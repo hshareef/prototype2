@@ -1,0 +1,73 @@
+
+.navbar {
+	margin-bottom: 0;
+	background: #c1f2ea;
+}
+
+body {
+	background: #c1f2ea;
+	color: #f7f7f7;
+	font-family: 'Montserrat', sans-serif;
+}
+h1,
+h2 {
+	font-weight: bold;
+}
+p {
+	font-size: 12px;
+	color: blue;
+}
+
+.jumbotron {
+	background: gray;
+	color: black;
+	text-align: center;
+}
+.jumbotron p {
+	color: white;
+	font-size: 26px;
+}
+
+.btn-primary {
+	color: #fff;
+	background-color: transparent;
+	border-color: white;
+	margin-bottom: 5px;
+}
+.btn-primary:hover {
+	color: #27A967;
+	background-color: white;
+	border-color: white;
+}
+.btn-secondary {
+	color: #fff;
+	background-color: transparent;
+	border-color: white;
+	margin-bottom: 5px;
+}
+.btn-secondary:hover {
+	color: white;
+	background-color: blue;
+	border-color: white;
+}
+
+.search-button{
+	background-color: transparent;
+	color:black;
+}
+.search-button:hover{
+	background-color: transparent;
+	color:white;
+}
+
+.glyphicon-trash{
+	color: white;
+}
+
+.glyphicon-trash:hover{
+	color: red;
+}
+
+.disabled:hover{
+	background-color: gray;
+}
