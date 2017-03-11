@@ -14,7 +14,7 @@ dashboardApp.controller('DashboardCtrl', function($scope, $http, DashboardServic
 	 };
 	 
 	 $scope.callClaimServiceFunction = function(){
-		 alert("Going to call the claim service function");
+		 alert("Going to call the claim service function, or not...maybe");
 		 //var msg = ClaimService.outsiderCall();
 		 //alert(msg);
 	 };
