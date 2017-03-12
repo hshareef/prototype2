@@ -44,6 +44,15 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		 });
 	    };
 	    
+	    
+		
+		 $scope.getClaim = function(claimId){
+			 $http.get("http://localhost:8080/Prototype/prototype/claim/" + claimId)
+			 .then(function(response){
+				 $scope.claim = response.data;
+			 });
+		    };
+	    
 	 $scope.createNewClaim = function(){
 	 };
 	 
@@ -53,12 +62,43 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		 //alert(msg);
 	 };
 	 
-	 $scope.openClaim = function(){
-		alert("i might open the claim...");
+	 $scope.openClaim = function(claimId){
+		//alert("i might open the claim with claim id..." + claimId);
 		//$location.absUrl() = '/Prototype/createForm.html';
-		$window.location.href = '/Prototype/createForm.html';
+		$window.location.href = '/Prototype/createForm.html?claimId=' + claimId;
 		
 	 };
+	 
+
+	 
+	 function getUrlVariable(name){
+		   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+		      return decodeURIComponent(name[1]);
+	};
+	
+	function getPageName(longString){
+		if(longString.indexOf("?") > 0){
+			return longString.substring(longString.indexOf("Prototype"), longString.indexOf("?")); 
+		}
+		else{
+			return longString.substring(longString.indexOf("Prototype"));
+		}
+	};
+	 
+	 $scope.init = function(){
+		 if(getPageName(window.location.toString()) == "Prototype/index.html"){
+			 $scope.testCtrl();
+		 }
+		 if(getPageName(window.location.toString()) == "Prototype/createForm.html"){
+			 var claimId = getUrlVariable("claimId");
+			 $scope.getClaim(claimId);
+		 }
+		 //alert("init function working");
+		 //alert(getPageName(window.location.toString()));
+		 //alert(getUrlVariable("claimId"));
+	 };
+	 
+	 $scope.init();
     
     
 });

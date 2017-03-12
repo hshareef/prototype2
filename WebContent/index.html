@@ -39,7 +39,7 @@
 				<input type="button" ng-click="testCtrl()" value="test ctrl" />
 				
 				<div ng-repeat="claim in topClaims" class="panel panel-primary panel-claimStatement">
-				<div class="panel-body" ng-click="openClaim()" >{{claim.claimStatement}}</div>
+				<div class="panel-body" ng-click="openClaim(claim.claimId)" >{{claim.claimStatement}}</div>
 				
 				</div>
 				
