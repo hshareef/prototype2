@@ -22,7 +22,7 @@ public class ClaimResource {
 	ClaimService claimService = new ClaimService();
 
  
-	@Path("{c}")
+	@Path("/temp/{c}")
 	@GET
 	@Produces("application/xml")
 	public String convertCtoFfromInput(@PathParam("c") Double c) {
@@ -58,22 +58,13 @@ public class ClaimResource {
 		return claimService.getTopClaims();
 	}
 	
-	
-//	@Path("/create2")
-//	@POST
-//	//@FormParam()
-//	@Produces("text/plain")
-//	@Consumes("text/plain")
-//	public String saveClaim(@QueryParam("claim") final String claim){
-//		int j=0;
-//		System.out.println("Hello there you rabbit!!");
-//		System.out.println(claim);
-//		j++;
-//		if(j==5){
-//			return null;
-//		}
-//		return "hello";
-//	}
+	@Path("/{claimId}")
+	@GET
+	@Produces("application/json")
+	public Claim getClaim(@PathParam("claimId") Integer claimId) {
+		Claim claim  = claimService.getClaim(claimId);
+		return claim;
+	}
 	
 	
 }

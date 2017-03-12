@@ -3,11 +3,14 @@ package com.prototype.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.criterion.Restrictions;
 
 import com.prototype.model.Argument;
 import com.prototype.model.Claim;
@@ -56,7 +59,29 @@ public class ClaimDao {
 	public String getAllClaimsQuery(){
 		return "select * from claim";
 	}
-	
-	
 
+	public Claim getClaim(Integer claimId) {
+		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		Claim claim;
+		System.out.println("Hibernate attempting to load the claim with claim id " + claimId + "...");
+		
+		claim = (Claim)session.get(Claim.class, claimId);
+		
+	     Hibernate.initialize(claim.getArguments());
+	     
+		
+		for(Argument argument : claim.getArguments()){
+		     Hibernate.initialize(argument.getPremises());
+		     for(Claim premise : argument.getPremises()){
+		 		ArrayList<Argument> premiseArguments = new ArrayList<Argument>();
+		 		premise.setArguments(premiseArguments); 
+		     }
+		}
+		session.close();
+		sessionFactory.close();
+		return claim;
+		
+	}
 }

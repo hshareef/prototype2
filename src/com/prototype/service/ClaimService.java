@@ -18,4 +18,8 @@ public class ClaimService {
 		return claimDao.getTopClaims();
 	}
 
+	public Claim getClaim(Integer claimId) {
+		return claimDao.getClaim(claimId);
+	}
+
 }

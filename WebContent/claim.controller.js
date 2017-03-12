@@ -1,5 +1,5 @@
 
-claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService) {
+claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location, $window) {
 	
 	
 	$scope.claim = new Object();
@@ -34,6 +34,31 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService) {
 //    $scope.loadClaimPage(){
 //    	location.assign("/Prototype/createForm.html");
 //    };
+    
+	$scope.topClaims = [];
+	
+	 $scope.testCtrl = function(){
+		 $http.get("http://localhost:8080/Prototype/prototype/claim/topClaims")
+		 .then(function(response){
+			 $scope.topClaims = response.data;
+		 });
+	    };
+	    
+	 $scope.createNewClaim = function(){
+	 };
+	 
+	 $scope.callClaimServiceFunction = function(){
+		 alert("Going to call the claim service function, or not...maybe");
+		 //var msg = ClaimService.outsiderCall();
+		 //alert(msg);
+	 };
+	 
+	 $scope.openClaim = function(){
+		alert("i might open the claim...");
+		//$location.absUrl() = '/Prototype/createForm.html';
+		$window.location.href = '/Prototype/createForm.html';
+		
+	 };
     
     
 });

@@ -25,7 +25,7 @@
 <br>
 <br>
 <hr>
-<div ng-app="DashboardModule" ng-controller="DashboardCtrl">
+<div ng-app="ClaimModule" ng-controller="ClaimCtrl">
 <div class=row>
 
 	<div class="col-sm-9">
@@ -39,7 +39,7 @@
 				<input type="button" ng-click="testCtrl()" value="test ctrl" />
 				
 				<div ng-repeat="claim in topClaims" class="panel panel-primary panel-claimStatement">
-				<div class="panel-body">{{claim.claimStatement}}</div>
+				<div class="panel-body" ng-click="openClaim()" >{{claim.claimStatement}}</div>
 				
 				</div>
 				
@@ -71,10 +71,9 @@
 </div>
 
 </div>
-				<script src="dashboardModule.js"></script>
+				<script src="claimModule.js"></script>
 				<script src="claim.service.js"></script>
-				<script src="dashboard.service.js"></script>
-				<script src="dashboard.controller.js"></script> 
+				<script src="claim.controller.js"></script> 
 
 <!-- <script src="prototypeModule.js"></script>
 <script src="search.service.js"></script>

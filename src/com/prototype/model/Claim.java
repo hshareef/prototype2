@@ -7,6 +7,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -21,6 +22,8 @@ public class Claim {
 	private String claimStatement;
 	@ElementCollection(targetClass=Argument.class)
 	private List<Argument> arguments;
+	
+	
 	//private ArgumentWrapper arguments;
 //	private ArrayList<String> keywords;
 //	private ArrayList<Claim> similarClaims;
