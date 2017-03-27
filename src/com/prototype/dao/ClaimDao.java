@@ -23,11 +23,11 @@ public class ClaimDao {
 		session.beginTransaction();
 		for(Argument arg : claim.getArguments()){
 			for(Claim premise : arg.getPremises()){
-				session.save(premise);
+				session.saveOrUpdate(premise);
 			}
-			session.save(arg);
+			session.saveOrUpdate(arg);
 		}
-		session.save(claim);
+		session.saveOrUpdate(claim);
 		session.getTransaction().commit();
 		session.close();
 		sessionFactory.close();

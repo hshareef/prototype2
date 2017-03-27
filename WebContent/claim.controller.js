@@ -11,7 +11,9 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     
     $scope.saveStatement = function(){
     	var test = $http.post("http://localhost:8080/Prototype/prototype/claim/create", $scope.claim);
-    };
+    	alert("message saved!");
+    	$scope.editMode=false;
+    };  
     
     $scope.addToArgumentArray = function(){
     	var argument = new Object();
@@ -27,8 +29,8 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     	$scope.claim.arguments[argIndex].premises.push(premise);
     };
     
-    $scope.setEditMode = function(isEditMode){
-    	editMode = isEditMode;
+    $scope.setEditMode = function(){
+    	$scope.editMode = true;
     };
     
 //    $scope.loadClaimPage(){
@@ -37,7 +39,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     
 	$scope.topClaims = [];
 	
-	 $scope.testCtrl = function(){
+	 $scope.loadTopClaims = function(){
 		 $http.get("http://localhost:8080/Prototype/prototype/claim/topClaims")
 		 .then(function(response){
 			 $scope.topClaims = response.data;
@@ -54,6 +56,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		    };
 	    
 	 $scope.createNewClaim = function(){
+		 
 	 };
 	 
 	 $scope.callClaimServiceFunction = function(){
@@ -87,7 +90,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	 
 	 $scope.init = function(){
 		 if(getPageName(window.location.toString()) == "Prototype/index.html"){
-			 $scope.testCtrl();
+			 $scope.loadTopClaims();
 		 }
 		 if(getPageName(window.location.toString()) == "Prototype/createForm.html"){
 			 var claimId = getUrlVariable("claimId");
