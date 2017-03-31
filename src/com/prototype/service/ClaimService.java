@@ -22,4 +22,5 @@ public class ClaimService {
 		return claimDao.getClaim(claimId);
 	}
 
+	
 }

@@ -1,6 +1,7 @@
 package com.prototype.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.ElementCollection;
@@ -22,6 +23,9 @@ public class Claim {
 	private String claimStatement;
 	@ElementCollection(targetClass=Argument.class)
 	private List<Argument> arguments;
+	
+	@ElementCollection
+	private List<String> keywords;
 	
 	
 	//private ArgumentWrapper arguments;
@@ -73,6 +77,15 @@ public class Claim {
 	public void setArguments(List<Argument> arguments) {
 		this.arguments = arguments;
 	}
+
+	public List<String> getKeywords() {
+		return keywords;
+	}
+
+	public void setKeywords(List<String> keywords) {
+		this.keywords = keywords;
+	}
+	
 
 //	public ArgumentWrapper getArguments() {
 //		return arguments;

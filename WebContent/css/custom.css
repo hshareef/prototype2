@@ -126,3 +126,13 @@ p {
 	background-color: red;
 }
 }
+
+.deleteKeywordBadge:hover{
+	background-color: red;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.keywordText{
+	background-color: #2B36E5;
+}

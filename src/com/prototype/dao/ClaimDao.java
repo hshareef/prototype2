@@ -48,6 +48,8 @@ public class ClaimDao {
 			System.out.println(claim.getClaimStatement());
 			ArrayList<Argument> arguments = new ArrayList<Argument>();
 			claim.setArguments(arguments);
+			ArrayList <String> keywords = new ArrayList<String>();
+			claim.setKeywords(keywords);
 		}
 		
 		
@@ -70,6 +72,7 @@ public class ClaimDao {
 		claim = (Claim)session.get(Claim.class, claimId);
 		
 	     Hibernate.initialize(claim.getArguments());
+	     Hibernate.initialize(claim.getKeywords());
 	     
 		
 		for(Argument argument : claim.getArguments()){
@@ -77,6 +80,8 @@ public class ClaimDao {
 		     for(Claim premise : argument.getPremises()){
 		 		ArrayList<Argument> premiseArguments = new ArrayList<Argument>();
 		 		premise.setArguments(premiseArguments); 
+		 		ArrayList<String> keywords = new ArrayList<String>();
+		 		premise.setKeywords(keywords);
 		     }
 		}
 		session.close();

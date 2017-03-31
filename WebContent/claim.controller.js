@@ -5,6 +5,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	$scope.claim = new Object();
 	$scope.claim.claimStatement="";
 	$scope.claim.arguments = [];
+	$scope.claim.keywords = [];
 	$scope.editMode = false;
 	
  
@@ -20,6 +21,15 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     	argument.argName="default name";
     	argument.premises = [];
     	$scope.claim.arguments.push(argument);
+    };
+    
+    $scope.addKeyword = function(){
+    	var keyword = "keyword";
+    	$scope.claim.keywords.push(keyword);
+    };
+    
+    $scope.deleteKeyword = function(){
+    	alert("deleting keyword!");
     };
     
     
