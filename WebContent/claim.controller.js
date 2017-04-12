@@ -1,12 +1,30 @@
 
 claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location, $window) {
 	
-	
 	$scope.claim = new Object();
 	$scope.claim.claimStatement="";
 	$scope.claim.arguments = [];
 	$scope.claim.keywords = [];
 	$scope.editMode = false;
+	$scope.user = {
+			userId: null,
+			username: "",
+			password: "",
+			firstName: "",
+			lastName: "",
+			emailAddress: "",
+			loggedIn: false	
+	};
+	$scope.createNewAcctFlag = false;
+	$scope.newUser = {
+			firstName: "",
+			lastName: "",
+			username: "",
+			password: "",
+			emailAddress: "",
+			loggedIn: false
+		};
+	$scope.confirmPassword = "";
 	
  
     
@@ -28,8 +46,9 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     	$scope.claim.keywords.push(keyword);
     };
     
-    $scope.deleteKeyword = function(){
-    	alert("deleting keyword!");
+    $scope.deleteKeyword = function(index){
+    	$scope.claim.keywords.splice(index, 1);
+    	$scope.saveStatement();
     };
     
     
@@ -97,12 +116,55 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 			return longString.substring(longString.indexOf("Prototype"));
 		}
 	};
+	
+	$scope.login = function () {
+		alert("trying to log in..." + $scope.user.username + " : " +  $scope.user.password);
+		var test = $http.post("http://localhost:8080/Prototype/prototype/login/login", $scope.user)
+		.then(function(response){
+			alert("retrieved");
+			$scope.user = response.data;
+			alert($scope.user.emailAddress);
+			alert($scope.user);
+			if($scope.user === undefined || $scope.user === null){
+				alert("login not successful");
+			}
+			else{
+				alert("login successful.");
+				localStorage.setItem("userId", $scope.user.userId)
+				$window.location.href = "/Prototype/index.html";
+			}
+		});
+		
+	};
+	
+	$scope.setNewAcctFlag = function(flag){
+		$scope.createNewAcctFlag = flag;
+		if(flag){
+
+		}
+		else{
+			$scope.newUser = null;
+			$scope.confirmPassword = null;
+		}
+			
+	};
+	
+	$scope.createNewUserAcct = function(){
+		alert("trying to create new user account...");
+		if($scope.newUser.password !== $scope.confirmPassword){
+			alert("passwords don't match");
+		}else{
+			var test = $http.post("http://localhost:8080/Prototype/prototype/login/createUser", $scope.newUser);
+		}
+	};
 	 
 	 $scope.init = function(){
 		 if(getPageName(window.location.toString()) == "Prototype/index.html"){
+			 $scope.user.userId = localStorage.getItem("userId");
 			 $scope.loadTopClaims();
 		 }
 		 if(getPageName(window.location.toString()) == "Prototype/createForm.html"){
+			 $scope.user.userId = localStorage.getItem("userId");
 			 var claimId = getUrlVariable("claimId");
 			 $scope.getClaim(claimId);
 		 }

@@ -68,7 +68,7 @@
 				</div>
 				<div>
 					<span ng-repeat="keyword in claim.keywords track by $index">
-						<button type="button" class="btn keywordText" ng-if="!editMode">{{keyword}}&nbsp<span ng-click="deleteKeyword()" class="badge deleteKeywordBadge">X</span></button>
+						<button type="button" class="btn keywordText" ng-if="!editMode">{{keyword}}&nbsp<span ng-click="deleteKeyword($index)" class="badge deleteKeywordBadge">X</span></button>
 						<textarea ng-if="editMode" rows="1" cols="20" type="text" ng-model="claim.keywords[$index]"></textarea>
 					</span>
 					<!-- <input type="text" ng-model="keyword" /> -->

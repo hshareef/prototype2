@@ -32,11 +32,9 @@
         <property name="hbm2ddl.auto">update</property>
         
         <!--  mention here all the model classes along with their package name -->
-        <!-- <mapping class="com.prototype.model.DeductiveArgument" />
-        <mapping class="com.prototype.model.InductiveArgument" /> -->
         <mapping class="com.prototype.model.Claim" />
-         <mapping class="com.prototype.model.Argument" />
-       <!--  <mapping class="com.prototype.model.Premise" /> -->
+        <mapping class="com.prototype.model.Argument" />
+        <mapping class="com.prototype.model.User" />
         
 
     </session-factory>

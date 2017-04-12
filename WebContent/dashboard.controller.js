@@ -1,5 +1,7 @@
 
 dashboardApp.controller('DashboardCtrl', function($scope, $http, DashboardService) {
+	
+	$scope.testDashboard = "chocobo";
 //	
 //	$scope.topClaims = [];
 //	
