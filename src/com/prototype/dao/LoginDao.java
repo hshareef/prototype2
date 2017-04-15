@@ -103,5 +103,18 @@ public class LoginDao {
 			return true;
 		}
 	}
+
+	public User getUser(Integer userId) {
+		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		User user =	(User)session.get(User.class, userId);
+		
+		
+		session.close();
+		sessionFactory.close();
+
+		return user;
+	}
 	
 }

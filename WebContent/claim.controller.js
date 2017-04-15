@@ -137,6 +137,13 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		
 	};
 	
+	$scope.getUser = function(userId){
+		var test = $http.get("http://localhost:8080/Prototype/prototype/login/"+userId)
+		.then(function(response){
+			$scope.user = response.data;
+		});
+	};
+	
 	$scope.setNewAcctFlag = function(flag){
 		$scope.createNewAcctFlag = flag;
 		if(flag){
@@ -160,11 +167,13 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	 
 	 $scope.init = function(){
 		 if(getPageName(window.location.toString()) == "Prototype/index.html"){
-			 $scope.user.userId = localStorage.getItem("userId");
+			 //$scope.user.userId = localStorage.getItem("userId");
+			 $scope.getUser(localStorage.getItem("userId"));
 			 $scope.loadTopClaims();
 		 }
 		 if(getPageName(window.location.toString()) == "Prototype/createForm.html"){
-			 $scope.user.userId = localStorage.getItem("userId");
+			 //$scope.user.userId = localStorage.getItem("userId");
+			 $scope.getUser(localStorage.getItem("userId"));
 			 var claimId = getUrlVariable("claimId");
 			 $scope.getClaim(claimId);
 		 }

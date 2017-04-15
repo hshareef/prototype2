@@ -40,4 +40,23 @@ public class LoginService {
 	public boolean usernameAvailable(String username){
 		return loginDao.checkUsernameAvailable(username);
 	}
+
+	public User getUser(Integer userId) {
+		// TODO Auto-generated method stub
+		if(userId != null){
+			return loginDao.getUser(userId);
+		}
+		else{
+			return getGuestUser();
+		}
+	}
+
+	private User getGuestUser() {
+		User guest = new User();
+		guest.setUsername("Guest");
+		guest.setFirstName("Guest");
+		guest.setLastName("");
+		guest.setLoggedIn(false);
+		return guest;
+	}
 }
