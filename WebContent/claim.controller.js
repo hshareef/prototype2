@@ -5,6 +5,8 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	$scope.claim.claimStatement="";
 	$scope.claim.arguments = [];
 	$scope.claim.keywords = [];
+	$scope.claim.originalOwnerId=-1;
+	$scope.claim.originalOwnerUsername = "";
 	$scope.editMode = false;
 	$scope.user = {
 			userId: null,
@@ -27,8 +29,12 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	$scope.confirmPassword = "";
 	
  
-    
+    //for saving a claim
     $scope.saveStatement = function(){
+    	if($scope.claim.originalOwnerId=-1){
+    		$scope.claim.originalOwnerId = $scope.user.userId;
+    		$scope.claim.originalOwnerUsername = $scope.user.username;
+    	}
     	var test = $http.post("http://localhost:8080/Prototype/prototype/claim/create", $scope.claim);
     	alert("message saved!");
     	$scope.editMode=false;
@@ -38,6 +44,8 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     	var argument = new Object();
     	argument.argName="default name";
     	argument.premises = [];
+    	argument.ownerId = $scope.user.userId;
+    	argument.ownerUsername = $scope.user.username;
     	$scope.claim.arguments.push(argument);
     };
     

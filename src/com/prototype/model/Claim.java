@@ -27,6 +27,9 @@ public class Claim {
 	@ElementCollection
 	private List<String> keywords;
 	
+	private Integer originalOwnerId;//id of the user who first created this claim
+	private String originalOwnerUsername;
+	
 	
 	//private ArgumentWrapper arguments;
 //	private ArrayList<String> keywords;
@@ -85,6 +88,24 @@ public class Claim {
 	public void setKeywords(List<String> keywords) {
 		this.keywords = keywords;
 	}
+
+	public Integer getOriginalOwnerId() {
+		return originalOwnerId;
+	}
+
+	public void setOriginalOwnerId(Integer originalOwnerId) {
+		this.originalOwnerId = originalOwnerId;
+	}
+
+	public String getOriginalOwnerUsername() {
+		return originalOwnerUsername;
+	}
+
+	public void setOriginalOwnerUsername(String originalOwnerUsername) {
+		this.originalOwnerUsername = originalOwnerUsername;
+	}
+
+
 	
 
 //	public ArgumentWrapper getArguments() {

@@ -20,6 +20,9 @@ public class Argument {
 	private String argName;
 	@ElementCollection(targetClass=Claim.class)
 	private List<Claim> premises;
+	
+	private Integer ownerId;
+	private String ownerUsername;
 
 	//private ArrayList<String> keywords;
 	
@@ -49,6 +52,20 @@ public class Argument {
 	public void setArgName(String argName) {
 		this.argName = argName;
 	}
+	public Integer getOwnerId() {
+		return ownerId;
+	}
+	public void setOwnerId(Integer ownerId) {
+		this.ownerId = ownerId;
+	}
+	public String getOwnerUsername() {
+		return ownerUsername;
+	}
+	public void setOwnerUsername(String ownerUsername) {
+		this.ownerUsername = ownerUsername;
+	}
+	
+	
 
 //	public ArrayList<String> getKeywords() {
 //		return keywords;

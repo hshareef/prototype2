@@ -42,6 +42,8 @@
 				<p ng-if="!editMode">{{claim.claimStatement}}</p>
 				<br><textarea ng-if="editMode" rows="2" cols="75" type="text" ng-model="claim.claimStatement"></textarea>
 				
+				<p ng-if="!editMode">Owner: {{claim.originalOwnerUsername}}</p>
+				
 				<div class="argSection panel panel-primary panel-center" ng-repeat="argument in claim.arguments track by $index">
 					<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
       					<h3 class = "panel-title">Argument - {{argument.argName}}</h3>
@@ -51,6 +53,7 @@
 						Argument name:
 						<p ng-if="!editMode">{{argument.argName}}</p>
 						<textarea ng-if="editMode" rows="1" cols="50"  type=text ng-model="argument.argName"></textarea><br>
+						<p ng-if="!editMode">owner: {{argument.ownerUsername}}</p>
 						
 						<div ng-repeat="premise in argument.premises">
 							Premise:<br>
