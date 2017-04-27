@@ -23,6 +23,8 @@ public class Argument {
 	
 	private Integer ownerId;
 	private String ownerUsername;
+	
+	private Boolean editable;
 
 	//private ArrayList<String> keywords;
 	
@@ -63,6 +65,12 @@ public class Argument {
 	}
 	public void setOwnerUsername(String ownerUsername) {
 		this.ownerUsername = ownerUsername;
+	}
+	public Boolean getEditable() {
+		return editable;
+	}
+	public void setEditable(Boolean editable) {
+		this.editable = editable;
 	}
 	
 	

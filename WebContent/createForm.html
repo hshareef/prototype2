@@ -46,21 +46,31 @@
 				
 				<div class="argSection panel panel-primary panel-center" ng-repeat="argument in claim.arguments track by $index">
 					<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
-      					<h3 class = "panel-title">Argument - {{argument.argName}}</h3>
+      					<h3 class = "panel-title">Argument {{$index+1}} - {{argument.argName}}</h3>
+      					<a class="btn" ng-if="!argument.editable && argument.ownerId === user.userId" ng-click="setArgumentEditMode($index, true) ; $event.stopPropagation()" style="color: black">Edit</a>
+      					<span class="btn" ng-if="!argument.editable && argument.ownerId === user.userId" ng-click="setArgumentEditMode($index, true) ; $event.stopPropagation()">
+          					<span class="glyphicon glyphicon-edit"></span> Edit
+        				</span>
+		   				<a class="btn" ng-if="argument.editable" ng-click="setArgumentEditMode($index, false) ; saveStatement() ; $event.stopPropagation()" style="color: black">Save</a>
+		   				<a class="btn" ng-if="argument.editable" ng-click="setArgumentEditMode($index, false) ; getClaim(claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a>
+		   				<span ng-if="argument.ownerId === user.userId" class="btn delete-icon" ng-click="deleteArgument($index) ; event.stopPropagation()">
+          					<span class="glyphicon glyphicon-trash"></span> Delete 
+       					 </span>
+		   				<!-- CHANGE saveStatement() above to saveArgument(index) (and create that method) -->
 		   			</div>
 		   			<div class="container" id="{{$index}}">
 			   			<div class = "panel-body" >
 						Argument name:
-						<p ng-if="!editMode">{{argument.argName}}</p>
-						<textarea ng-if="editMode" rows="1" cols="50"  type=text ng-model="argument.argName"></textarea><br>
-						<p ng-if="!editMode">owner: {{argument.ownerUsername}}</p>
+						<p ng-if="!argument.editable">{{argument.argName}}</p>
+						<textarea ng-if="argument.editable" rows="1" cols="50"  type=text ng-model="argument.argName"></textarea><br>
+						<p ng-if="!argument.editable">owner: {{argument.ownerUsername}}</p>
 						
-						<div ng-repeat="premise in argument.premises">
-							Premise:<br>
-							<p ng-if="!editMode">{{premise.claimStatement}}</p>
-							<textarea ng-if="editMode" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
+						<div ng-repeat="premise in argument.premises track by $index">
+							Premise {{$index+1}}:<br>
+							<a ng-class="btn" style="color:black; font-size:12px" ng-if="!argument.editable" ng-click="openClaim(premise.claimId)">{{premise.claimStatement}}</a>
+							<textarea ng-if="argument.editable" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
 						</div>
-						<a ng-if="editMode" class="btn" ng-click="addToPremiseArray($index)">Add Premise</a><br>
+						<a ng-if="argument.editable" class="btn" ng-click="addToPremiseArray($index)">Add Premise</a><br>
 						Conclusion: 
 						<p>{{claim.claimStatement}}</p>
 						<!-- <textarea rows="1" cols="50" type=text value={{claim.claimStatement}} readonly>{{claim.claimStatement}}</textarea> -->

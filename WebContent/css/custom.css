@@ -72,12 +72,8 @@ p {
 	color:blue;
 }
 
-.glyphicon-trash{
-	color: white;
-}
-
-.glyphicon-trash:hover{
-	color: red;
+.delete-icon:hover{
+	color : red;
 }
 
 .disabled:hover{

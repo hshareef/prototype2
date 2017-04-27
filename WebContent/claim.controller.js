@@ -46,7 +46,20 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     	argument.premises = [];
     	argument.ownerId = $scope.user.userId;
     	argument.ownerUsername = $scope.user.username;
+    	argument.editable = true;
     	$scope.claim.arguments.push(argument);
+    };
+    
+    $scope.deleteArgument = function(index){
+    	$scope.claim.arguments.splice(index, 1);
+    	$scope.saveStatement();
+    };
+    
+    $scope.setArgumentEditMode = function(index, editMode){//editMode is bool
+    	alert("edit the argument " + index);
+    	if($scope.claim.arguments[index].ownerId === $scope.user.userId){
+    		$scope.claim.arguments[index].editable = editMode;
+    	}
     };
     
     $scope.addKeyword = function(){
@@ -63,6 +76,8 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     $scope.addToPremiseArray = function(argIndex){
     	var premise = new Object();
     	premise.claimStatement="default statement";
+    	premise.originalOwnerId = $scope.user.userId;
+    	premise.originalOwnerUsername = $scope.user.username;
     	$scope.claim.arguments[argIndex].premises.push(premise);
     };
     
