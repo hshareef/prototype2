@@ -21,6 +21,11 @@ body {
 	/* color: red; */
 	font-family: 'Montserrat', sans-serif;
 }
+
+.profileDropdown {
+		color: black;
+}
+
 h1,
 h2 {
 	font-weight: bold;

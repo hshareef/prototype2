@@ -67,8 +67,15 @@
    			</div>
    
   			<div class = "panel-body">
-  				<p>Hello, {{user.username}}</p>
-				<a class="btn search-button" href="/Prototype/createForm.html" role="button" >Create a new Claim</a>		
+  				<li ng-if="user.username.length > 0" style="list-style:none" class="profileDropdown dropdown">
+          			<a  class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hello, {{user.username}} <span class="caret"></span></a>
+          			<ul class="dropdown-menu">
+            			<li><a ng-click="logout()">Log out</a></li>
+            			<li><a href="#">Profile Settings</a></li>
+          			</ul>
+        		</li>
+				<a ng-if="user.userId !== null" class="btn search-button" href="/Prototype/createForm.html" role="button" >Create a new Claim</a>		
+				<a ng-if="user.userId === null" href="/Prototype/login.html">Login</a>
    			</div>
 		</div>
 		<div class = "panel panel-primary panel-right">

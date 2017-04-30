@@ -87,7 +87,7 @@
 					<!-- <input type="text" ng-model="keyword" /> -->
 				</div>{{claim.keywords.length}}
 				<a ng-if="editMode" class="btn" ng-click="addKeyword()">Add Keyword</a>
-				<a ng-if="editMode" class="btn" ng-click="addToArgumentArray()">Add Argument</a>
+				<a class="btn" ng-click="addToArgumentArray()">Add Argument</a>
 				<br>
 				<a ng-if="editMode" class="btn" ng-click="saveStatement()">Save</a>
 				<a ng-if="!editMode" class="btn" ng-click="setEditMode()">Edit</a>

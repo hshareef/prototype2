@@ -56,7 +56,6 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     };
     
     $scope.setArgumentEditMode = function(index, editMode){//editMode is bool
-    	alert("edit the argument " + index);
     	if($scope.claim.arguments[index].ownerId === $scope.user.userId){
     		$scope.claim.arguments[index].editable = editMode;
     	}
@@ -85,10 +84,6 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     	$scope.editMode = true;
     };
     
-//    $scope.loadClaimPage(){
-//    	location.assign("/Prototype/createForm.html");
-//    };
-    
 	$scope.topClaims = [];
 	
 	 $scope.loadTopClaims = function(){
@@ -113,13 +108,9 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	 
 	 $scope.callClaimServiceFunction = function(){
 		 alert("Going to call the claim service function, or not...maybe");
-		 //var msg = ClaimService.outsiderCall();
-		 //alert(msg);
 	 };
 	 
 	 $scope.openClaim = function(claimId){
-		//alert("i might open the claim with claim id..." + claimId);
-		//$location.absUrl() = '/Prototype/createForm.html';
 		$window.location.href = '/Prototype/createForm.html?claimId=' + claimId;
 		
 	 };
@@ -144,10 +135,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		alert("trying to log in..." + $scope.user.username + " : " +  $scope.user.password);
 		var test = $http.post("http://localhost:8080/Prototype/prototype/login/login", $scope.user)
 		.then(function(response){
-			alert("retrieved");
 			$scope.user = response.data;
-			alert($scope.user.emailAddress);
-			alert($scope.user);
 			if($scope.user === undefined || $scope.user === null){
 				alert("login not successful");
 			}
@@ -158,6 +146,12 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 			}
 		});
 		
+	};
+	
+	$scope.logout = function(){
+		alert("trying to log out!");
+		localStorage.clear();
+		location.reload();
 	};
 	
 	$scope.getUser = function(userId){
@@ -190,8 +184,9 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	 
 	 $scope.init = function(){
 		 if(getPageName(window.location.toString()) == "Prototype/index.html"){
-			 //$scope.user.userId = localStorage.getItem("userId");
-			 $scope.getUser(localStorage.getItem("userId"));
+			 if(localStorage.getItem("userId") !== undefined && localStorage.getItem("userId") !== null){
+				 $scope.getUser(localStorage.getItem("userId"));
+			 }
 			 $scope.loadTopClaims();
 		 }
 		 if(getPageName(window.location.toString()) == "Prototype/createForm.html"){
@@ -200,9 +195,6 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 			 var claimId = getUrlVariable("claimId");
 			 $scope.getClaim(claimId);
 		 }
-		 //alert("init function working");
-		 //alert(getPageName(window.location.toString()));
-		 //alert(getUrlVariable("claimId"));
 	 };
 	 
 	 $scope.init();
