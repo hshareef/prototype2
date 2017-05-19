@@ -63,7 +63,8 @@
 						Argument name:
 						<p ng-if="!argument.editable">{{argument.argName}}</p>
 						<textarea ng-if="argument.editable" rows="1" cols="50"  type=text ng-model="argument.argName"></textarea><br>
-						<p ng-if="!argument.editable">owner: {{argument.ownerUsername}}</p>
+						
+						
 						
 						<div ng-repeat="premise in argument.premises track by $index">
 							Premise {{$index+1}}:<br>
@@ -76,6 +77,25 @@
 						<!-- <textarea rows="1" cols="50" type=text value={{claim.claimStatement}} readonly>{{claim.claimStatement}}</textarea> -->
 						
 						<br>
+							<div class="row">
+								<div class="col-sm-6">
+									
+									<div class="argSection panel panel-primary panel-center">
+										<div class="panel-heading">Argument Details</div>
+										<div class="panel-body">
+											<p ng-if="!argument.editable">owner: {{argument.ownerUsername}}</p>
+											<p>Valid:<span ng-if="argument.valid">Yes</span><span ng-if="!argument.valid">No<span></p>
+											<p>Sound:<span ng-if="argument.sound">Yes</span><span ng-if="!argument.sound">No</span></p>
+											<p>Valid votes:{{argument.validCount}}  Invalid votes:{{argument.invalidCount}}</p>
+											<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="color:black">Vote <span class="caret"></span></a>
+          									<ul class="dropdown-menu">
+								            	<li><a href="#" ng-click="voteValidity($index, true)">Valid</a></li>
+								            	<li><a href="#" ng-click="voteValidity($index, false)">Invalid</a></li>
+								            </ul>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

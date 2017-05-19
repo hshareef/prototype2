@@ -28,6 +28,53 @@ public class Argument {
 
 	//private ArrayList<String> keywords;
 	
+	private Boolean valid;
+	private Boolean sound;
+	
+	private Integer validCount;
+	private Integer invalidCount;
+	
+	//private ArgumentWrapper arguments;
+//	private ArrayList<String> keywords;
+//	private ArrayList<Claim> similarClaims;
+//	private ArrayList<Claim> oppositeClaims;
+	
+	public void determineValidity(){
+		if(validCount == null){
+			validCount = 0;
+		}
+		if(invalidCount == null){
+			invalidCount = 0;
+		}
+		if(validCount + invalidCount == 0){
+			this.valid = false;
+		}
+		else if(validCount/(validCount + invalidCount)>0.9){
+			this.valid = true;
+		}
+		else
+			this.valid = false;
+	}
+
+
+	public Integer getValidCount() {
+		return validCount;
+	}
+
+	public void setValidCount(Integer validCount) {
+		this.validCount = validCount;
+	}
+
+	public Integer getInvalidCount() {
+		return invalidCount;
+	}
+
+	public void setInvalidCount(Integer invalidCount) {
+		this.invalidCount = invalidCount;
+	}
+
+
+	
 	public Integer getArgumentId() {
 		return argumentId;
 	}
@@ -71,6 +118,26 @@ public class Argument {
 	}
 	public void setEditable(Boolean editable) {
 		this.editable = editable;
+	}
+
+
+	public Boolean getValid() {
+		return valid;
+	}
+
+
+	public void setValid(Boolean valid) {
+		this.valid = valid;
+	}
+
+
+	public Boolean getSound() {
+		return sound;
+	}
+
+
+	public void setSound(Boolean sound) {
+		this.sound = sound;
 	}
 	
 	

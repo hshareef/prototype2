@@ -29,13 +29,13 @@ public class Claim {
 	
 	private Integer originalOwnerId;//id of the user who first created this claim
 	private String originalOwnerUsername;
-	
-	
+
 	//private ArgumentWrapper arguments;
 //	private ArrayList<String> keywords;
 //	private ArrayList<Claim> similarClaims;
 //	private ArrayList<Claim> oppositeClaims;
 	
+
 	public Claim()
 	{
 		

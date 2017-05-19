@@ -47,6 +47,10 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     	argument.ownerId = $scope.user.userId;
     	argument.ownerUsername = $scope.user.username;
     	argument.editable = true;
+    	argument.valid = false;
+    	argument.sound = false;
+    	argument.validCount = 0;
+    	argument.invalidCount = 0;
     	$scope.claim.arguments.push(argument);
     };
     
@@ -113,6 +117,27 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	 $scope.openClaim = function(claimId){
 		$window.location.href = '/Prototype/createForm.html?claimId=' + claimId;
 		
+	 };
+	 
+	 $scope.voteValidity = function(index, valid){
+		 alert("trying to vote as valid");
+		 if(valid){
+			 if($scope.claim.arguments[index].validCount === undefined || $scope.claim.arguments[index].validCount === null){
+				 $scope.claim.arguments[index].validCount = 1;
+			 }
+			 else {
+				 $scope.claim.arguments[index].validCount += 1;
+			 }
+		 }
+		 else{
+			 if($scope.claim.arguments[index].invalidCount === undefined || $scope.claim.arguments[index].invalidCount === null){
+				 $scope.claim.arguments[index].invalidCount = 1;
+			 }
+			 else {
+				 $scope.claim.arguments[index].invalidCount += 1;
+			 }
+		 }
+		 $scope.saveStatement();
 	 };
 	 
 
