@@ -14,6 +14,7 @@ import org.hibernate.criterion.Restrictions;
 
 import com.prototype.model.Argument;
 import com.prototype.model.Claim;
+import com.prototype.model.FallacyDetails;
 
 public class ClaimDao {
 	
@@ -25,6 +26,11 @@ public class ClaimDao {
 			for(Claim premise : arg.getPremises()){
 				session.saveOrUpdate(premise);
 			}
+			if(arg.getFallacyDetails() == null){
+				FallacyDetails fd = new FallacyDetails();
+				arg.setFallacyDetails(fd);
+			}
+			session.saveOrUpdate(arg.getFallacyDetails());
 			session.saveOrUpdate(arg);
 		}
 		session.saveOrUpdate(claim);
@@ -71,11 +77,13 @@ public class ClaimDao {
 		
 		claim = (Claim)session.get(Claim.class, claimId);
 		
+		
 	     Hibernate.initialize(claim.getArguments());
 	     Hibernate.initialize(claim.getKeywords());
 	     
 		
 		for(Argument argument : claim.getArguments()){
+			 Hibernate.initialize(argument.getFallacyDetails());
 		     Hibernate.initialize(argument.getPremises());
 		     for(Claim premise : argument.getPremises()){
 		 		ArrayList<Argument> premiseArguments = new ArrayList<Argument>();

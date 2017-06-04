@@ -7,6 +7,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlRootElement;
 
 //@XmlRootElement(name="Argument")
@@ -33,6 +34,9 @@ public class Argument {
 	
 	private Integer validCount;
 	private Integer invalidCount;
+	
+	@OneToOne(targetEntity = FallacyDetails.class)
+	private FallacyDetails fallacyDetails;
 	
 	//private ArgumentWrapper arguments;
 //	private ArrayList<String> keywords;
@@ -139,6 +143,18 @@ public class Argument {
 	public void setSound(Boolean sound) {
 		this.sound = sound;
 	}
+
+
+	public FallacyDetails getFallacyDetails() {
+		return fallacyDetails;
+	}
+
+
+	public void setFallacyDetails(FallacyDetails fallacyDetails) {
+		this.fallacyDetails = fallacyDetails;
+	}
+	
+	
 	
 	
 

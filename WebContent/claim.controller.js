@@ -28,6 +28,8 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		};
 	$scope.confirmPassword = "";
 	
+
+	
  
     //for saving a claim
     $scope.saveStatement = function(){
@@ -51,6 +53,28 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     	argument.sound = false;
     	argument.validCount = 0;
     	argument.invalidCount = 0;
+    	argument.fallacyDetails = {
+    			adHomniemUpvotes: 0,
+    			adHomniemDownvotes: 0,
+    			ignorantumUpvotes: 0,
+    			ignorantumDownvotes: 0,
+    			adpopulumUpvotes: 0,
+    			adpopulumDownvotes: 0,
+    			argFromAuthorityUpvotes: 0,
+    			argFromAuthorityDownvotes: 0,
+    			generalizationUpvotes: 0,
+    			generalizationDownvotes: 0,
+    			slipperySlopeUpvotes: 0,
+    			slipperSlopeDownvotes: 0,
+    			strawmanUpvotes: 0,
+    			strawmanDownvotes: 0,
+    			redHerringUpvotes: 0,
+    			redHerringDownvotes: 0,
+    			falseDichotomyUpvotes: 0,
+    			falseDichotomyDownvotes: 0,
+    			circularReasoningUpvotes: 0,
+    			circularReasoningDownvotes: 0
+    	};
     	$scope.claim.arguments.push(argument);
     };
     
@@ -140,6 +164,46 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		 $scope.saveStatement();
 	 };
 	 
+	 $scope.voteFallacy = function(type, index){
+		 alert("inside the vote");
+		 $scope.claim;
+		 if(type === 'adHomniem'){
+			 $scope.claim.arguments[index].fallacyDetails.adHomniemUpvotes =
+				 $scope.claim.arguments[index].fallacyDetails.adHomniemUpvotes+1;
+			 var t=9;
+			 $scope.claim;
+		 }
+		 else if(type === 'ignorantum'){
+			 $scope.claim.arguments[index].fallacyDetails.ignorantumUpvotes =
+				 $scope.claim.arguments[index].fallacyDetails.ignorantumUpvotes+1;
+		 }
+		 else if(type === 'adpopulum'){
+			 $scope.claim.arguments[index].fallacyDetails.adpopulumUpvotes +=1;	 
+		 }
+		 else if(type === 'argFromAuthority'){
+			 $scope.claim.arguments[index].fallacyDetails.argFromAuthorityUpvotes +=1;
+		 }
+		 else if(type === 'generalization'){
+			 $scope.claim.arguments[index].fallacyDetails.generalizationUpvotes +=1;
+		 }
+		 else if(type === 'slipperySlope'){
+			 $scope.claim.arguments[index].fallacyDetails.slipperySlopeUpvotes +=1;
+		 }
+		 else if(type === 'strawman'){
+			 $scope.claim.arguments[index].fallacyDetails.strawmanUpvotes +=1;
+		 }
+		 else if(type === 'redHerring'){
+			 $scope.claim.arguments[index].fallacyDetails.redHerringUpvotes +=1;
+		 }
+		 else if(type === 'falseDichotomy'){
+			 $scope.claim.arguments[index].fallacyDetails.falseDichotomyUpvotes +=1;
+		 }
+		 else if(type === 'circularReasoning'){
+			 $scope.claim.arguments[index].fallacyDetails.circularReasoningUpvotes +=1;
+		 }
+		 $scope.saveStatement();
+		 
+	 };
 
 	 
 	 function getUrlVariable(name){

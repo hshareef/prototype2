@@ -87,11 +87,42 @@
 											<p>Valid:<span ng-if="argument.valid">Yes</span><span ng-if="!argument.valid">No<span></p>
 											<p>Sound:<span ng-if="argument.sound">Yes</span><span ng-if="!argument.sound">No</span></p>
 											<p>Valid votes:{{argument.validCount}}  Invalid votes:{{argument.invalidCount}}</p>
+											<li class="dropdown">
 											<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="color:black">Vote <span class="caret"></span></a>
+          									
           									<ul class="dropdown-menu">
 								            	<li><a href="#" ng-click="voteValidity($index, true)">Valid</a></li>
 								            	<li><a href="#" ng-click="voteValidity($index, false)">Invalid</a></li>
 								            </ul>
+								            </li>
+								            <br>
+								            <li class="dropdown">
+								            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="color:black">Mark fallacy <span class="caret"></span></a>
+          									<ul class="dropdown-menu">
+								            	<li><a href="#" ng-click="voteFallacy('adHomniem', $index)">Ad Homniem</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('ignorantum', $index)">Ignorantum</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('adPopulum', $index)">Ad Populum</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('argFromAuthority', $index)">Argument from Authority</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('generalization', $index)">Generalization</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('slipperySlope', $index)">Slippery Slope</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('strawman', $index)">Strawman</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('redHerring', $index)">Red Herring</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('falseDichotomy', $index)">False Dichotomy</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('circularReasoning', $index)">Circular Reasoning</a></li>
+								            </ul>
+								            </li>
+								            	<p ng-if="argument.fallacyDetails.adHomniemUpvotes > 0">Ad Homniem Upvotes: {{argument.fallacyDetails.adHomniemUpvotes}}</p>
+								            	<p ng-if="argument.fallacyDetails.ignorantumUpvotes > 0">Ignorantum Upvotes: {{argument.fallacyDetails.ignorantumUpvotes}}</p>
+								            	<p ng-if="argument.fallacyDetails.adPopulumUpvotes > 0">Ad Populum Upvotes: {{argument.fallacyDetails.adPopulumUpvotes}}</p>
+								            	<p ng-if="argument.fallacyDetails.argFromAuthorityUpvotes > 0">Argument from Authority Upvotes: {{argument.fallacyDetails.argFromAuthorityUpvotes}}</p>
+								            	<p ng-if="argument.fallacyDetails.generalizationUpvotes > 0">Generalization Upvotes: {{argument.fallacyDetails.generalizationUpvotes}}</p>
+								            	<p ng-if="argument.fallacyDetails.slipperySlopeUpvotes > 0">Slippery Slope Upvotes: {{argument.fallacyDetails.slipperySlopeUpvotes}}</p>
+								            	<p ng-if="argument.fallacyDetails.strawmanUpvotes > 0">Strawman Upvotes: {{argument.fallacyDetails.strawmanUpvotes}}</p>
+								            	<p ng-if="argument.fallacyDetails.redHerringUpvotes > 0">Red Herring Upvotes: {{argument.fallacyDetails.redHerringUpvotes}}</p>
+								            	<p ng-if="argument.fallacyDetails.falseDichotomyUpvotes > 0">False Dichotomy Upvotes: {{argument.fallacyDetails.falseDichotomyUpvotes}}</p>
+								            	<p ng-if="argument.fallacyDetails.circularReasoningUpvotes > 0">Circular Reasoning Upvotes: {{argument.fallacyDetails.circularReasoningUpvotes}}</p>
+								            	
+								            
 										</div>
 									</div>
 								</div>
