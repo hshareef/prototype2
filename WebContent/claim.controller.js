@@ -1,6 +1,7 @@
 
 claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location, $window) {
 	
+	$scope.topClaims = [];
 	$scope.claim = new Object();
 	$scope.claim.claimStatement="";
 	$scope.claim.arguments = [];
@@ -27,6 +28,8 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 			loggedIn: false
 		};
 	$scope.confirmPassword = "";
+	
+	$scope.searchString="";
 	
 
 	
@@ -112,7 +115,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     	$scope.editMode = true;
     };
     
-	$scope.topClaims = [];
+	
 	
 	 $scope.loadTopClaims = function(){
 		 $http.get("http://localhost:8080/Prototype/prototype/claim/topClaims")
@@ -141,6 +144,14 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	 $scope.openClaim = function(claimId){
 		$window.location.href = '/Prototype/createForm.html?claimId=' + claimId;
 		
+	 };
+	 
+	 $scope.searchClaims = function(){
+		 alert($scope.searchString);
+		 $http.get("http://localhost:8080/Prototype/prototype/claim/searchClaims/" + $scope.searchString)
+		 .then(function(response){
+			 $scope.topClaims = response.data;
+		 });
 	 };
 	 
 	 $scope.voteValidity = function(index, valid){

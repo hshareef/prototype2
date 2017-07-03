@@ -1,7 +1,10 @@
 package com.prototype.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.prototype.dao.ClaimDao;
 import com.prototype.model.Argument;
@@ -26,5 +29,62 @@ public class ClaimService {
 		return claimDao.getClaim(claimId);
 	}
 
+	public List<Claim> getSearchedClaims(String searchString) {
+		List<String> words = new ArrayList<String>(Arrays.asList(searchString.split(" ")));
+		words.add(0, searchString);
+		if(!checkSingleStopword(searchString)){
+			words = removeStopwords(words);
+		}
+		return claimDao.getSearchedClaims(words);
+	}
+	
+	public List<String> removeStopwords(List<String> words){
+		//need to redo this - have a table of stopwords and then load them to a hashmap
+		//get stopwords here:   http://xpo6.com/list-of-english-stop-words/
+		Map stopWords = new HashMap<String, Integer>();
+		stopWords.put("a", 1);
+		stopWords.put("the", 1);
+		stopWords.put("an", 1);
+		stopWords.put("it", 1);
+		stopWords.put("he", 1);
+		stopWords.put("she", 1);
+		stopWords.put("him", 1);
+		stopWords.put("her", 1);
+		stopWords.put("they", 1);
+		stopWords.put("them", 1);
+		stopWords.put("so", 1);
+		stopWords.put("then", 1);
+		for(int i = 0; i < words.size(); i++){
+			if(stopWords.get(words.get(i)) != null) {
+				words.remove(i);
+				i--;
+			}
+		}
+		return words;
+	}
+	
+	public boolean checkSingleStopword(String searchString){
+		//need to redo this - have a table of stopwords and then load them to a hashmap
+		//get stopwords here:   http://xpo6.com/list-of-english-stop-words/
+		Map stopWords = new HashMap<String, Integer>();
+		stopWords.put("a", 1);
+		stopWords.put("the", 1);
+		stopWords.put("an", 1);
+		stopWords.put("it", 1);
+		stopWords.put("he", 1);
+		stopWords.put("she", 1);
+		stopWords.put("him", 1);
+		stopWords.put("her", 1);
+		stopWords.put("they", 1);
+		stopWords.put("them", 1);
+		stopWords.put("so", 1);
+		stopWords.put("then", 1);
+		if(stopWords.get(searchString) != null){
+			return true;
+		}
+		return false;
+	}
+	
+	
 	
 }

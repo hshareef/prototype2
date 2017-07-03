@@ -24,6 +24,11 @@
   	
 <div ng-app="ClaimModule" ng-controller="ClaimCtrl">
 <div w3-include-html="headerNav.html"></div> 
+
+<div>
+	 <input ng-model="searchString" type="text" class="search-text" placeholder="Search">
+     <button ng-click="searchClaims()" class="btn btn-default">Search</button>
+</div>
 <div class=row>
 	<div class="col-sm-9">
 		<div class = "panel panel-primary panel-center">
