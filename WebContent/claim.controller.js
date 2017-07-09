@@ -31,6 +31,8 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	
 	$scope.searchString="";
 	
+	$scope.oppositeClaimSearchResults = [];
+	
 
 	
  
@@ -216,6 +218,29 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		 
 	 };
 
+	 $scope.openOppositeClaimDialog = function(){
+		 var theOppoClaimDialog = document.getElementById('theOppoClaimDialog');
+		 theOppoClaimDialog.style.display = "block";
+	 };
+	 
+	 $scope.closeOppositeClaimDialog = function(){
+		 var theOppoClaimDialog = document.getElementById('theOppoClaimDialog');
+		 theOppoClaimDialog.style.display = "none";
+	 };
+	 
+	 $scope.searchOppositeClaims = function(){
+		 alert($scope.searchString);
+		 $http.get("http://localhost:8080/Prototype/prototype/claim/searchClaims/" + $scope.searchString)
+		 .then(function(response){
+			 $scope.oppositeClaimSearchResults = response.data;
+		 });
+	 };
+	 
+	 $scope.setOppositeClaim = function(claimId, oppositeClaimId){
+		alert("this claim id: " + claimId + "\nOpposite claim Id: " + oppositeClaimId); 
+		var test = $http.post("http://localhost:8080/Prototype/prototype/claim/opposites/" + oppositeClaimId, $scope.claim);
+		
+	 };
 	 
 	 function getUrlVariable(name){
 		   if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))

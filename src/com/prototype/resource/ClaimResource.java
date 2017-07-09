@@ -13,6 +13,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import com.prototype.model.Argument;
 import com.prototype.model.Claim;
 import com.prototype.service.ClaimService;
  
@@ -47,6 +48,15 @@ public class ClaimResource {
 			return null;
 		}
 		claimService.saveClaim(claim);
+		return "hello";
+	}
+	
+	@Path("/opposites/{oppositeClaimId}")
+	@POST
+	@Produces("text/plain")
+	@Consumes("application/json")
+	public String setOppositeClaims(Claim claim, @PathParam("oppositeClaimId") Integer oppositeClaimId){
+		claimService.setOppositeClaim(claim, oppositeClaimId);
 		return "hello";
 	}
 	

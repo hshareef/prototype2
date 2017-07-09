@@ -84,6 +84,27 @@ public class ClaimService {
 		}
 		return false;
 	}
+
+	public void setOppositeClaim(Claim claim, Integer oppositeClaimId) {
+		Claim oppoClaim = getClaim(oppositeClaimId);
+		checkAndSetOppositeClaim(claim, oppoClaim);
+		checkAndSetOppositeClaim(oppoClaim, claim);
+		
+	}
+	
+	public void checkAndSetOppositeClaim(Claim claim1, Claim claim2){
+		boolean alreadyExists = false;
+		for(Claim oppo : claim1.getOppositeClaims()){
+			if(oppo.getClaimId() == claim2.getClaimId()){
+				alreadyExists = true;
+				break;
+			}
+		}
+		if(!alreadyExists){
+			claim1.getOppositeClaims().add(claim2);
+			saveClaim(claim1);
+		}
+	}
 	
 	
 	

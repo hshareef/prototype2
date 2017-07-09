@@ -33,6 +33,9 @@ public class ClaimDao {
 			session.saveOrUpdate(arg.getFallacyDetails());
 			session.saveOrUpdate(arg);
 		}
+		for(Claim oppositeClaims : claim.getOppositeClaims()){
+			session.saveOrUpdate(oppositeClaims);
+		}
 		session.saveOrUpdate(claim);
 		session.getTransaction().commit();
 		session.close();
@@ -56,6 +59,8 @@ public class ClaimDao {
 			claim.setArguments(arguments);
 			ArrayList <String> keywords = new ArrayList<String>();
 			claim.setKeywords(keywords);
+			ArrayList <Claim> oppositeClaims = new ArrayList<Claim>();
+			claim.setOppositeClaims(oppositeClaims);
 		}
 		
 		
@@ -90,8 +95,21 @@ public class ClaimDao {
 		 		premise.setArguments(premiseArguments); 
 		 		ArrayList<String> keywords = new ArrayList<String>();
 		 		premise.setKeywords(keywords);
+		 		ArrayList <Claim> oppositeClaims = new ArrayList<Claim>();
+		 		premise.setOppositeClaims(oppositeClaims);
 		     }
 		}
+		
+		Hibernate.initialize(claim.getOppositeClaims());
+	     for(Claim oppo : claim.getOppositeClaims()){
+	 		ArrayList<Argument> premiseArguments = new ArrayList<Argument>();
+	 		oppo.setArguments(premiseArguments); 
+	 		ArrayList<String> keywords = new ArrayList<String>();
+	 		oppo.setKeywords(keywords);
+	 		ArrayList <Claim> oppositeClaims = new ArrayList<Claim>();
+	 		oppo.setOppositeClaims(oppositeClaims);
+	     }
+		
 		session.close();
 		sessionFactory.close();
 		return claim;
@@ -116,6 +134,7 @@ public class ClaimDao {
 			claim.setArguments(arguments);
 			ArrayList <String> keywords = new ArrayList<String>();
 			claim.setKeywords(keywords);
+			claim.setOppositeClaims(new ArrayList<Claim>());
 		}
 		
 		
@@ -156,4 +175,22 @@ public class ClaimDao {
 		System.out.println(query.toString());
 		return query.toString();
 	}
+	
+//	public void linkOppositeClaim(int claimId, int oppositeClaimId){
+//		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+//		Session session = sessionFactory.openSession();
+//		session.beginTransaction();
+//		Query query = session.createSQLQuery("select OPPOSITE_CLAIM_ID from OPPOSITE_CLAIMS where CLAIM_ID = "
+//				+ " and OPPOSITE_CLAIM_ID = ").addEntity(Integer.class);
+//		List <Integer> oppositeClaims =  (ArrayList<Integer>) query.list();
+//		
+//		if(oppositeClaims.size() == 0){
+//			Query saveQuery = session.createSQLQuery("insert into Prototype.OPPOSITE_CLAIMS"
+//					+ " CLAIM_ID = "
+//					+ " OPPOSITE_CLAIM_ID = ");
+//			saveQuery.executeUpdate();
+//		}
+//		session.close();
+//		sessionFactory.close();
+//	}
 }

@@ -130,6 +130,43 @@
 						</div>
 					</div>
 				</div>
+				
+				<div>
+				
+					<div class = "oppoSection panel panel-primary panel-center">
+   						<div class="panel-heading">
+      						<h3 class = "panel-title">Opposite Claims</h3>
+      						
+   						</div>
+   					
+  					 <div class="container">
+	   				<div class = "panel-body">
+	   					<p ng-if="claim.oppositeClaims.length == 0">No opposite claims. </p>
+	   					<button ng-click="openOppositeClaimDialog()">Link Opposite Claim</button>
+	   					<span ng-repeat="oppo in claim.oppositeClaims track by $index">
+	   						<br>
+	   						<a ng-click="openClaim(claim.oppositeClaims[$index].claimId)" >{{claim.oppositeClaims[$index].claimStatement}}</a>
+	   					</span>
+	   					<!--  Eventually the below div section needs to go in a separate html file -->
+	   					<div id="theOppoClaimDialog" class="oppositeClaimDialog">
+	   						<div class="oppositeClaimDialog-content">
+	   						<span class="close" ng-click="closeOppositeClaimDialog()">&times;</span>
+	   						<p>Claim Statement: {{claim.claimStatement}}</p>
+	   						Search for claims to mark as opposite:
+	   						<input ng-model="searchString" type="text" class="search-text" />
+	   						 <button ng-click="searchOppositeClaims()" class="btn btn-default">Search</button>
+	   						 <br>
+	   						 <span ng-repeat="oppositeClaim in oppositeClaimSearchResults">
+	   						 <p>{{oppositeClaim.claimStatement}}</p>
+	   						 <a ng-click="setOppositeClaim(claim.claimId, oppositeClaim.claimId)">Set as opposite claim</a>
+	   						 </span>
+	   						</div>
+	   					</div>
+	   				</div>
+	   				</div>
+	   				</div>
+					
+				</div>
 				<div>
 					<span ng-repeat="keyword in claim.keywords track by $index">
 						<button type="button" class="btn keywordText" ng-if="!editMode">{{keyword}}&nbsp<span ng-click="deleteKeyword($index)" class="badge deleteKeywordBadge">X</span></button>

@@ -24,17 +24,16 @@ public class Claim {
 	@ElementCollection(targetClass=Argument.class)
 	private List<Argument> arguments;
 	
+	@ElementCollection(targetClass=Claim.class)
+	private List<Claim> oppositeClaims;
+	
+	
 	@ElementCollection
 	private List<String> keywords;
 	
 	private Integer originalOwnerId;//id of the user who first created this claim
 	private String originalOwnerUsername;
 
-	//private ArgumentWrapper arguments;
-//	private ArrayList<String> keywords;
-//	private ArrayList<Claim> similarClaims;
-//	private ArrayList<Claim> oppositeClaims;
-	
 
 	public Claim()
 	{
@@ -53,25 +52,6 @@ public class Claim {
 	public void setClaimStatement(String claimStatement) {
 		this.claimStatement = claimStatement;
 	}
-//	public ArrayList<String> getKeywords() {
-//		return keywords;
-//	}
-//	public void setKeywords(ArrayList<String> keywords) {
-//		this.keywords = keywords;
-//	}
-//	public ArrayList<Claim> getSimilarClaims() {
-//		return similarClaims;
-//	}
-//	public void setSimilarClaims(ArrayList<Claim> similarClaims) {
-//		this.similarClaims = similarClaims;
-//	}
-//	public ArrayList<Claim> getOppositeClaims() {
-//		return oppositeClaims;
-//	}
-//	public void setOppositeClaims(ArrayList<Claim> oppositeClaims) {
-//		this.oppositeClaims = oppositeClaims;
-//	}
-
 
 	public List<Argument> getArguments() {
 		return arguments;
@@ -105,18 +85,12 @@ public class Claim {
 		this.originalOwnerUsername = originalOwnerUsername;
 	}
 
+	public List<Claim> getOppositeClaims() {
+		return oppositeClaims;
+	}
 
-	
-
-//	public ArgumentWrapper getArguments() {
-//		return arguments;
-//	}
-//
-//	public void setArguments(ArgumentWrapper arguments) {
-//		this.arguments = arguments;
-//	}
-	
-	
-	
+	public void setOppositeClaims(List<Claim> oppositeClaims) {
+		this.oppositeClaims = oppositeClaims;
+	}
 	
 }
