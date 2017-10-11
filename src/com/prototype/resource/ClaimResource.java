@@ -37,9 +37,9 @@ public class ClaimResource {
 	
 	@Path("/create")
 	@POST
-	@Produces("text/plain")
+	@Produces("application/json")
 	@Consumes("application/json")
-	public String saveClaim(Claim claim){
+	public Claim saveClaim(Claim claim){
 		int j=0;
 		System.out.println("Hello there you rabbit!!");
 		System.out.println(claim.getClaimStatement());
@@ -47,8 +47,8 @@ public class ClaimResource {
 		if(j==5){
 			return null;
 		}
-		claimService.saveClaim(claim);
-		return "hello";
+		claim = claimService.saveClaim(claim);
+		return claim;
 	}
 	
 	@Path("/opposites/{oppositeClaimId}")
@@ -85,5 +85,12 @@ public class ClaimResource {
 		return claim;
 	}
 	
+	@Path("/argTemplate")
+	@GET
+	@Produces("application/json")
+	public Argument getArgTemplate() {
+		Argument arg  = claimService.getArgumentTemplate();
+		return arg;
+	}
 	
 }

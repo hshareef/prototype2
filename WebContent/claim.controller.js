@@ -32,7 +32,8 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	$scope.searchString="";
 	
 	$scope.oppositeClaimSearchResults = [];
-	
+	$scope.oneUnsavedArgument = false;
+	$scope.currentArgIndex = null;
 
 	
  
@@ -42,10 +43,29 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     		$scope.claim.originalOwnerId = $scope.user.userId;
     		$scope.claim.originalOwnerUsername = $scope.user.username;
     	}
-    	var test = $http.post("http://localhost:8080/Prototype/prototype/claim/create", $scope.claim);
-    	alert("message saved!");
-    	$scope.editMode=false;
+    	var test = $http.post("http://localhost:8080/Prototype/prototype/claim/create", $scope.claim).then(function(response){
+        	alert("message saved!");
+        	$scope.claim = response.data;
+        	$scope.editMode=false;
+        	$scope.oneUnsavedArgument = false;
+        	//$scope.closeCreateClaimDialog(false);
+        	$scope.closeDialog('theCreateClaimDialog', false);
+        	$scope.openClaim($scope.claim.claimId);
+    	});
+
     };  
+    
+    $scope.addBlankArg = function(){
+    	var newArg = null;
+		 $http.get("http://localhost:8080/Prototype/prototype/claim/argTemplate")
+		 .then(function(response){
+			 newArg = response.data;
+			 newArg.ownerId = $scope.user.userId;
+			 newArg.ownerUsername = $scope.user.username;
+			 $scope.claim.arguments.push(newArg);
+			 $scope.currentArgIndex = $scope.claim.arguments.length - 1;
+		 });
+    };
     
     $scope.addToArgumentArray = function(){
     	var argument = new Object();
@@ -81,6 +101,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     			circularReasoningDownvotes: 0
     	};
     	$scope.claim.arguments.push(argument);
+    	$scope.oneUnsavedArgument = true;
     };
     
     $scope.deleteArgument = function(index){
@@ -111,6 +132,14 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     	premise.originalOwnerId = $scope.user.userId;
     	premise.originalOwnerUsername = $scope.user.username;
     	$scope.claim.arguments[argIndex].premises.push(premise);
+    };
+    
+    $scope.addToCurrentArgPremiseArray = function(){
+    	var premise = new Object();
+    	premise.claimStatement="default statement";
+    	premise.originalOwnerId = $scope.user.userId;
+    	premise.originalOwnerUsername = $scope.user.username;
+    	$scope.claim.arguments[$scope.currentArgIndex].premises.push(premise);
     };
     
     $scope.setEditMode = function(){
@@ -218,14 +247,51 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		 
 	 };
 
-	 $scope.openOppositeClaimDialog = function(){
-		 var theOppoClaimDialog = document.getElementById('theOppoClaimDialog');
-		 theOppoClaimDialog.style.display = "block";
+//	 $scope.openOppositeClaimDialog = function(){
+//		 var theOppoClaimDialog = document.getElementById('theOppoClaimDialog');
+//		 theOppoClaimDialog.style.display = "block";
+//	 };
+//	 
+//	 $scope.closeOppositeClaimDialog = function(){
+//		 var theOppoClaimDialog = document.getElementById('theOppoClaimDialog');
+//		 theOppoClaimDialog.style.display = "none";
+//	 };
+//	 
+//	 $scope.openCreateClaimDialog = function(){
+//		 var theCreateClaimDialog = document.getElementById('theCreateClaimDialog');
+//		 theCreateClaimDialog.style.display = "block";
+//	 };
+//	 
+//	 $scope.closeCreateClaimDialog = function(redirect){
+//		 var theCreateClaimDialog = document.getElementById('theCreateClaimDialog');
+//		 theCreateClaimDialog.style.display = "none";
+//		 if(redirect){
+//			 window.location.href = window.history.back(1);
+//		 }
+//	 };
+	 
+	 $scope.openDialog = function(dialogId, editArgIndex){
+		 var theDialogBox = document.getElementById(dialogId);
+		 theDialogBox.style.display = "block";
+		 
+		 //if its the add argument dialog box
+		 if(dialogId == "theEditArgumentDialog" && (editArgIndex === undefined || editArgIndex === null)){
+			 $scope.addBlankArg();
+		 }
+		 else if(dialogId == "theEditArgumentDialog"){
+			 $scope.currentArgIndex = editArgIndex;
+		 }
+		 
+
+		 
 	 };
 	 
-	 $scope.closeOppositeClaimDialog = function(){
-		 var theOppoClaimDialog = document.getElementById('theOppoClaimDialog');
-		 theOppoClaimDialog.style.display = "none";
+	 $scope.closeDialog = function(dialogId, redirect){
+		 var theDialogBox = document.getElementById(dialogId);
+		 theDialogBox.style.display = "none";
+		 if(redirect){
+			 window.location.href = window.history.back(1);
+		 }
 	 };
 	 
 	 $scope.searchOppositeClaims = function(){
@@ -239,6 +305,8 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	 $scope.setOppositeClaim = function(claimId, oppositeClaimId){
 		alert("this claim id: " + claimId + "\nOpposite claim Id: " + oppositeClaimId); 
 		var test = $http.post("http://localhost:8080/Prototype/prototype/claim/opposites/" + oppositeClaimId, $scope.claim);
+		$scope.closeOppositeClaimDialog();
+		//location.reload();
 		
 	 };
 	 
@@ -318,6 +386,9 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 			 //$scope.user.userId = localStorage.getItem("userId");
 			 $scope.getUser(localStorage.getItem("userId"));
 			 var claimId = getUrlVariable("claimId");
+			 if(claimId === undefined || claimId === null){
+				 $scope.openDialog('theCreateClaimDialog');
+			 }
 			 $scope.getClaim(claimId);
 		 }
 	 };

@@ -47,12 +47,11 @@
 				<div class="argSection panel panel-primary panel-center" ng-repeat="argument in claim.arguments track by $index">
 					<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
       					<h3 class = "panel-title">Argument {{$index+1}} - {{argument.argName}}</h3>
-      					<a class="btn" ng-if="!argument.editable && argument.ownerId === user.userId" ng-click="setArgumentEditMode($index, true) ; $event.stopPropagation()" style="color: black">Edit</a>
-      					<span class="btn" ng-if="!argument.editable && argument.ownerId === user.userId" ng-click="setArgumentEditMode($index, true) ; $event.stopPropagation()">
+      					<span class="btn" ng-if="argument.ownerId === user.userId" ng-click="openDialog('theEditArgumentDialog', $index) ; $event.stopPropagation()">
           					<span class="glyphicon glyphicon-edit"></span> Edit
         				</span>
-		   				<a class="btn" ng-if="argument.editable" ng-click="setArgumentEditMode($index, false) ; saveStatement() ; $event.stopPropagation()" style="color: black">Save</a>
-		   				<a class="btn" ng-if="argument.editable" ng-click="setArgumentEditMode($index, false) ; getClaim(claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a>
+		   				<!-- <a class="btn" ng-if="argument.editable" ng-click="setArgumentEditMode($index, false) ; saveStatement() ; $event.stopPropagation()" style="color: black">Save</a> -->
+		   				<!-- <a class="btn" ng-if="argument.editable" ng-click="setArgumentEditMode($index, false) ; getClaim(claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a> -->
 		   				<span ng-if="argument.ownerId === user.userId" class="btn delete-icon" ng-click="deleteArgument($index) ; event.stopPropagation()">
           					<span class="glyphicon glyphicon-trash"></span> Delete 
        					 </span>
@@ -60,18 +59,21 @@
 		   			</div>
 		   			<div class="container" id="{{$index}}">
 			   			<div class = "panel-body" >
-						Argument name:
-						<p ng-if="!argument.editable">{{argument.argName}}</p>
-						<textarea ng-if="argument.editable" rows="1" cols="50"  type=text ng-model="argument.argName"></textarea><br>
+						{{argument.editable}}Argument name:
+						<p>{{argument.argName}}</p>
+						<!-- <textarea ng-if="argument.editable" rows="1" cols="50"  type=text ng-model="argument.argName"></textarea> -->
+						<br>
 						
 						
 						
 						<div ng-repeat="premise in argument.premises track by $index">
 							Premise {{$index+1}}:<br>
-							<a ng-class="btn" style="color:black; font-size:12px" ng-if="!argument.editable" ng-click="openClaim(premise.claimId)">{{premise.claimStatement}}</a>
-							<textarea ng-if="argument.editable" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
+							<a ng-class="btn" style="color:black; font-size:12px" ng-click="openClaim(premise.claimId)">{{premise.claimStatement}}</a>
+							<!-- <textarea ng-if="argument.editable" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea> -->
+							<br>
 						</div>
-						<a ng-if="argument.editable" class="btn" ng-click="addToPremiseArray($index)">Add Premise</a><br>
+						<!-- <a ng-if="argument.editable" class="btn" ng-click="addToPremiseArray($index)">Add Premise</a> -->
+						<br>
 						Conclusion: 
 						<p>{{claim.claimStatement}}</p>
 						<!-- <textarea rows="1" cols="50" type=text value={{claim.claimStatement}} readonly>{{claim.claimStatement}}</textarea> -->
@@ -135,33 +137,19 @@
 				
 					<div class = "oppoSection panel panel-primary panel-center">
    						<div class="panel-heading">
-      						<h3 class = "panel-title">Opposite Claims</h3>
+      						<h3 class = "panel-title">Opposite/Contradicting Claims</h3>
       						
    						</div>
    					
   					 <div class="container">
 	   				<div class = "panel-body">
 	   					<p ng-if="claim.oppositeClaims.length == 0">No opposite claims. </p>
-	   					<button ng-click="openOppositeClaimDialog()">Link Opposite Claim</button>
+	   					<button ng-click="openDialog('theOppoClaimDialog')">Link Opposite Claim</button>
 	   					<span ng-repeat="oppo in claim.oppositeClaims track by $index">
 	   						<br>
 	   						<a ng-click="openClaim(claim.oppositeClaims[$index].claimId)" >{{claim.oppositeClaims[$index].claimStatement}}</a>
 	   					</span>
-	   					<!--  Eventually the below div section needs to go in a separate html file -->
-	   					<div id="theOppoClaimDialog" class="oppositeClaimDialog">
-	   						<div class="oppositeClaimDialog-content">
-	   						<span class="close" ng-click="closeOppositeClaimDialog()">&times;</span>
-	   						<p>Claim Statement: {{claim.claimStatement}}</p>
-	   						Search for claims to mark as opposite:
-	   						<input ng-model="searchString" type="text" class="search-text" />
-	   						 <button ng-click="searchOppositeClaims()" class="btn btn-default">Search</button>
-	   						 <br>
-	   						 <span ng-repeat="oppositeClaim in oppositeClaimSearchResults">
-	   						 <p>{{oppositeClaim.claimStatement}}</p>
-	   						 <a ng-click="setOppositeClaim(claim.claimId, oppositeClaim.claimId)">Set as opposite claim</a>
-	   						 </span>
-	   						</div>
-	   					</div>
+
 	   				</div>
 	   				</div>
 	   				</div>
@@ -175,13 +163,88 @@
 					<!-- <input type="text" ng-model="keyword" /> -->
 				</div>{{claim.keywords.length}}
 				<a ng-if="editMode" class="btn" ng-click="addKeyword()">Add Keyword</a>
-				<a class="btn" ng-click="addToArgumentArray()">Add Argument</a>
+				<!-- <a ng-if="!oneUnsavedArgument" class="btn" ng-click="addToArgumentArray()">Add Argument</a> -->
+				<a class="btn" ng-click="openDialog('theEditArgumentDialog')">Add Argument</a>
 				<br>
 				<a ng-if="editMode" class="btn" ng-click="saveStatement()">Save</a>
-				<a ng-if="!editMode" class="btn" ng-click="setEditMode()">Edit</a>
+				<!-- <a ng-if="!editMode" class="btn" ng-click="setEditMode()">Edit</a> -->
 				
 				<br>
 				
+				<!--  Eventually the below div section needs to go in a separate html file -->
+				<div id="theCreateClaimDialog" class="dialog">
+					<div class="dialog-content">
+	   					<span class="close" ng-click="closeDialog('theCreateClaimDialog',true)">&times;</span>
+	   					<br>
+	   					<textarea rows="2" cols="75" type="text" ng-model="claim.claimStatement"></textarea>
+	   					<br>
+	   					<button ng-click="saveStatement()">Save</button>
+	   					<button ng-click="closeDialog('theCreateClaimDialog', true)">Close</button>
+	   				</div>
+				</div>
+				
+				<!--  Eventually the below div section needs to go in a separate html file -->
+				<div id="theEditArgumentDialog" class="dialog">
+					<div class="dialog-content">
+	   					<span class="close" ng-click="closeDialog('theEditArgumentDialog', false)">&times;</span>
+	   					
+			   			<div class="argSection panel panel-primary panel-center">
+							<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
+		      					<h3 class = "panel-title">Argument {{$index+1}} - {{claim.arguments[currentArgIndex].argName}}</h3>
+		      					<span class="btn" ng-if="!claim.arguments[currentArgIndex].editable && claim.arguments[currentArgIndex].ownerId === user.userId" ng-click="setArgumentEditMode($index, true) ; $event.stopPropagation()">
+		          					<span class="glyphicon glyphicon-edit"></span> Edit
+		        				</span>
+				   				<a class="btn" ng-if="claim.arguments[currentArgIndex].editable" ng-click="setArgumentEditMode($index, false) ; saveStatement() ; $event.stopPropagation()" style="color: black">Save</a>
+				   				<a class="btn" ng-if="claim.arguments[currentArgIndex].editable" ng-click="setArgumentEditMode($index, false) ; getClaim(claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a>
+				   				<!-- CHANGE saveStatement() above to saveArgument(index) (and create that method) -->
+				   			</div>
+				   			<div class="container" id="{{$index}}">
+					   			<div class = "panel-body" >
+								{{argument.editable}}Argument name:
+								<textarea ng-if="claim.arguments[currentArgIndex].editable" rows="1" cols="50"  type=text ng-model="claim.arguments[currentArgIndex].argName"></textarea><br>
+								
+								
+								
+								<div ng-repeat="premise in claim.arguments[currentArgIndex].premises track by $index">
+									Premise {{$index+1}}:<br>
+									<textarea ng-if="claim.arguments[currentArgIndex].editable" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
+								</div>
+								<a ng-if="claim.arguments[currentArgIndex].editable" class="btn" ng-click="addToCurrentArgPremiseArray($index)">Add Premise</a><br>
+								Conclusion: 
+								<p>{{claim.claimStatement}}</p>
+								
+								<br>
+		
+								</div>
+							</div>
+						</div>
+	   					
+	   					<div>{{editMode}}</div>
+	   					
+	   					<button ng-click="saveStatement()">Save</button>
+	   					<button ng-click="closeDialog('theEditArgumentDialog', false)">Close</button>
+	   				</div>
+				</div>
+				
+				<!--  Eventually the below div section needs to go in a separate html file -->
+	   			<!-- <div id="theOppoClaimDialog" class="oppositeClaimDialog"> -->
+	   			<div id="theOppoClaimDialog" class="dialog">
+	   			<!-- <div class="oppositeClaimDialog-content"> -->
+	   				<div class="dialog-content">
+	   					<span class="close" ng-click="closeDialog('theOppoClaimDialog', false)">&times;</span>
+	   					<p>Claim Statement: {{claim.claimStatement}}</p>
+	   					Search for claims to mark as opposite:
+	   					<input ng-model="searchString" type="text" class="search-text" />
+	   					 <button ng-click="searchOppositeClaims()" class="btn btn-default">Search</button>
+	   					 <br>
+	   					 <span ng-repeat="oppositeClaim in oppositeClaimSearchResults">
+	   					 	{{oppositeClaim.claimStatement}}
+	   					 	<a ng-click="setOppositeClaim(claim.claimId, oppositeClaim.claimId)">Set as opposite claim</a>
+	   					 	<br>
+	   					</span>
+	   				</div>
+	   			</div>
+	   					
 				</div>
 				
 				<script src="claimModule.js"></script>

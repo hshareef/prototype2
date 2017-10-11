@@ -18,7 +18,7 @@ import com.prototype.model.FallacyDetails;
 
 public class ClaimDao {
 	
-	public void saveClaim(Claim claim){
+	public Claim saveClaim(Claim claim){
 		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
@@ -33,14 +33,17 @@ public class ClaimDao {
 			session.saveOrUpdate(arg.getFallacyDetails());
 			session.saveOrUpdate(arg);
 		}
-		for(Claim oppositeClaims : claim.getOppositeClaims()){
-			session.saveOrUpdate(oppositeClaims);
+		if(claim.getOppositeClaims() != null){
+			for(Claim oppositeClaims : claim.getOppositeClaims()){
+				session.saveOrUpdate(oppositeClaims);
+			}
 		}
 		session.saveOrUpdate(claim);
 		session.getTransaction().commit();
 		session.close();
 		sessionFactory.close();
 		System.out.println("saved the following claim: " + claim.getClaimStatement());
+		return claim;
 	}
 	
 	public List<Claim> getTopClaims(){

@@ -9,16 +9,28 @@ import java.util.Map;
 import com.prototype.dao.ClaimDao;
 import com.prototype.model.Argument;
 import com.prototype.model.Claim;
+import com.prototype.model.FallacyDetails;
+import com.prototype.validators.ClaimValidator;
 
 public class ClaimService {
 	
 	ClaimDao claimDao = new ClaimDao();
 	
-	public void saveClaim(Claim claim){
-		for(Argument arg : claim.getArguments()){
-			arg.determineValidity();
+	//need to autowire
+	ClaimValidator claimValidator = new ClaimValidator();
+	
+	public Claim saveClaim(Claim claim){
+		if(claimValidator.validateClaim(claim).size()==0){
+			for(Argument arg : claim.getArguments()){
+				arg.determineValidity();
+			}
+			claim = claimDao.saveClaim(claim);
+			return claim;
 		}
-		claimDao.saveClaim(claim);
+		else{
+			System.out.println("Claim invlid, cannot save.");
+			return null;
+		}
 	}
 	
 	public List<Claim> getTopClaims(){
@@ -105,7 +117,18 @@ public class ClaimService {
 			saveClaim(claim1);
 		}
 	}
-	
-	
+
+	public Argument getArgumentTemplate() {
+		Argument arg = new Argument();
+		arg.setArgName("default name from template");
+		arg.setEditable(true);
+		arg.setSound(false);
+		arg.setValid(false);
+		arg.setValidCount(0);
+		arg.setInvalidCount(0);
+		arg.setFallacyDetails(new FallacyDetails());
+		arg.setPremises(new ArrayList<Claim>());
+		return arg;
+	}
 	
 }
