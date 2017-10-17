@@ -34,6 +34,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	$scope.oppositeClaimSearchResults = [];
 	$scope.oneUnsavedArgument = false;
 	$scope.currentArgIndex = null;
+	$scope.argumentViewingIndex = 0;
 
 	
  
@@ -114,6 +115,10 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     		$scope.claim.arguments[index].editable = editMode;
     	}
     };
+    
+    $scope.changeArgViewing = function(index){
+    	$scope.argumentViewingIndex = index;
+    }
     
     $scope.addKeyword = function(){
     	var keyword = "keyword";

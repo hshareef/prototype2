@@ -1,7 +1,7 @@
 
 .navbar {
 	margin-bottom: 0;
-	background: #6C5B7B;
+	background: #337ab7;
 	overflow:visible;
 	.container-fluid{
 	
@@ -16,7 +16,8 @@
 }
 
 body {
-	background: #6C5B7B;
+	background:  url("main-background.png"); 
+	background-size: 100% 100%;
 	/* color: #f7f7f7; */
 	/* color: red; */
 	font-family: 'Montserrat', sans-serif;
@@ -120,6 +121,10 @@ p {
 	background-color: gray;
 }
 
+.panel-body{
+	
+}
+
 .oppoSection{
 	background-color: #FF949E;
 }
@@ -139,7 +144,7 @@ p {
 }
 
 .keywordText{
-	background-color: #2B36E5;
+	background-color: #337ab7;
 }
 
 .search-text{
@@ -309,4 +314,39 @@ p {
     color: #000;
     text-decoration: none;
     cursor: pointer;
+}
+
+#top-claims-window {
+  height: 300px;
+  border: 1px black solid;
+}
+
+#scrollable-content {
+  height: 250px;
+  overflow: auto;
+  background-color: gray;
+  opacity: 0.6;
+}
+
+#top-claims-footer {
+  height: 30px;
+  background-color: #337ab7;
+}
+
+#top-claims-header{
+	height: 20px;
+	background-color: #337ab7;
+}
+
+.claimRow:hover{
+	background-color: #DAD9D9;
+	cursor: pointer;
+}
+
+.add-arg-button{
+	float: right;
+}
+
+.add-arg-button:hover{
+	color: green;
 }

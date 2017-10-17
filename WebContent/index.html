@@ -29,9 +29,31 @@
 	 <input ng-model="searchString" type="text" class="search-text" placeholder="Search">
      <button ng-click="searchClaims()" class="btn btn-default">Search</button>
 </div>
+
+
+
+
+
 <div class=row>
 	<div class="col-sm-9">
-		<div class = "panel panel-primary panel-center">
+	
+	<div id="top-claims-window">
+
+	<div id="top-claims-header">
+		Top Claims
+	</div>
+
+  <div id="scrollable-content">
+  
+	  <table class="table table-inverse">
+
+	  	<tr ng-repeat="claim in topClaims">
+	  		<td class="claimRow" ng-click="openClaim(claim.claimId)">{{claim.claimStatement}}</td>
+	  	</tr>
+	  </table>
+  
+  
+<!-- 		<div class = "panel panel-primary panel-center">
    			<div class="panel-heading">
       			<h3 class = "panel-title">Top Arguments</h3>
    			</div>
@@ -46,9 +68,9 @@
 				
 				 
    			</div>
-		</div>
+		</div> -->
 		
-		<div class = "panel panel-primary panel-center">
+<!-- 		<div class = "panel panel-primary panel-center">
    			<div class="panel-heading">
       			<h3 class = "panel-title">Search Results</h3>
    			</div>
@@ -63,7 +85,15 @@
 				
 				 
    			</div>
-		</div>
+		</div> -->
+		  </div>
+
+  <div id="top-claims-footer">
+  Total claims: {{topClaims.length}}
+  </div>
+
+</div>
+		
 	</div>
 	<div class="col-sm-3">
 			<div class = "panel panel-primary panel-right">
@@ -93,6 +123,7 @@
 		</div>
 	</div>
 </div>
+
 
 </div>
 				<script src="claimModule.js"></script>

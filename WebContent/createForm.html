@@ -25,43 +25,168 @@
 </head>
 <body>
 <div w3-include-html="headerNav.html"></div> 
+
+<div ng-app="ClaimModule" ng-controller="ClaimCtrl">
+
 <div class=row>
-	<div class="col-sm-3"></div>
+
+<h1>  Claim Statement: {{claim.claimStatement}}</h1>
+<p>Owner: {{claim.originalOwnerUsername}}</p>
+
+
 	<div class="col-sm-6">
-		<div class = "panel panel-primary panel-center">
-   			<div class="panel-heading">
-      			<h3 class = "panel-title">Enter Claim Info:</h3>
-   			</div>
-   
-	   		<div class = "panel-body">
+		
+<div id="top-claims-window">
+
+	<div id="top-claims-header">
+		Arguments
+	</div>
+
+  <div id="scrollable-content">
+  
+	  <table class="table table-inverse">
+
+	  	<tr ng-repeat="argument in claim.arguments track by $index">
+	  		<td class="claimRow" ng-click="changeArgViewing($index)">Argument {{$index+1}} - {{argument.argName}}</td>
+	  	</tr>
+	  </table>
+  
+  
+		  </div>
+
+  <div id="top-claims-footer">
+  Total arguments: {{claim.arguments.length}}
+          <button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="openDialog('theEditArgumentDialog')">
+         	 <span class="glyphicon glyphicon-plus "></span> Add Argument
+        </button>
+  </div>
+
+</div>
+	
+	</div>
 	
 	
-				<div ng-app="ClaimModule" ng-controller="ClaimCtrl">
-				
-				Claim Statement:
-				<p ng-if="!editMode">{{claim.claimStatement}}</p>
-				<br><textarea ng-if="editMode" rows="2" cols="75" type="text" ng-model="claim.claimStatement"></textarea>
-				
-				<p ng-if="!editMode">Owner: {{claim.originalOwnerUsername}}</p>
-				
-				<div class="argSection panel panel-primary panel-center" ng-repeat="argument in claim.arguments track by $index">
-					<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
-      					<h3 class = "panel-title">Argument {{$index+1}} - {{argument.argName}}</h3>
-      					<span class="btn" ng-if="argument.ownerId === user.userId" ng-click="openDialog('theEditArgumentDialog', $index) ; $event.stopPropagation()">
+	<div class="col-sm-6">
+
+
+<div ng-if="claim.arguments.length > 0">
+				<div class="argSection panel panel-primary panel-center">
+					<div  class="panel-heading">
+      					<h3 class = "panel-title">Argument {{argumentViewingIndex+1}} - {{claim.arguments[argumentViewingIndex].argName}}</h3>
+      					<span class="btn" ng-if="claim.arguments[argumentViewingIndex].ownerId === user.userId" ng-click="openDialog('theEditArgumentDialog', argumentViewingIndex) ; $event.stopPropagation()">
           					<span class="glyphicon glyphicon-edit"></span> Edit
         				</span>
-		   				<!-- <a class="btn" ng-if="argument.editable" ng-click="setArgumentEditMode($index, false) ; saveStatement() ; $event.stopPropagation()" style="color: black">Save</a> -->
-		   				<!-- <a class="btn" ng-if="argument.editable" ng-click="setArgumentEditMode($index, false) ; getClaim(claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a> -->
-		   				<span ng-if="argument.ownerId === user.userId" class="btn delete-icon" ng-click="deleteArgument($index) ; event.stopPropagation()">
+        				<span ng-if="claim.arguments[argumentViewingIndex].ownerId === user.userId" class="btn delete-icon" ng-click="deleteArgument(argumentViewingIndex) ; event.stopPropagation()">
           					<span class="glyphicon glyphicon-trash"></span> Delete 
        					 </span>
 		   				<!-- CHANGE saveStatement() above to saveArgument(index) (and create that method) -->
 		   			</div>
 		   			<div class="container" id="{{$index}}">
 			   			<div class = "panel-body" >
+						<!-- <textarea ng-if="argument.editable" rows="1" cols="50"  type=text ng-model="argument.argName"></textarea> -->
+						
+						
+						
+						
+						<div ng-repeat="premise in claim.arguments[argumentViewingIndex].premises track by $index">
+							Premise {{$index+1}}:
+							<a ng-class="btn" style="color:black; font-size:12px" ng-click="openClaim(premise.claimId)">{{premise.claimStatement}}</a>
+							<br>
+						</div>
+						<br>
+						Conclusion: {{claim.claimStatement}}
+						
+						<br>
+							<div class="row">
+								<div class="col-sm-6">
+									
+									<div class="argSection panel panel-primary panel-center">
+										<div class="panel-heading">Argument Details</div>
+										<div class="panel-body">
+											<p ng-if="!argument.editable">owner: {{claim.arguments[argumentViewingIndex].ownerUsername}}</p>
+											<p>Valid:<span ng-if="claim.arguments[argumentViewingIndex].valid">Yes</span><span ng-if="!claim.arguments[argumentViewingIndex].valid">No<span></p>
+											<p>Sound:<span ng-if="claim.arguments[argumentViewingIndex].sound">Yes</span><span ng-if="!claim.arguments[argumentViewingIndex].sound">No</span></p>
+											<p>Valid votes:{{claim.arguments[argumentViewingIndex].validCount}}  Invalid votes:{{claim.arguments[argumentViewingIndex].invalidCount}}</p>
+											<li class="dropdown">
+											<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="color:black">Vote <span class="caret"></span></a>
+          									
+          									<ul class="dropdown-menu">
+								            	<li><a href="#" ng-click="voteValidity(argumentViewingIndex, true)">Valid</a></li>
+								            	<li><a href="#" ng-click="voteValidity(argumentViewingIndex, false)">Invalid</a></li>
+								            </ul>
+								            </li>
+								            <br>
+								            <li class="dropdown">
+								            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="color:black">Mark fallacy <span class="caret"></span></a>
+          									<ul class="dropdown-menu">
+								            	<li><a href="#" ng-click="voteFallacy('adHomniem', argumentViewingIndex)">Ad Homniem</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('ignorantum', argumentViewingIndex)">Ignorantum</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('adPopulum', argumentViewingIndex)">Ad Populum</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('argFromAuthority', argumentViewingIndex)">Argument from Authority</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('generalization', argumentViewingIndex)">Generalization</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('slipperySlope', argumentViewingIndex)">Slippery Slope</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('strawman', argumentViewingIndex)">Strawman</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('redHerring', argumentViewingIndex)">Red Herring</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('falseDichotomy', argumentViewingIndex)">False Dichotomy</a></li>
+								            	<li><a href="#" ng-click="voteFallacy('circularReasoning', argumentViewingIndex)">Circular Reasoning</a></li>
+								            </ul>
+								            </li>
+								            	<p ng-if="claim.arguments[argumentViewingIndex].fallacyDetails.adHomniemUpvotes > 0">Ad Homniem Upvotes: {{claim.arguments[argumentViewingIndex].fallacyDetails.adHomniemUpvotes}}</p>
+								            	<p ng-if="claim.arguments[argumentViewingIndex].fallacyDetails.ignorantumUpvotes > 0">Ignorantum Upvotes: {{claim.arguments[argumentViewingIndex].fallacyDetails.ignorantumUpvotes}}</p>
+								            	<p ng-if="claim.arguments[argumentViewingIndex].fallacyDetails.adPopulumUpvotes > 0">Ad Populum Upvotes: {{claim.arguments[argumentViewingIndex].fallacyDetails.adPopulumUpvotes}}</p>
+								            	<p ng-if="claim.arguments[argumentViewingIndex].fallacyDetails.argFromAuthorityUpvotes > 0">Argument from Authority Upvotes: {{claim.arguments[argumentViewingIndex].fallacyDetails.argFromAuthorityUpvotes}}</p>
+								            	<p ng-if="claim.arguments[argumentViewingIndex].fallacyDetails.generalizationUpvotes > 0">Generalization Upvotes: {{claim.arguments[argumentViewingIndex].fallacyDetails.generalizationUpvotes}}</p>
+								            	<p ng-if="claim.arguments[argumentViewingIndex].fallacyDetails.slipperySlopeUpvotes > 0">Slippery Slope Upvotes: {{claim.arguments[argumentViewingIndex].fallacyDetails.slipperySlopeUpvotes}}</p>
+								            	<p ng-if="claim.arguments[argumentViewingIndex].fallacyDetails.strawmanUpvotes > 0">Strawman Upvotes: {{claim.arguments[argumentViewingIndex].fallacyDetails.strawmanUpvotes}}</p>
+								            	<p ng-if="claim.arguments[argumentViewingIndex].fallacyDetails.redHerringUpvotes > 0">Red Herring Upvotes: {{claim.arguments[argumentViewingIndex].fallacyDetails.redHerringUpvotes}}</p>
+								            	<p ng-if="claim.arguments[argumentViewingIndex].fallacyDetails.falseDichotomyUpvotes > 0">False Dichotomy Upvotes: {{claim.arguments[argumentViewingIndex].fallacyDetails.falseDichotomyUpvotes}}</p>
+								            	<p ng-if="claim.arguments[argumentViewingIndex].fallacyDetails.circularReasoningUpvotes > 0">Circular Reasoning Upvotes: {{claim.arguments[argumentViewingIndex].fallacyDetails.circularReasoningUpvotes}}</p>
+								            	
+								            
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+</div>
+	
+	
+	
+		<div class = "panel panel-primary panel-center">
+<!--    			<div class="panel-heading">
+      			<h3 class = "panel-title">Enter Claim Info:</h3>
+   			</div> -->
+   
+	   		<div class = "panel-body">
+	
+	
+				
+				
+				Claim Statement:
+				<p ng-if="!editMode">{{claim.claimStatement}}</p>
+				<br><textarea ng-if="editMode" rows="2" cols="75" type="text" ng-model="claim.claimStatement"></textarea>
+				
+				<p ng-if="!editMode">Owner: {{claim.originalOwnerUsername}}</p>
+<!-- 				<div class="argSection panel panel-primary panel-center" ng-repeat="argument in claim.arguments track by $index">
+					<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
+      					<h3 class = "panel-title">Argument {{$index+1}} - {{argument.argName}}</h3>
+      					<span class="btn" ng-if="argument.ownerId === user.userId" ng-click="openDialog('theEditArgumentDialog', $index) ; $event.stopPropagation()">
+          					<span class="glyphicon glyphicon-edit"></span> Edit
+        				</span>
+		   				<a class="btn" ng-if="argument.editable" ng-click="setArgumentEditMode($index, false) ; saveStatement() ; $event.stopPropagation()" style="color: black">Save</a>
+		   				<a class="btn" ng-if="argument.editable" ng-click="setArgumentEditMode($index, false) ; getClaim(claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a>
+		   				<span ng-if="argument.ownerId === user.userId" class="btn delete-icon" ng-click="deleteArgument($index) ; event.stopPropagation()">
+          					<span class="glyphicon glyphicon-trash"></span> Delete 
+       					 </span>
+		   				CHANGE saveStatement() above to saveArgument(index) (and create that method)
+		   			</div>
+		   			<div class="container" id="{{$index}}">
+			   			<div class = "panel-body" >
 						{{argument.editable}}Argument name:
 						<p>{{argument.argName}}</p>
-						<!-- <textarea ng-if="argument.editable" rows="1" cols="50"  type=text ng-model="argument.argName"></textarea> -->
+						<textarea ng-if="argument.editable" rows="1" cols="50"  type=text ng-model="argument.argName"></textarea>
 						<br>
 						
 						
@@ -69,14 +194,14 @@
 						<div ng-repeat="premise in argument.premises track by $index">
 							Premise {{$index+1}}:<br>
 							<a ng-class="btn" style="color:black; font-size:12px" ng-click="openClaim(premise.claimId)">{{premise.claimStatement}}</a>
-							<!-- <textarea ng-if="argument.editable" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea> -->
+							<textarea ng-if="argument.editable" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea>
 							<br>
 						</div>
-						<!-- <a ng-if="argument.editable" class="btn" ng-click="addToPremiseArray($index)">Add Premise</a> -->
+						<a ng-if="argument.editable" class="btn" ng-click="addToPremiseArray($index)">Add Premise</a>
 						<br>
 						Conclusion: 
 						<p>{{claim.claimStatement}}</p>
-						<!-- <textarea rows="1" cols="50" type=text value={{claim.claimStatement}} readonly>{{claim.claimStatement}}</textarea> -->
+						<textarea rows="1" cols="50" type=text value={{claim.claimStatement}} readonly>{{claim.claimStatement}}</textarea>
 						
 						<br>
 							<div class="row">
@@ -131,7 +256,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> -->
 				
 				<div>
 				
@@ -201,15 +326,15 @@
 				   			<div class="container" id="{{$index}}">
 					   			<div class = "panel-body" >
 								{{argument.editable}}Argument name:
-								<textarea ng-if="claim.arguments[currentArgIndex].editable" rows="1" cols="50"  type=text ng-model="claim.arguments[currentArgIndex].argName"></textarea><br>
+								<textarea rows="1" cols="50"  type=text ng-model="claim.arguments[currentArgIndex].argName"></textarea><br>
 								
 								
 								
 								<div ng-repeat="premise in claim.arguments[currentArgIndex].premises track by $index">
 									Premise {{$index+1}}:<br>
-									<textarea ng-if="claim.arguments[currentArgIndex].editable" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
+									<textarea  rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
 								</div>
-								<a ng-if="claim.arguments[currentArgIndex].editable" class="btn" ng-click="addToCurrentArgPremiseArray($index)">Add Premise</a><br>
+								<a class="btn" ng-click="addToCurrentArgPremiseArray($index)">Add Premise</a><br>
 								Conclusion: 
 								<p>{{claim.claimStatement}}</p>
 								
@@ -245,18 +370,19 @@
 	   				</div>
 	   			</div>
 	   					
+
+			</div>
+   		</div>
+	</div>
+	<!-- <div class="col-sm-3"></div> -->
+</div>
+
 				</div>
 				
 				<script src="claimModule.js"></script>
 				<script src="claim.service.js"></script>
 				<script src="claim.controller.js"></script> 		
 				<script>w3IncludeHTML();</script>
-			</div>
-   		</div>
-	</div>
-	<div class="col-sm-3"></div>
-</div>
-
 
 	
 
