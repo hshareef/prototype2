@@ -13,6 +13,7 @@ import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.criterion.Restrictions;
 
 import com.prototype.model.Argument;
+import com.prototype.model.ArgumentState;
 import com.prototype.model.Claim;
 import com.prototype.model.FallacyDetails;
 
@@ -25,6 +26,11 @@ public class ClaimDao {
 		for(Argument arg : claim.getArguments()){
 			for(Claim premise : arg.getPremises()){
 				session.saveOrUpdate(premise);
+			}
+			if(arg.getStateHistory() != null){
+				for(ArgumentState state : arg.getStateHistory()){
+					session.saveOrUpdate(state);
+				}
 			}
 			if(arg.getFallacyDetails() == null){
 				FallacyDetails fd = new FallacyDetails();
@@ -93,6 +99,7 @@ public class ClaimDao {
 		for(Argument argument : claim.getArguments()){
 			 Hibernate.initialize(argument.getFallacyDetails());
 		     Hibernate.initialize(argument.getPremises());
+		     Hibernate.initialize(argument.getStateHistory());
 		     for(Claim premise : argument.getPremises()){
 		 		ArrayList<Argument> premiseArguments = new ArrayList<Argument>();
 		 		premise.setArguments(premiseArguments); 
@@ -177,6 +184,32 @@ public class ClaimDao {
 		query.append(") \n");
 		System.out.println(query.toString());
 		return query.toString();
+	}
+
+	public Argument saveArgument(Argument arg) {
+		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		for(Claim premise : arg.getPremises()){
+			session.saveOrUpdate(premise);
+		}
+		if(arg.getStateHistory() != null){
+			for(ArgumentState state : arg.getStateHistory()){
+				session.saveOrUpdate(state);
+			}
+		}
+		if(arg.getFallacyDetails() == null){
+			FallacyDetails fd = new FallacyDetails();
+			arg.setFallacyDetails(fd);
+		}
+		session.saveOrUpdate(arg.getFallacyDetails());
+		session.saveOrUpdate(arg);
+		session.getTransaction().commit();
+		session.close();
+		sessionFactory.close();
+		System.out.println("saved the following argument: " + arg.getArgName());
+		return arg;
+		
 	}
 	
 //	public void linkOppositeClaim(int claimId, int oppositeClaimId){

@@ -22,6 +22,19 @@ public class Argument {
 	@ElementCollection(targetClass=Claim.class)
 	private List<Claim> premises;
 	
+	public List<ArgumentState> getStateHistory() {
+		return stateHistory;
+	}
+
+
+	public void setStateHistory(List<ArgumentState> stateHistory) {
+		this.stateHistory = stateHistory;
+	}
+
+
+	@ElementCollection(targetClass=ArgumentState.class)
+	private List<ArgumentState> stateHistory;
+	
 	private Integer ownerId;
 	private String ownerUsername;
 	

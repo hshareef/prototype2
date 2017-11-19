@@ -93,4 +93,12 @@ public class ClaimResource {
 		return arg;
 	}
 	
+	@Path("/updateState/{targetStateId}")
+	@POST
+	@Produces("application/json")
+	@Consumes("application/json")
+	public Argument updateArgumentState(Argument argument, @PathParam("targetStateId") Integer targetStateId){
+		argument = claimService.updateArgState(argument, targetStateId);
+		return argument;
+	}
 }

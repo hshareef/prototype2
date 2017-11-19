@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.prototype.common.ArgumentConstants;
 import com.prototype.dao.ClaimDao;
 import com.prototype.model.Argument;
+import com.prototype.model.ArgumentState;
 import com.prototype.model.Claim;
 import com.prototype.model.FallacyDetails;
 import com.prototype.validators.ClaimValidator;
@@ -31,6 +33,10 @@ public class ClaimService {
 			System.out.println("Claim invlid, cannot save.");
 			return null;
 		}
+	}
+	
+	public Argument saveArgument(Argument arg){
+		return claimDao.saveArgument(arg);
 	}
 	
 	public List<Claim> getTopClaims(){
@@ -128,7 +134,34 @@ public class ClaimService {
 		arg.setInvalidCount(0);
 		arg.setFallacyDetails(new FallacyDetails());
 		arg.setPremises(new ArrayList<Claim>());
+		arg.setStateHistory(new ArrayList<ArgumentState>());
+		addArgState(arg, ArgumentConstants.States.PRELIM.id);
 		return arg;
+	}
+	
+	private void addArgState(Argument arg, Integer statusId){
+		//first set all current flags to false (since the new state is going to be the current one)
+		if(arg.getStateHistory() != null && arg.getStateHistory().size() > 0){
+			for(ArgumentState state : arg.getStateHistory()){
+				if(state.getCurrentFlag()){
+					state.setCurrentFlag(false);
+				}
+			}
+		}
+		ArgumentState state = new ArgumentState();
+		state.setArgumentStatusId(statusId);
+		state.setCurrentFlag(true);
+		//need to add createdTs and updatedTs as well!!
+		arg.getStateHistory().add(state);
+	}
+
+	public Argument updateArgState(Argument argument, Integer targetStateId) {
+		//can run rule checks here if needed
+		
+		addArgState(argument, targetStateId);
+		argument = saveArgument(argument);
+		return argument;
+		
 	}
 	
 }

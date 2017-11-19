@@ -4,6 +4,10 @@
 claimApp.service('ClaimService',function(){
 	
 	var dog = "fido";
+	
+	this.getDog = function(){
+		return dog;
+	};
 
 	this.saveClaim = function(){
 		

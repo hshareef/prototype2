@@ -1,6 +1,7 @@
 
-claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location, $window) {
+claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location, $window, ConfigService) {
 	
+	$scope.testUrl = ConfigService.getSettings().url;
 	$scope.topClaims = [];
 	$scope.claim = new Object();
 	$scope.claim.claimStatement="";
@@ -35,7 +36,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	$scope.oneUnsavedArgument = false;
 	$scope.currentArgIndex = null;
 	$scope.argumentViewingIndex = 0;
-
+	$scope.score = 85;
 	
  
     //for saving a claim
@@ -44,7 +45,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     		$scope.claim.originalOwnerId = $scope.user.userId;
     		$scope.claim.originalOwnerUsername = $scope.user.username;
     	}
-    	var test = $http.post("http://localhost:8080/Prototype/prototype/claim/create", $scope.claim).then(function(response){
+    	var test = $http.post(ConfigService.getSettings().url + "/Prototype/prototype/claim/create", $scope.claim).then(function(response){
         	alert("message saved!");
         	$scope.claim = response.data;
         	$scope.editMode=false;
@@ -58,7 +59,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     
     $scope.addBlankArg = function(){
     	var newArg = null;
-		 $http.get("http://localhost:8080/Prototype/prototype/claim/argTemplate")
+		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/argTemplate")
 		 .then(function(response){
 			 newArg = response.data;
 			 newArg.ownerId = $scope.user.userId;
@@ -72,6 +73,15 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     	var argument = new Object();
     	argument.argName="default name";
     	argument.premises = [];
+    	argument.stateHistory = [
+    	                           {
+    	                        	   argumentStateId: null,
+    	                        	   createdTs: null,
+    	                        	   updatedTs: null,
+    	                        	   argumentStatusId: 1,
+    	                        	   currentFlag: true
+    	                           }
+    	                           ];
     	argument.ownerId = $scope.user.userId;
     	argument.ownerUsername = $scope.user.username;
     	argument.editable = true;
@@ -118,7 +128,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     
     $scope.changeArgViewing = function(index){
     	$scope.argumentViewingIndex = index;
-    }
+    };
     
     $scope.addKeyword = function(){
     	var keyword = "keyword";
@@ -147,6 +157,25 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     	$scope.claim.arguments[$scope.currentArgIndex].premises.push(premise);
     };
     
+    $scope.getCurrentStatusId = function(argument){
+    	for(var i=0; i < argument.stateHistory.length; i++){
+    		if(argument.stateHistory[i].currentFlag){
+    			return argument.stateHistory[i].argumentStatusId;
+    		}
+    	}
+    };
+    
+    $scope.getFirstPublishedArg = function(){
+    	for(var i = 0 ; i < $scope.claim.arguments.length ; i++){
+    		for(var j = 0; j < $scope.claim.arguments[i].stateHistory.length ; j++){
+    			if($scope.claim.arguments[i].stateHistory[j].currentFlag && $scope.claim.arguments[i].stateHistory[j].argumentStatusId === 2){
+    				return i;
+    			}
+    		}
+    	}
+    	return null;
+    };
+    
     $scope.setEditMode = function(){
     	$scope.editMode = true;
     };
@@ -154,7 +183,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	
 	
 	 $scope.loadTopClaims = function(){
-		 $http.get("http://localhost:8080/Prototype/prototype/claim/topClaims")
+		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/topClaims")
 		 .then(function(response){
 			 $scope.topClaims = response.data;
 		 });
@@ -163,9 +192,10 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	    
 		
 		 $scope.getClaim = function(claimId){
-			 $http.get("http://localhost:8080/Prototype/prototype/claim/" + claimId)
+			 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/" + claimId)
 			 .then(function(response){
 				 $scope.claim = response.data;
+				 $scope.argumentViewingIndex = $scope.getFirstPublishedArg();
 			 });
 		    };
 	    
@@ -184,7 +214,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	 
 	 $scope.searchClaims = function(){
 		 alert($scope.searchString);
-		 $http.get("http://localhost:8080/Prototype/prototype/claim/searchClaims/" + $scope.searchString)
+		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/searchClaims/" + $scope.searchString)
 		 .then(function(response){
 			 $scope.topClaims = response.data;
 		 });
@@ -301,7 +331,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	 
 	 $scope.searchOppositeClaims = function(){
 		 alert($scope.searchString);
-		 $http.get("http://localhost:8080/Prototype/prototype/claim/searchClaims/" + $scope.searchString)
+		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/searchClaims/" + $scope.searchString)
 		 .then(function(response){
 			 $scope.oppositeClaimSearchResults = response.data;
 		 });
@@ -309,10 +339,18 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	 
 	 $scope.setOppositeClaim = function(claimId, oppositeClaimId){
 		alert("this claim id: " + claimId + "\nOpposite claim Id: " + oppositeClaimId); 
-		var test = $http.post("http://localhost:8080/Prototype/prototype/claim/opposites/" + oppositeClaimId, $scope.claim);
+		var test = $http.post(ConfigService.getSettings().url + "/Prototype/prototype/claim/opposites/" + oppositeClaimId, $scope.claim);
 		$scope.closeOppositeClaimDialog();
 		//location.reload();
 		
+	 };
+	 
+	 $scope.publishArg = function(index, targetStateId){
+		 //update the state to published
+		 alert("test publish");
+		 $http.post(ConfigService.getSettings().url + "/Prototype/prototype/claim/updateState/" + targetStateId, $scope.claim.arguments[index]).then(function(response){
+			 $scope.claim.arguments[index] = response.data;
+		 });
 	 };
 	 
 	 function getUrlVariable(name){
@@ -331,7 +369,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	
 	$scope.login = function () {
 		alert("trying to log in..." + $scope.user.username + " : " +  $scope.user.password);
-		var test = $http.post("http://localhost:8080/Prototype/prototype/login/login", $scope.user)
+		var test = $http.post(ConfigService.getSettings().url + "/Prototype/prototype/login/login", $scope.user)
 		.then(function(response){
 			$scope.user = response.data;
 			if($scope.user === undefined || $scope.user === null){
@@ -353,7 +391,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	};
 	
 	$scope.getUser = function(userId){
-		var test = $http.get("http://localhost:8080/Prototype/prototype/login/"+userId)
+		var test = $http.get(ConfigService.getSettings().url + "/Prototype/prototype/login/"+userId)
 		.then(function(response){
 			$scope.user = response.data;
 		});
@@ -376,7 +414,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		if($scope.newUser.password !== $scope.confirmPassword){
 			alert("passwords don't match");
 		}else{
-			var test = $http.post("http://localhost:8080/Prototype/prototype/login/createUser", $scope.newUser);
+			var test = $http.post(ConfigService.getSettings().url + "/Prototype/prototype/login/createUser", $scope.newUser);
 		}
 	};
 	 
