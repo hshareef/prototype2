@@ -164,4 +164,8 @@ public class ClaimService {
 		
 	}
 	
+	public boolean deleteClaim(Integer claimId){
+		return claimDao.deleteClaim(claimId);
+	}
+	
 }

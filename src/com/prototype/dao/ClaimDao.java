@@ -211,6 +211,29 @@ public class ClaimDao {
 		return arg;
 		
 	}
+
+	public boolean deleteClaim(Integer claimId) {
+		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		
+		Claim claim = getClaim(claimId);
+		
+		if(claim.getArguments().size() > 0
+				|| claim.getOppositeClaims().size() > 0){
+			System.out.println("Cannot delete claim \"" + claim.getClaimStatement() + "\" because it still contains arguments or opposite claims.");
+			return false;
+		}
+		
+		session.delete(claim);
+		
+		session.getTransaction().commit();
+		session.close();
+		sessionFactory.close();
+		System.out.println("Deleted the following claim: " + claim.getClaimStatement());
+		return true;
+		
+	}
 	
 //	public void linkOppositeClaim(int claimId, int oppositeClaimId){
 //		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();

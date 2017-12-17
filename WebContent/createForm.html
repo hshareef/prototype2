@@ -29,6 +29,9 @@
 		<div class=row>
 			<h1>  Claim Statement: {{claim.claimStatement}}</h1>
 			<h1 class="score">Score: {{score}}</h1>
+			<span ng-if="claim.arguments.length === 0 && !claim.usedAsPremise" class="btn delete-icon" ng-click="deleteClaim()">
+	          	<span class="glyphicon glyphicon-trash"></span> Delete 
+	       	</span>
 			<p>Owner: {{claim.originalOwnerUsername}}</p>
 			<div class="col-sm-6">
 				<div id="top-claims-window">
@@ -215,9 +218,10 @@
 											<textarea rows="1" cols="50"  type=text ng-model="claim.arguments[currentArgIndex].argName"></textarea><br>
 											<div ng-repeat="premise in claim.arguments[currentArgIndex].premises track by $index">
 												Premise {{$index+1}}:<br>
-												<textarea  rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
+												<textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
 											</div>
-											<a class="btn" ng-click="addToCurrentArgPremiseArray($index)">Add Premise</a><br>
+											<a class="btn" ng-click="addToCurrentArgPremiseArray($index)">Add New Premise</a><br>
+											<a class="btn" ng-click="openDialog('theAddPremiseDialog')">Add Pre-existing Premise</a><br>
 											Conclusion: 
 											<p>{{claim.claimStatement}}</p>
 											<br>
@@ -241,6 +245,23 @@
 			   					 <span ng-repeat="oppositeClaim in oppositeClaimSearchResults">
 			   					 	{{oppositeClaim.claimStatement}}
 			   					 	<a ng-click="setOppositeClaim(claim.claimId, oppositeClaim.claimId)">Set as opposite claim</a>
+			   					 	<br>
+			   					</span>
+			   				</div>
+			   			</div>
+			   			
+			   			<!--  Eventually the below div section needs to go in a separate html file -->
+			   			<div id="theAddPremiseDialog" class="dialog">
+			   				<div class="dialog-content">
+			   					<span class="close" ng-click="closeDialog('theAddPremiseDialog', false)">&times;</span>
+			   					<p>Claim Statement: {{claim.claimStatement}}</p>
+			   					Search for premises:
+			   					<input ng-model="searchString" type="text" class="search-text" />
+			   					 <button ng-click="searchPremises()" class="btn btn-default">Search</button>
+			   					 <br>
+			   					 <span ng-repeat="searchedPremises in premiseSearchResults">
+			   					 	{{searchedPremises.claimStatement}}
+			   					 	<a ng-click="addPremiseToClaim(searchedPremises.claimId)">Select Premise</a>
 			   					 	<br>
 			   					</span>
 			   				</div>

@@ -55,7 +55,14 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
         	$scope.openClaim($scope.claim.claimId);
     	});
 
-    };  
+    }; 
+    
+    $scope.deleteClaim = function(){
+    	alert("going to delete claim!");
+    	$http.post(ConfigService.getSettings().url + "/Prototype/prototype/claim/delete/"+$scope.claim.claimId).then(function(response){
+    		alert("claim deleted!");
+    	});
+    };
     
     $scope.addBlankArg = function(){
     	var newArg = null;
@@ -337,11 +344,32 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		 });
 	 };
 	 
+	 $scope.searchPremises = function(){
+		 alert($scope.searchString);
+		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/searchClaims/" + $scope.searchString)
+		 .then(function(response){
+			 $scope.premiseSearchResults = response.data;
+		 });
+	 };
+	 
 	 $scope.setOppositeClaim = function(claimId, oppositeClaimId){
 		alert("this claim id: " + claimId + "\nOpposite claim Id: " + oppositeClaimId); 
 		var test = $http.post(ConfigService.getSettings().url + "/Prototype/prototype/claim/opposites/" + oppositeClaimId, $scope.claim);
 		$scope.closeOppositeClaimDialog();
 		//location.reload();
+		
+	 };
+	 
+	 $scope.addPremiseToClaim = function(claimId){
+		alert("this claim id: " + claimId); 
+		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/" + claimId)
+		 .then(function(response){
+			 var premise = response.data;
+			 premise.usedAsPremise = true;
+			 $scope.claim.arguments[$scope.currentArgIndex].premises.push(premise);
+			 alert("searched premise added successfully!");
+			 $scope.closeDialog('theAddPremiseDialog', false);
+		 });
 		
 	 };
 	 

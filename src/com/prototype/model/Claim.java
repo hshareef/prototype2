@@ -33,6 +33,9 @@ public class Claim {
 	
 	private Integer originalOwnerId;//id of the user who first created this claim
 	private String originalOwnerUsername;
+	
+	private boolean usedAsPremise; //flag to help determine if the claim can be deleted or not
+	
 
 
 	public Claim()
@@ -91,6 +94,14 @@ public class Claim {
 
 	public void setOppositeClaims(List<Claim> oppositeClaims) {
 		this.oppositeClaims = oppositeClaims;
+	}
+
+	public boolean isUsedAsPremise() {
+		return usedAsPremise;
+	}
+
+	public void setUsedAsPremise(boolean usedAsPremise) {
+		this.usedAsPremise = usedAsPremise;
 	}
 	
 }

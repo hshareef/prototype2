@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -100,5 +101,13 @@ public class ClaimResource {
 	public Argument updateArgumentState(Argument argument, @PathParam("targetStateId") Integer targetStateId){
 		argument = claimService.updateArgState(argument, targetStateId);
 		return argument;
+	}
+	
+	@Path("/delete/{claimId}")
+	@POST
+	@Consumes("application/json")
+	@Produces("application/json")
+	public boolean deleteClaim(@PathParam("claimId") Integer claimId){
+		return claimService.deleteClaim(claimId);
 	}
 }
