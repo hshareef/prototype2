@@ -37,6 +37,7 @@
         <mapping class="com.prototype.model.User" />
         <mapping class="com.prototype.model.FallacyDetails" />
         <mapping class="com.prototype.model.ArgumentState" />
+        <mapping class="com.prototype.model.ClaimRef" />
         
 
     </session-factory>

@@ -15,6 +15,7 @@ import org.hibernate.criterion.Restrictions;
 import com.prototype.model.Argument;
 import com.prototype.model.ArgumentState;
 import com.prototype.model.Claim;
+import com.prototype.model.ClaimRef;
 import com.prototype.model.FallacyDetails;
 
 public class ClaimDao {
@@ -24,7 +25,13 @@ public class ClaimDao {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
 		for(Argument arg : claim.getArguments()){
-			for(Claim premise : arg.getPremises()){
+			for(ClaimRef premise : arg.getPremises()){
+				if(premise.getClaimId() == null){
+					Claim premiseClaim = new Claim();
+					premiseClaim.setClaimStatement(premise.getClaimStatement());
+					session.save(premiseClaim);
+					premise.setClaimId(premiseClaim.getClaimId());
+				}
 				session.saveOrUpdate(premise);
 			}
 			if(arg.getStateHistory() != null){
@@ -100,14 +107,14 @@ public class ClaimDao {
 			 Hibernate.initialize(argument.getFallacyDetails());
 		     Hibernate.initialize(argument.getPremises());
 		     Hibernate.initialize(argument.getStateHistory());
-		     for(Claim premise : argument.getPremises()){
-		 		ArrayList<Argument> premiseArguments = new ArrayList<Argument>();
-		 		premise.setArguments(premiseArguments); 
-		 		ArrayList<String> keywords = new ArrayList<String>();
-		 		premise.setKeywords(keywords);
-		 		ArrayList <Claim> oppositeClaims = new ArrayList<Claim>();
-		 		premise.setOppositeClaims(oppositeClaims);
-		     }
+//		     for(Claim premise : argument.getPremises()){
+//		 		ArrayList<Argument> premiseArguments = new ArrayList<Argument>();
+//		 		premise.setArguments(premiseArguments); 
+//		 		ArrayList<String> keywords = new ArrayList<String>();
+//		 		premise.setKeywords(keywords);
+//		 		ArrayList <Claim> oppositeClaims = new ArrayList<Claim>();
+//		 		premise.setOppositeClaims(oppositeClaims);
+//		     }
 		}
 		
 		Hibernate.initialize(claim.getOppositeClaims());
@@ -185,12 +192,44 @@ public class ClaimDao {
 		System.out.println(query.toString());
 		return query.toString();
 	}
+	
+	private String generateClaimRefSearchSql(List<String> words) {
+		
+		
+		StringBuffer query = new StringBuffer();
+		query.append(" select  claim.*, null as occurance \n");
+		query.append(" from prototype.claimref claim where claimStatement like concat('% ', :param0, ' %')\n");
+		query.append(" or claimStatement like concat(:param0, ' %')\n");
+		query.append(" or claimStatement like concat('% ', :param0, '_')\n");
+		query.append(" or claimStatement like concat('% ', :param0)\n");
+		query.append(" or claimStatement like :param0");
+		query.append(" union \n");
+		query.append("( \n");
+		query.append("select claim.*, count(claimId) as occurance from \n");
+		query.append("( \n");
+		for(int i = 1; i < words.size(); i++){
+			query.append(" select  * from prototype.claimref \n");
+			query.append("where ( claimStatement like concat('% ', :param"+i+", ' %') \n");
+			query.append("OR claimStatement like concat(:param"+i+", ' %') \n");
+			query.append("OR claimStatement like concat('% ', :param"+i+") \n");
+			query.append("OR claimStatement like concat('% ', :param"+i+", '_')) \n");
+			query.append(" and claimStatement not like concat('% ', :param0, ' %') \n");
+			if(i != words.size()-1){
+				query.append(" union all \n");
+			}
+		}
+		query.append(") claim \n");
+		query.append("group by claimId order by occurance desc \n");
+		query.append(") \n");
+		System.out.println(query.toString());
+		return query.toString();
+	}
 
 	public Argument saveArgument(Argument arg) {
 		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		for(Claim premise : arg.getPremises()){
+		for(ClaimRef premise : arg.getPremises()){
 			session.saveOrUpdate(premise);
 		}
 		if(arg.getStateHistory() != null){
@@ -233,6 +272,28 @@ public class ClaimDao {
 		System.out.println("Deleted the following claim: " + claim.getClaimStatement());
 		return true;
 		
+	}
+
+	public List<ClaimRef> getSearchedClaimRefs(List<String> words) {
+		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		ArrayList <ClaimRef> searchedClaimRefs = new ArrayList<ClaimRef>();
+		String sql = generateClaimRefSearchSql(words);
+		Query query = session.createSQLQuery(sql).addEntity(ClaimRef.class);
+		for (int i=0; i<words.size(); i++){
+			query.setString("param"+i,words.get(i));
+		}
+		System.out.println(query.toString());
+		searchedClaimRefs = (ArrayList<ClaimRef>) query.list();
+		for(ClaimRef claimRef : searchedClaimRefs){
+			System.out.println(claimRef.getClaimStatement());
+		}
+		
+		
+		session.close();
+		sessionFactory.close();
+		return searchedClaimRefs;
 	}
 	
 //	public void linkOppositeClaim(int claimId, int oppositeClaimId){

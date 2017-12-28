@@ -7,6 +7,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -19,8 +20,9 @@ public class Argument {
 	private Integer argumentId;
 //	private Integer claimId;
 	private String argName;
-	@ElementCollection(targetClass=Claim.class)
-	private List<Claim> premises;
+	//@ElementCollection(targetClass=ClaimRef.class)
+	@ManyToMany(targetEntity=ClaimRef.class)
+	private List<ClaimRef> premises;
 	
 	public List<ArgumentState> getStateHistory() {
 		return stateHistory;
@@ -106,10 +108,10 @@ public class Argument {
 //	}
 	
 
-	public List<Claim> getPremises() {
+	public List<ClaimRef> getPremises() {
 		return premises;
 	}
-	public void setPremises(List<Claim> premises) {
+	public void setPremises(List<ClaimRef> premises) {
 		this.premises = premises;
 	}
 	public String getArgName() {

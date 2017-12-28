@@ -37,14 +37,15 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	$scope.currentArgIndex = null;
 	$scope.argumentViewingIndex = 0;
 	$scope.score = 85;
+	$scope.newArg = null;
 	
  
     //for saving a claim
     $scope.saveStatement = function(){
-    	if($scope.claim.originalOwnerId=-1){
-    		$scope.claim.originalOwnerId = $scope.user.userId;
-    		$scope.claim.originalOwnerUsername = $scope.user.username;
-    	}
+    	//if($scope.claim.originalOwnerId=-1){
+    		//$scope.claim.originalOwnerId = $scope.user.userId;
+    		//$scope.claim.originalOwnerUsername = $scope.user.username;
+    	//}
     	var test = $http.post(ConfigService.getSettings().url + "/Prototype/prototype/claim/create", $scope.claim).then(function(response){
         	alert("message saved!");
         	$scope.claim = response.data;
@@ -65,15 +66,20 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     };
     
     $scope.addBlankArg = function(){
-    	var newArg = null;
 		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/argTemplate")
 		 .then(function(response){
-			 newArg = response.data;
-			 newArg.ownerId = $scope.user.userId;
-			 newArg.ownerUsername = $scope.user.username;
-			 $scope.claim.arguments.push(newArg);
-			 $scope.currentArgIndex = $scope.claim.arguments.length - 1;
+			 $scope.newArg = response.data;
+			 $scope.newArg.ownerId = $scope.user.userId;
+			 $scope.newArg.ownerUsername = $scope.user.username;
+			 //$scope.claim.arguments.push(newArg);
+			 //$scope.currentArgIndex = $scope.claim.arguments.length - 1;
 		 });
+    };
+    
+    $scope.addAndSaveNewArgument = function(){
+    	$scope.claim.arguments.push($scope.newArg);
+    	$scope.currentArgIndex = $scope.claim.arguments.length = 1;
+    	$scope.saveStatement();
     };
     
     $scope.addToArgumentArray = function(){
@@ -150,18 +156,24 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     
     $scope.addToPremiseArray = function(argIndex){
     	var premise = new Object();
-    	premise.claimStatement="default statement";
-    	premise.originalOwnerId = $scope.user.userId;
-    	premise.originalOwnerUsername = $scope.user.username;
+    	premise.claimStatement="";
+    	//premise.originalOwnerId = $scope.user.userId;
+    	//premise.originalOwnerUsername = $scope.user.username;
     	$scope.claim.arguments[argIndex].premises.push(premise);
     };
     
     $scope.addToCurrentArgPremiseArray = function(){
     	var premise = new Object();
-    	premise.claimStatement="default statement";
-    	premise.originalOwnerId = $scope.user.userId;
-    	premise.originalOwnerUsername = $scope.user.username;
+    	premise.claimStatement="";
+    	//premise.originalOwnerId = $scope.user.userId;
+    	//premise.originalOwnerUsername = $scope.user.username;
     	$scope.claim.arguments[$scope.currentArgIndex].premises.push(premise);
+    };
+    
+    $scope.addToNewArgPremiseArray = function(){
+    	var premise = new Object();
+    	premise.claimStatement = "";
+    	$scope.newArg.premises.push(premise);
     };
     
     $scope.getCurrentStatusId = function(argument){
@@ -317,7 +329,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		 theDialogBox.style.display = "block";
 		 
 		 //if its the add argument dialog box
-		 if(dialogId == "theEditArgumentDialog" && (editArgIndex === undefined || editArgIndex === null)){
+		 if(dialogId == "theCreateNewArgumentDialog"){
 			 $scope.addBlankArg();
 		 }
 		 else if(dialogId == "theEditArgumentDialog"){
@@ -360,18 +372,28 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		
 	 };
 	 
-	 $scope.addPremiseToClaim = function(claimId){
-		alert("this claim id: " + claimId); 
-		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/" + claimId)
-		 .then(function(response){
-			 var premise = response.data;
-			 premise.usedAsPremise = true;
-			 $scope.claim.arguments[$scope.currentArgIndex].premises.push(premise);
-			 alert("searched premise added successfully!");
-			 $scope.closeDialog('theAddPremiseDialog', false);
-		 });
-		
+	 $scope.addPremiseToClaim = function(index){
+//		alert("this claim id: " + claimId); 
+//		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/" + claimId)
+//		 .then(function(response){
+//			 var premise = response.data;
+//			 premise.usedAsPremise = true;
+//			 $scope.claim.arguments[$scope.currentArgIndex].premises.push(premise);
+//			 alert("searched premise added successfully!");
+//			 $scope.closeDialog('theAddPremiseDialog', false);
+//		 });
+		 var premise = $scope.premiseSearchResults[index];
+		 $scope.claim.arguments[$scope.currentArgIndex].premises.push(premise);
+		 alert("searched premise added successfully!");
+		 $scope.closeDialog('theAddPremiseDialog', false);
 	 };
+	 
+	 $scope.addPremiseToClaim = function(index){
+			 var premise = $scope.premiseSearchResults[index];
+			 $scope.newArg.premises.push(premise);
+			 alert("searched premise added successfully to new argument!");
+			 $scope.closeDialog('theAddPremiseDialog', false);
+		 };
 	 
 	 $scope.publishArg = function(index, targetStateId){
 		 //update the state to published

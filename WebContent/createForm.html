@@ -48,7 +48,7 @@
 			 	   </div>
 					<div id="top-claims-footer">
 						Total arguments: {{claim.arguments.length}}
-						<button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="openDialog('theEditArgumentDialog')">
+						<button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="openDialog('theCreateNewArgumentDialog')">
 							<span class="glyphicon glyphicon-plus "></span> Add Argument
 						</button>
 					</div>
@@ -67,7 +67,7 @@
 			 	   </div>
 					<div id="top-claims-footer">
 						Total arguments: {{claim.arguments.length}}
-						<button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="openDialog('theEditArgumentDialog')">
+						<button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="openDialog('theCreateNewArgumentDialog')">
 							<span class="glyphicon glyphicon-plus "></span> Add Argument
 						</button>
 					</div>
@@ -233,6 +233,45 @@
 			   					<button ng-click="closeDialog('theEditArgumentDialog', false)">Close</button>
 			   				</div>
 						</div>
+						
+						<!--  Eventually the below div section needs to go in a separate html file -->
+						<div id="theCreateNewArgumentDialog" class="dialog">
+							<div class="dialog-content">
+			   					<span class="close" ng-click="closeDialog('theCreateNewArgumentDialog', false)">&times;</span>
+					   			<div class="argSection panel panel-primary panel-center">
+									<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
+				      					<h3 class = "panel-title">Argument {{$index+1}} - {{newArg.argName}}</h3>
+				      					<span class="btn" ng-if="!claim.arguments[currentArgIndex].editable && claim.arguments[currentArgIndex].ownerId === user.userId" ng-click="setArgumentEditMode($index, true) ; $event.stopPropagation()">
+				          					<span class="glyphicon glyphicon-edit"></span> Edit
+				        				</span>
+						   				<a class="btn" ng-if="claim.arguments[currentArgIndex].editable" ng-click="setArgumentEditMode($index, false) ; saveStatement() ; $event.stopPropagation()" style="color: black">Save</a>
+						   				<a class="btn" ng-if="claim.arguments[currentArgIndex].editable" ng-click="setArgumentEditMode($index, false) ; getClaim(claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a>
+						   				<!-- CHANGE saveStatement() above to saveArgument(index) (and create that method) -->
+						   			</div>
+						   			<div class="container" id="{{$index}}">
+							   			<div class = "panel-body" >
+											{{argument.editable}}Argument name:
+											<textarea rows="1" cols="50"  type=text ng-model="newArg.argName"></textarea><br>
+											<div ng-repeat="premise in newArg.premises track by $index">
+												Premise {{$index+1}}:<br>
+												<textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
+											</div>
+											<a class="btn" ng-click="addToNewArgPremiseArray($index)">Add New Premise</a><br>
+											<a class="btn" ng-click="openDialog('theAddPremiseDialog')">Add Pre-existing Premise</a><br>
+											Conclusion: 
+											<p>{{claim.claimStatement}}</p>
+											<br>
+										</div>
+									</div>
+								</div>
+			   					<div>{{editMode}}</div>
+			   					<button ng-click="addAndSaveNewArgument()">Save</button>
+			   					<button ng-click="closeDialog('theCreateNewArgumentDialog', false)">Close</button>
+			   				</div>
+						</div>
+						
+						
+						
 						<!--  Eventually the below div section needs to go in a separate html file -->
 			   			<div id="theOppoClaimDialog" class="dialog">
 			   				<div class="dialog-content">
@@ -259,9 +298,9 @@
 			   					<input ng-model="searchString" type="text" class="search-text" />
 			   					 <button ng-click="searchPremises()" class="btn btn-default">Search</button>
 			   					 <br>
-			   					 <span ng-repeat="searchedPremises in premiseSearchResults">
-			   					 	{{searchedPremises.claimStatement}}
-			   					 	<a ng-click="addPremiseToClaim(searchedPremises.claimId)">Select Premise</a>
+			   					 <span ng-repeat="searchedPremises in premiseSearchResults track by $index">
+			   					 	{{$index}} - {{searchedPremises.claimStatement}}
+			   					 	<a ng-click="addPremiseToClaim($index)">Select Premise</a>
 			   					 	<br>
 			   					</span>
 			   				</div>

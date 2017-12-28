@@ -16,6 +16,7 @@ import javax.ws.rs.QueryParam;
 
 import com.prototype.model.Argument;
 import com.prototype.model.Claim;
+import com.prototype.model.ClaimRef;
 import com.prototype.service.ClaimService;
  
 @Path("/claim")
@@ -72,9 +73,9 @@ public class ClaimResource {
 	@Path("/searchClaims/{searchString}")
 	@GET
 	@Produces("application/json")
-	public List<Claim> getSearchedClaims(@PathParam("searchString") String searchString) {
+	public List<ClaimRef> getSearchedClaims(@PathParam("searchString") String searchString) {
 		System.out.println("Attempting to search for claims with search string " +searchString+"...");
-		List <Claim> searchedClaims = claimService.getSearchedClaims(searchString);
+		List <ClaimRef> searchedClaims = claimService.getSearchedClaimRefs(searchString);
 		return searchedClaims;
 	}
 	

@@ -7,6 +7,7 @@ import com.prototype.messages.BlankFieldError;
 import com.prototype.messages.Message;
 import com.prototype.model.Argument;
 import com.prototype.model.Claim;
+import com.prototype.model.ClaimRef;
 import com.prototype.service.FieldConstants;
 
 public class ArgumentValidator extends Validator {
@@ -16,7 +17,7 @@ public class ArgumentValidator extends Validator {
 		if(arg.getArgName() == null || arg.getArgName().length()==0){
 			messages.add(new BlankFieldError(FieldConstants.ArgumentFields.ArgumentName.value));
 		}
-		for(Claim premise : arg.getPremises()){
+		for(ClaimRef premise : arg.getPremises()){
 			if(premise.getClaimStatement() == null || premise.getClaimStatement().length()==0){
 				messages.add(new BlankFieldError(FieldConstants.ArgumentFields.ArgumentPremise.value));
 				break;

@@ -11,6 +11,7 @@ import com.prototype.dao.ClaimDao;
 import com.prototype.model.Argument;
 import com.prototype.model.ArgumentState;
 import com.prototype.model.Claim;
+import com.prototype.model.ClaimRef;
 import com.prototype.model.FallacyDetails;
 import com.prototype.validators.ClaimValidator;
 
@@ -54,6 +55,15 @@ public class ClaimService {
 			words = removeStopwords(words);
 		}
 		return claimDao.getSearchedClaims(words);
+	}
+	
+	public List<ClaimRef> getSearchedClaimRefs(String searchString) {
+		List<String> words = new ArrayList<String>(Arrays.asList(searchString.split(" ")));
+		words.add(0, searchString);
+		if(!checkSingleStopword(searchString)){
+			words = removeStopwords(words);
+		}
+		return claimDao.getSearchedClaimRefs(words);
 	}
 	
 	public List<String> removeStopwords(List<String> words){
@@ -133,7 +143,7 @@ public class ClaimService {
 		arg.setValidCount(0);
 		arg.setInvalidCount(0);
 		arg.setFallacyDetails(new FallacyDetails());
-		arg.setPremises(new ArrayList<Claim>());
+		arg.setPremises(new ArrayList<ClaimRef>());
 		arg.setStateHistory(new ArrayList<ArgumentState>());
 		addArgState(arg, ArgumentConstants.States.PRELIM.id);
 		return arg;
