@@ -33,6 +33,13 @@
 	          	<span class="glyphicon glyphicon-trash"></span> Delete 
 	       	</span>
 			<p>Owner: {{claim.originalOwnerUsername}}</p>
+			<ul class="nav nav-pills">
+				<li class="active"><a data-toggle="pill" href="#arguments">Arguments</a></li>
+				<li><a data-toggle="pill" href="#mediaResources">Media Resources</a></li>
+			</ul>
+			<div><!--  container -->
+			<div class="tab-content"><!-- tabs -->
+			<div id="arguments" class="tab-pane fade in active">
 			<div class="col-sm-6">
 				<div id="top-claims-window">
 					<div id="top-claims-header">
@@ -308,6 +315,12 @@
 					</div>
 			  	</div>
 			</div>
+			</div>
+			<div id="mediaResources" class="tab-pane fade">
+				Media Resources tab
+			</div>
+			</div><!-- tabs -->
+			</div><!--  container -->
 		</div>
 	</div>			
 	<script src="claimModule.js"></script>

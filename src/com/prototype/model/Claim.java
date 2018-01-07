@@ -37,7 +37,6 @@ public class Claim {
 	private boolean usedAsPremise; //flag to help determine if the claim can be deleted or not
 	
 
-
 	public Claim()
 	{
 		

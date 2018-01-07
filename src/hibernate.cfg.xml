@@ -38,6 +38,10 @@
         <mapping class="com.prototype.model.FallacyDetails" />
         <mapping class="com.prototype.model.ArgumentState" />
         <mapping class="com.prototype.model.ClaimRef" />
+        <mapping class="com.prototype.model.Author" />
+        <mapping class="com.prototype.model.Institution" />
+        <mapping class="com.prototype.model.MediaResource" />
+        <mapping class="com.prototype.model.Person" />
         
 
     </session-factory>
