@@ -17,7 +17,7 @@ public class ArgumentValidator extends Validator {
 		if(arg.getArgName() == null || arg.getArgName().length()==0){
 			messages.add(new BlankFieldError(FieldConstants.ArgumentFields.ArgumentName.value));
 		}
-		for(ClaimRef premise : arg.getPremises()){
+		for(Claim premise : arg.getPremises()){
 			if(premise.getClaimStatement() == null || premise.getClaimStatement().length()==0){
 				messages.add(new BlankFieldError(FieldConstants.ArgumentFields.ArgumentPremise.value));
 				break;

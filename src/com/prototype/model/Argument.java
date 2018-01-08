@@ -21,8 +21,8 @@ public class Argument {
 //	private Integer claimId;
 	private String argName;
 	//@ElementCollection(targetClass=ClaimRef.class)
-	@ManyToMany(targetEntity=ClaimRef.class)
-	private List<ClaimRef> premises;
+	@ManyToMany(targetEntity=Claim.class)
+	private List<Claim> premises;
 	
 	public List<ArgumentState> getStateHistory() {
 		return stateHistory;
@@ -108,10 +108,10 @@ public class Argument {
 //	}
 	
 
-	public List<ClaimRef> getPremises() {
+	public List<Claim> getPremises() {
 		return premises;
 	}
-	public void setPremises(List<ClaimRef> premises) {
+	public void setPremises(List<Claim> premises) {
 		this.premises = premises;
 	}
 	public String getArgName() {

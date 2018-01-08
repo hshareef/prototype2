@@ -8,6 +8,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -24,7 +25,7 @@ public class Claim {
 	@ElementCollection(targetClass=Argument.class)
 	private List<Argument> arguments;
 	
-	@ElementCollection(targetClass=Claim.class)
+	@ManyToMany(targetEntity=Claim.class)
 	private List<Claim> oppositeClaims;
 	
 	

@@ -25,12 +25,12 @@ public class ClaimDao {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
 		for(Argument arg : claim.getArguments()){
-			for(ClaimRef premise : arg.getPremises()){
+			for(Claim premise : arg.getPremises()){
 				if(premise.getClaimId() == null){
-					Claim premiseClaim = new Claim();
-					premiseClaim.setClaimStatement(premise.getClaimStatement());
-					session.save(premiseClaim);
-					premise.setClaimId(premiseClaim.getClaimId());
+					//Claim premiseClaim = new Claim();
+					//premiseClaim.setClaimStatement(premise.getClaimStatement());
+					//session.save(premiseClaim);
+					//premise.setClaimId(premiseClaim.getClaimId());
 				}
 				session.saveOrUpdate(premise);
 			}
@@ -107,14 +107,15 @@ public class ClaimDao {
 			 Hibernate.initialize(argument.getFallacyDetails());
 		     Hibernate.initialize(argument.getPremises());
 		     Hibernate.initialize(argument.getStateHistory());
-//		     for(Claim premise : argument.getPremises()){
-//		 		ArrayList<Argument> premiseArguments = new ArrayList<Argument>();
-//		 		premise.setArguments(premiseArguments); 
-//		 		ArrayList<String> keywords = new ArrayList<String>();
-//		 		premise.setKeywords(keywords);
-//		 		ArrayList <Claim> oppositeClaims = new ArrayList<Claim>();
-//		 		premise.setOppositeClaims(oppositeClaims);
-//		     }
+		     //for all the argument premises for which we dont want to load the data, just fill with empty data to avoid  lazyload exception
+		     for(Claim premise : argument.getPremises()){
+		 		ArrayList<Argument> premiseArguments = new ArrayList<Argument>();
+		 		premise.setArguments(premiseArguments); 
+		 		ArrayList<String> keywords = new ArrayList<String>();
+		 		premise.setKeywords(keywords);
+		 		ArrayList <Claim> oppositeClaims = new ArrayList<Claim>();
+		 		premise.setOppositeClaims(oppositeClaims);
+		     }
 		}
 		
 		Hibernate.initialize(claim.getOppositeClaims());
@@ -229,7 +230,7 @@ public class ClaimDao {
 		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-		for(ClaimRef premise : arg.getPremises()){
+		for(Claim premise : arg.getPremises()){
 			session.saveOrUpdate(premise);
 		}
 		if(arg.getStateHistory() != null){

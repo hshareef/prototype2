@@ -73,9 +73,10 @@ public class ClaimResource {
 	@Path("/searchClaims/{searchString}")
 	@GET
 	@Produces("application/json")
-	public List<ClaimRef> getSearchedClaims(@PathParam("searchString") String searchString) {
+	public List<Claim> getSearchedClaims(@PathParam("searchString") String searchString) {
 		System.out.println("Attempting to search for claims with search string " +searchString+"...");
-		List <ClaimRef> searchedClaims = claimService.getSearchedClaimRefs(searchString);
+		//List <ClaimRef> searchedClaims = claimService.getSearchedClaimRefs(searchString);
+		List <Claim> searchedClaims = claimService.getSearchedClaims(searchString);
 		return searchedClaims;
 	}
 	

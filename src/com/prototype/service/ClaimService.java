@@ -143,7 +143,7 @@ public class ClaimService {
 		arg.setValidCount(0);
 		arg.setInvalidCount(0);
 		arg.setFallacyDetails(new FallacyDetails());
-		arg.setPremises(new ArrayList<ClaimRef>());
+		arg.setPremises(new ArrayList<Claim>());
 		arg.setStateHistory(new ArrayList<ArgumentState>());
 		addArgState(arg, ArgumentConstants.States.PRELIM.id);
 		return arg;
