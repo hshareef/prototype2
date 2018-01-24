@@ -28,6 +28,8 @@ public class Claim {
 	@ManyToMany(targetEntity=Claim.class)
 	private List<Claim> oppositeClaims;
 	
+	@ManyToMany(targetEntity=MediaResource.class)
+	private List<MediaResource> mediaResources;
 	
 	@ElementCollection
 	private List<String> keywords;
@@ -103,5 +105,15 @@ public class Claim {
 	public void setUsedAsPremise(boolean usedAsPremise) {
 		this.usedAsPremise = usedAsPremise;
 	}
+
+	public List<MediaResource> getMediaResources() {
+		return mediaResources;
+	}
+
+	public void setMediaResources(List<MediaResource> mediaResources) {
+		this.mediaResources = mediaResources;
+	}
+	
+	
 	
 }

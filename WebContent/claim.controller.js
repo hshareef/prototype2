@@ -78,7 +78,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     
     $scope.addAndSaveNewArgument = function(){
     	$scope.claim.arguments.push($scope.newArg);
-    	$scope.currentArgIndex = $scope.claim.arguments.length = 1;
+    	$scope.currentArgIndex = $scope.claim.arguments.length;
     	$scope.saveStatement();
     };
     
@@ -335,6 +335,16 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		 else if(dialogId == "theEditArgumentDialog"){
 			 $scope.currentArgIndex = editArgIndex;
 		 }
+		 else if(dialogId == "theCreateNewMediaResourceDialog"){
+			 $scope.newMediaResource = 
+				 {
+					resourceTypeId : 1,
+					url : "",
+					publishDate : "",
+					author : null,
+					institution : null
+				 };
+		 }
 		 
 
 		 
@@ -343,6 +353,9 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	 $scope.closeDialog = function(dialogId, redirect){
 		 var theDialogBox = document.getElementById(dialogId);
 		 theDialogBox.style.display = "none";
+		 if(dialogId == "theCreateNewMediaResourceDialog"){
+			 $scope.newMediaResource = null;
+		 }
 		 if(redirect){
 			 window.location.href = window.history.back(1);
 		 }

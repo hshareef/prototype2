@@ -17,6 +17,7 @@ import com.prototype.model.ArgumentState;
 import com.prototype.model.Claim;
 import com.prototype.model.ClaimRef;
 import com.prototype.model.FallacyDetails;
+import com.prototype.model.MediaResource;
 
 public class ClaimDao {
 	
@@ -77,6 +78,8 @@ public class ClaimDao {
 			claim.setKeywords(keywords);
 			ArrayList <Claim> oppositeClaims = new ArrayList<Claim>();
 			claim.setOppositeClaims(oppositeClaims);
+			ArrayList <MediaResource> mediaResources = new ArrayList<MediaResource>();
+			claim.setMediaResources(mediaResources);
 		}
 		
 		
@@ -101,6 +104,7 @@ public class ClaimDao {
 		
 	     Hibernate.initialize(claim.getArguments());
 	     Hibernate.initialize(claim.getKeywords());
+	     Hibernate.initialize(claim.getMediaResources());
 	     
 		
 		for(Argument argument : claim.getArguments()){
@@ -115,6 +119,8 @@ public class ClaimDao {
 		 		premise.setKeywords(keywords);
 		 		ArrayList <Claim> oppositeClaims = new ArrayList<Claim>();
 		 		premise.setOppositeClaims(oppositeClaims);
+		 		ArrayList <MediaResource> mediaResources = new ArrayList<MediaResource>();
+		 		premise.setMediaResources(mediaResources);
 		     }
 		}
 		
@@ -126,6 +132,8 @@ public class ClaimDao {
 	 		oppo.setKeywords(keywords);
 	 		ArrayList <Claim> oppositeClaims = new ArrayList<Claim>();
 	 		oppo.setOppositeClaims(oppositeClaims);
+	 		ArrayList <MediaResource> mediaResources = new ArrayList<MediaResource>();
+	 		oppo.setMediaResources(mediaResources);
 	     }
 		
 		session.close();
@@ -153,6 +161,8 @@ public class ClaimDao {
 			ArrayList <String> keywords = new ArrayList<String>();
 			claim.setKeywords(keywords);
 			claim.setOppositeClaims(new ArrayList<Claim>());
+	 		ArrayList <MediaResource> mediaResources = new ArrayList<MediaResource>();
+	 		claim.setMediaResources(mediaResources);
 		}
 		
 		
