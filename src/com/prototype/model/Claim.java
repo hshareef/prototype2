@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,7 +21,9 @@ public class Claim {
 
 	@Id
 	@GeneratedValue
+	@Column(name="claim_id")
 	private Integer claimId;
+	@Column(name="claim_statement")
 	private String claimStatement;
 	@ElementCollection(targetClass=Argument.class)
 	private List<Argument> arguments;
@@ -34,9 +37,12 @@ public class Claim {
 	@ElementCollection
 	private List<String> keywords;
 	
+	@Column(name="original_owner_id")
 	private Integer originalOwnerId;//id of the user who first created this claim
+	@Column(name="original_owner_username")
 	private String originalOwnerUsername;
 	
+	@Column(name="used_as_premise")
 	private boolean usedAsPremise; //flag to help determine if the claim can be deleted or not
 	
 

@@ -27,11 +27,47 @@
 
 <div ng-app="MediaResourceModule" ng-controller="MediaResourceCtrl">
 
-
-	<p>Create a new Media Resource</p>
-	URL:<textarea ng-model="newMediaResource.url" rows="1" cols="75"></textarea>
-	<br>
-   	{{dog}}
+	<br><br><br><br>
+   	<div class="container">
+    	<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<div class="panel panel-login">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-lg-12">
+								<div>
+									<form  id="login-form" method="post" role="form" style="display: block;">
+										<div ng-if="!postSaveFlag"><h1>Add Media Resource</h1></div>
+										<div ng-if="postSaveFlag"><h1>Media Resource saved.</h1></div>
+										<div class="form-group">
+											<textarea ng-disabled="postSaveFlag" name="title" id="title" placeholder="Media Resource Title" ng-model="mediaResource.title" rows="1" cols="75"></textarea>
+										</div>
+										<div class="form-group">
+											<textarea ng-disabled="postSaveFlag" name="url" id="url" placeholder="Media Resource URL" ng-model="mediaResource.url" rows="1" cols="75"></textarea>
+										</div>
+										<div class="form-group">
+											<div class="row">
+												<div class="col-sm-6 col-sm-offset-3">
+													<span ng-if="!postSaveFlag"><input type="submit" name="save-media-resource" id="save-media-resource" tabindex="4" class="form-control btn btn-login" value="Save Media Resource" ng-click="saveMediaResource()"></span>
+													<span ng-if="postSaveFlag"><input type="submit" name="add-another" id="add-another" tabindex="4" class="form-control btn btn-login" value="Add Another Media Resource" ng-click="addAnotherMediaResource()"></span>
+													<span ng-if="postSaveFlag"><input type="submit" name="close" id="close" tabindex="4" class="form-control btn btn-login" value="Close" ng-click="closeMediaResource()"></span>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div>
+		<input type="text" ng-model="testWord" /><button ng-click="testTheTestWord()">Test the Test word</button>
+	</div>
+	
 
 </div>
 				<script src="mediaResourceModule.js"></script>

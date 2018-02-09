@@ -3,24 +3,31 @@ package com.prototype.model;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="media_resource")
 public class MediaResource {
 
 	@Id
 	@GeneratedValue
+	@Column(name="media_resource_id")
 	private Integer mediaResourceId;
+	@Column(name="resource_type_id")
 	private Integer resourceTypeId;
 	private String url;
+	@Column(name="publish_date")
 	private Date publishDate;
 	@ManyToOne
 	private Author author;
 	@ManyToOne
 	private Institution institution;
+	private String title;
 	//private List<ClaimRef> claims; 
 	//private List<Integer> argumentIds;
 	
@@ -54,6 +61,19 @@ public class MediaResource {
 	public void setInstitution(Institution institution) {
 		this.institution = institution;
 	}
+	public Integer getMediaResourceId() {
+		return mediaResourceId;
+	}
+	public void setMediaResourceId(Integer mediaResourceId) {
+		this.mediaResourceId = mediaResourceId;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
 //	public List<ClaimRef> getClaims() {
 //		return claims;
 //	}

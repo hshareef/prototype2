@@ -1,16 +1,22 @@
 package com.prototype.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="claim_ref")
 public class ClaimRef {
 	
 	@Id
 	@GeneratedValue
+	@Column(name="claim_ref_id")
 	private Integer claimRefId;
+	@Column(name="claim_id")
 	private Integer claimId;
+	@Column(name="claim_statement")
 	private String claimStatement;
 	
 	public Integer getClaimRefId() {

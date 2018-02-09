@@ -3,6 +3,7 @@ package com.prototype.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,8 +18,10 @@ public class Argument {
 	
 	@Id
 	@GeneratedValue
+	@Column(name="argument_id")
 	private Integer argumentId;
 //	private Integer claimId;
+	@Column(name="arg_name")
 	private String argName;
 	//@ElementCollection(targetClass=ClaimRef.class)
 	@ManyToMany(targetEntity=Claim.class)
@@ -37,7 +40,10 @@ public class Argument {
 	@ElementCollection(targetClass=ArgumentState.class)
 	private List<ArgumentState> stateHistory;
 	
+	@Column(name="owner_id")
 	private Integer ownerId;
+	
+	@Column(name="owner_username")
 	private String ownerUsername;
 	
 	private Boolean editable;
@@ -47,7 +53,10 @@ public class Argument {
 	private Boolean valid;
 	private Boolean sound;
 	
+	@Column(name="valid_count")
 	private Integer validCount;
+	
+	@Column(name="invalid_count")
 	private Integer invalidCount;
 	
 	@OneToOne(targetEntity = FallacyDetails.class)
