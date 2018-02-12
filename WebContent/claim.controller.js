@@ -380,7 +380,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	 $scope.setOppositeClaim = function(claimId, oppositeClaimId){
 		alert("this claim id: " + claimId + "\nOpposite claim Id: " + oppositeClaimId); 
 		var test = $http.post(ConfigService.getSettings().url + "/Prototype/prototype/claim/opposites/" + oppositeClaimId, $scope.claim);
-		$scope.closeOppositeClaimDialog();
+		$scope.closeDialog('theOppoClaimDialog', false);
 		//location.reload();
 		
 	 };

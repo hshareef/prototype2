@@ -69,7 +69,7 @@ public class LoginDao {
 	}
 
 	public boolean checkEmailAddressUsed(String emailAddress) {
-		String sql = "select * from User where emailAddress = :emailAddress";
+		String sql = "select * from User where email_address = :emailAddress";
 		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();

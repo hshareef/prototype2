@@ -177,28 +177,28 @@ public class ClaimDao {
 		
 		StringBuffer query = new StringBuffer();
 		query.append(" select  claim.*, null as occurance \n");
-		query.append(" from prototype.claim claim where claimStatement like concat('% ', :param0, ' %')\n");
-		query.append(" or claimStatement like concat(:param0, ' %')\n");
-		query.append(" or claimStatement like concat('% ', :param0, '_')\n");
-		query.append(" or claimStatement like concat('% ', :param0)\n");
-		query.append(" or claimStatement like :param0");
+		query.append(" from prototype.claim claim where claim_statement like concat('% ', :param0, ' %')\n");
+		query.append(" or claim_statement like concat(:param0, ' %')\n");
+		query.append(" or claim_statement like concat('% ', :param0, '_')\n");
+		query.append(" or claim_statement like concat('% ', :param0)\n");
+		query.append(" or claim_statement like :param0");
 		query.append(" union \n");
 		query.append("( \n");
-		query.append("select claim.*, count(claimId) as occurance from \n");
+		query.append("select claim.*, count(claim_id) as occurance from \n");
 		query.append("( \n");
 		for(int i = 1; i < words.size(); i++){
 			query.append(" select  * from prototype.claim \n");
-			query.append("where ( claimStatement like concat('% ', :param"+i+", ' %') \n");
-			query.append("OR claimStatement like concat(:param"+i+", ' %') \n");
-			query.append("OR claimStatement like concat('% ', :param"+i+") \n");
-			query.append("OR claimStatement like concat('% ', :param"+i+", '_')) \n");
-			query.append(" and claimStatement not like concat('% ', :param0, ' %') \n");
+			query.append("where ( claim_statement like concat('% ', :param"+i+", ' %') \n");
+			query.append("OR claim_statement like concat(:param"+i+", ' %') \n");
+			query.append("OR claim_statement like concat('% ', :param"+i+") \n");
+			query.append("OR claim_statement like concat('% ', :param"+i+", '_')) \n");
+			query.append(" and claim_statement not like concat('% ', :param0, ' %') \n");
 			if(i != words.size()-1){
 				query.append(" union all \n");
 			}
 		}
 		query.append(") claim \n");
-		query.append("group by claimId order by occurance desc \n");
+		query.append("group by claim_id order by occurance desc \n");
 		query.append(") \n");
 		System.out.println(query.toString());
 		return query.toString();
@@ -209,28 +209,28 @@ public class ClaimDao {
 		
 		StringBuffer query = new StringBuffer();
 		query.append(" select  claim.*, null as occurance \n");
-		query.append(" from prototype.claimref claim where claimStatement like concat('% ', :param0, ' %')\n");
-		query.append(" or claimStatement like concat(:param0, ' %')\n");
-		query.append(" or claimStatement like concat('% ', :param0, '_')\n");
-		query.append(" or claimStatement like concat('% ', :param0)\n");
-		query.append(" or claimStatement like :param0");
+		query.append(" from prototype.claim_ref claim where claim_statement like concat('% ', :param0, ' %')\n");
+		query.append(" or claim_statement like concat(:param0, ' %')\n");
+		query.append(" or claim_statement like concat('% ', :param0, '_')\n");
+		query.append(" or claim_statement like concat('% ', :param0)\n");
+		query.append(" or claim_statement like :param0");
 		query.append(" union \n");
 		query.append("( \n");
-		query.append("select claim.*, count(claimId) as occurance from \n");
+		query.append("select claim.*, count(claim_id) as occurance from \n");
 		query.append("( \n");
 		for(int i = 1; i < words.size(); i++){
-			query.append(" select  * from prototype.claimref \n");
-			query.append("where ( claimStatement like concat('% ', :param"+i+", ' %') \n");
-			query.append("OR claimStatement like concat(:param"+i+", ' %') \n");
-			query.append("OR claimStatement like concat('% ', :param"+i+") \n");
-			query.append("OR claimStatement like concat('% ', :param"+i+", '_')) \n");
-			query.append(" and claimStatement not like concat('% ', :param0, ' %') \n");
+			query.append(" select  * from prototype.claim_ref \n");
+			query.append("where ( claim_statement like concat('% ', :param"+i+", ' %') \n");
+			query.append("OR claim_statement like concat(:param"+i+", ' %') \n");
+			query.append("OR claim_statement like concat('% ', :param"+i+") \n");
+			query.append("OR claim_statement like concat('% ', :param"+i+", '_')) \n");
+			query.append(" and claim_statement not like concat('% ', :param0, ' %') \n");
 			if(i != words.size()-1){
 				query.append(" union all \n");
 			}
 		}
 		query.append(") claim \n");
-		query.append("group by claimId order by occurance desc \n");
+		query.append("group by claim_id order by occurance desc \n");
 		query.append(") \n");
 		System.out.println(query.toString());
 		return query.toString();
