@@ -345,6 +345,9 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 					institution : null
 				 };
 		 }
+		 else if(dialogId == "theAddMissedPremiseGroupDialog"){
+			 
+		 }
 		 
 
 		 

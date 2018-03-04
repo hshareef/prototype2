@@ -18,6 +18,7 @@ import com.prototype.model.Claim;
 import com.prototype.model.ClaimRef;
 import com.prototype.model.FallacyDetails;
 import com.prototype.model.MediaResource;
+import com.prototype.model.MissedPremiseObjection;
 
 public class ClaimDao {
 	
@@ -121,6 +122,18 @@ public class ClaimDao {
 		 		premise.setOppositeClaims(oppositeClaims);
 		 		ArrayList <MediaResource> mediaResources = new ArrayList<MediaResource>();
 		 		premise.setMediaResources(mediaResources);
+		     }
+
+		     Hibernate.initialize(argument.getMissedPremiseObjections());
+		     for(MissedPremiseObjection objection : argument.getMissedPremiseObjections()){
+		    	 Hibernate.initialize(objection.getMissedPremises());
+		    	 for(Claim premise : objection.getMissedPremises()){
+		    		 //don't want to load all the sub-info, just leave blank
+		    		 premise.setArguments(new ArrayList<Argument>());
+		    		 premise.setKeywords(new ArrayList<String>());
+		    		 premise.setOppositeClaims(new ArrayList<Claim>());
+		    		 premise.setMediaResources(new ArrayList<MediaResource>());
+		    	 }
 		     }
 		}
 		

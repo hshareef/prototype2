@@ -27,6 +27,9 @@ public class Argument {
 	@ManyToMany(targetEntity=Claim.class)
 	private List<Claim> premises;
 	
+	@ElementCollection(targetClass=MissedPremiseObjection.class)
+	private List<MissedPremiseObjection> missedPremiseObjections;
+	
 	public List<ArgumentState> getStateHistory() {
 		return stateHistory;
 	}
@@ -177,10 +180,18 @@ public class Argument {
 	public void setFallacyDetails(FallacyDetails fallacyDetails) {
 		this.fallacyDetails = fallacyDetails;
 	}
-	
-	
-	
-	
+
+
+	public List<MissedPremiseObjection> getMissedPremiseObjections() {
+		return missedPremiseObjections;
+	}
+
+
+	public void setMissedPremiseObjections(
+			List<MissedPremiseObjection> missedPremiseObjections) {
+		this.missedPremiseObjections = missedPremiseObjections;
+	}
+
 
 //	public ArrayList<String> getKeywords() {
 //		return keywords;

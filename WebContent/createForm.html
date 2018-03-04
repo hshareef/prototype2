@@ -81,7 +81,7 @@
 				</div>
 			</div>
 			<div class="col-sm-6">
-				<div ng-if="claim.arguments.length > 0">
+				<div ng-if="claim.arguments.length > 0 && argumentViewingIndex !== undefined && argumentViewingIndex !== null && argumentViewingIndex > -1">
 					<div class="argSection panel panel-primary panel-center">
 						<div  class="panel-heading">
 	      					<h3 class = "panel-title">Argument {{argumentViewingIndex+1}} - {{claim.arguments[argumentViewingIndex].argName}}</h3>
@@ -106,6 +106,29 @@
 								</div>
 								<br>
 								Conclusion: {{claim.claimStatement}}	
+								<br>
+								<div class="row">
+									<div class="col-sm-6">
+										<div id="top-claims-window">
+											<div id="top-claims-header">
+												Objections - missed premises
+											</div>
+							  				<div id="scrollable-content">
+									  			<table class="table table-inverse">
+													<tr ng-repeat="missedPremiseObjection in claim.arguments[argumentViewingIndex].missedPremises track by $index">
+														<td class="claimRow" ng-click="">Missing Premise Objection # {{$index+1}} - {{missedPremiseObjection.name}}</td>
+													</tr>
+												</table>
+									 	   </div>
+											<div id="top-claims-footer">
+												Total Missed Premise Objections: {{claim.arguments[argumentViewingIndex].missedPremises.length}}
+												<button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="openDialog('theAddMissedPremiseGroupDialog')">
+													<span class="glyphicon glyphicon-plus "></span> Add Missed Premise Objection
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
 								<br>
 								<div class="row">
 									<div class="col-sm-6">
@@ -350,6 +373,40 @@
    					URL:<textarea ng-model="newMediaResource.url" rows="1" cols="75"></textarea>
    					<br>
    					<a ng-click="addNewMediaResource()">Add New Media Resource</a>
+   				</div>
+   			</div>
+   			
+   			<div id="theAddMissedPremiseGroupDialog" class="dialog">
+   				<div class="dialog-content">
+   					<span class="close" ng-click="closeDialog('theAddMissedPremiseGroupDialog', false)">&times;</span>
+		   			<div class="argSection panel panel-primary panel-center">
+						<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
+	      					<h3 class = "panel-title">Argument {{argumentViewingIndex}} - {{claim.arguments[argumentViewingIndex].argName}}</h3>
+	      					<span class="btn" ng-if="!claim.arguments[currentArgIndex].editable && claim.arguments[currentArgIndex].ownerId === user.userId" ng-click="setArgumentEditMode($index, true) ; $event.stopPropagation()">
+	          					<span class="glyphicon glyphicon-edit"></span> Edit
+	        				</span>
+			   				<a class="btn" ng-if="claim.arguments[currentArgIndex].editable" ng-click="setArgumentEditMode($index, false) ; saveStatement() ; $event.stopPropagation()" style="color: black">Save</a>
+			   				<a class="btn" ng-if="claim.arguments[currentArgIndex].editable" ng-click="setArgumentEditMode($index, false) ; getClaim(claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a>
+			   				<!-- CHANGE saveStatement() above to saveArgument(index) (and create that method) -->
+			   			</div>
+			   			<div class="container" id="{{$index}}">
+				   			<div class = "panel-body" >
+								{{argument.editable}}Argument name: {{claim.arguments[argumentViewingIndex].argName}}
+								<div ng-repeat="premise in claim.arguments[argumentViewingIndex].premises track by $index">
+									Premise {{$index+1}}:<br>
+									<textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
+								</div>
+								<a class="btn" ng-click="addToNewArgPremiseArray($index)">Add New Missed Premise</a><br>
+								<a class="btn" ng-click="openDialog('theAddPremiseDialog')">Add Missed Premise from Pre-existing Premises</a><br>
+								Conclusion: 
+								<p>{{claim.claimStatement}}</p>
+								<br>
+							</div>
+						</div>
+					</div>
+   					<div>{{editMode}}</div>
+   					<button ng-click="addAndSaveNewArgument()">Save</button>
+   					<button ng-click="closeDialog('theAddMissedPremiseGroupDialog', false)">Close</button>
    				</div>
    			</div>
 			</div><!-- tabs -->

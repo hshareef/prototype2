@@ -43,6 +43,7 @@
         <mapping class="com.prototype.model.MediaResource" />
         <mapping class="com.prototype.model.Person" />
         <mapping class="com.prototype.model.InstitutionMember" />
+        <mapping class="com.prototype.model.MissedPremiseObjection" />
         
 
     </session-factory>
