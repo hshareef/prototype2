@@ -3,32 +3,52 @@ package com.prototype.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 //@XmlRootElement(name="Argument")
 @Entity
+@Table(name="ARGUMENT")
 public class Argument {
 	
 	@Id
 	@GeneratedValue
-	@Column(name="argument_id")
+	@Column(name="ARGUMENT_ID")
 	private Integer argumentId;
 //	private Integer claimId;
-	@Column(name="arg_name")
+	@Column(name="ARG_NAME")
 	private String argName;
+	
+	 @ManyToOne
+	 private Claim claim;
+	 
+	 
 	//@ElementCollection(targetClass=ClaimRef.class)
 	@ManyToMany(targetEntity=Claim.class)
+	@JoinTable(name="ARGUMENT_PREMISE_JT")
 	private List<Claim> premises;
 	
-	@ElementCollection(targetClass=MissedPremiseObjection.class)
+	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name="ARGUMENT_ID")
 	private List<MissedPremiseObjection> missedPremiseObjections;
+	
+
+	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name="ARGUMENT_ID")
+	private List<ArgumentState> stateHistory;
 	
 	public List<ArgumentState> getStateHistory() {
 		return stateHistory;
@@ -40,8 +60,6 @@ public class Argument {
 	}
 
 
-	@ElementCollection(targetClass=ArgumentState.class)
-	private List<ArgumentState> stateHistory;
 	
 	@Column(name="owner_id")
 	private Integer ownerId;
@@ -190,6 +208,16 @@ public class Argument {
 	public void setMissedPremiseObjections(
 			List<MissedPremiseObjection> missedPremiseObjections) {
 		this.missedPremiseObjections = missedPremiseObjections;
+	}
+
+
+	public Claim getClaim() {
+		return claim;
+	}
+
+
+	public void setClaim(Claim claim) {
+		this.claim = claim;
 	}
 
 

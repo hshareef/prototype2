@@ -46,6 +46,14 @@ public class ClaimDao {
 				arg.setFallacyDetails(fd);
 			}
 			session.saveOrUpdate(arg.getFallacyDetails());
+			
+			for(MissedPremiseObjection mpo : arg.getMissedPremiseObjections()){
+				for(Claim premise : mpo.getMissedPremises()){
+					session.saveOrUpdate(premise);
+				}
+				session.saveOrUpdate(mpo);
+			}
+			
 			session.saveOrUpdate(arg);
 		}
 		if(claim.getOppositeClaims() != null){

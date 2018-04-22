@@ -115,13 +115,13 @@
 											</div>
 							  				<div id="scrollable-content">
 									  			<table class="table table-inverse">
-													<tr ng-repeat="missedPremiseObjection in claim.arguments[argumentViewingIndex].missedPremises track by $index">
-														<td class="claimRow" ng-click="">Missing Premise Objection # {{$index+1}} - {{missedPremiseObjection.name}}</td>
+													<tr ng-repeat="missedPremiseObjection in claim.arguments[argumentViewingIndex].missedPremiseObjections track by $index">
+														<td class="claimRow" ng-click="openDialog('theAddMissedPremiseGroupDialog', null, 'viewMpo', $index)">Missing Premise Objection # {{$index+1}} - {{missedPremiseObjection.name}}</td>
 													</tr>
 												</table>
 									 	   </div>
 											<div id="top-claims-footer">
-												Total Missed Premise Objections: {{claim.arguments[argumentViewingIndex].missedPremises.length}}
+												Total Missed Premise Objections: {{claim.arguments[argumentViewingIndex].missedPremiseObjections.length}}
 												<button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="openDialog('theAddMissedPremiseGroupDialog')">
 													<span class="glyphicon glyphicon-plus "></span> Add Missed Premise Objection
 												</button>
@@ -381,7 +381,7 @@
    					<span class="close" ng-click="closeDialog('theAddMissedPremiseGroupDialog', false)">&times;</span>
 		   			<div class="argSection panel panel-primary panel-center">
 						<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
-	      					<h3 class = "panel-title">Argument {{argumentViewingIndex}} - {{claim.arguments[argumentViewingIndex].argName}}</h3>
+	      					<h3 class = "panel-title">Missed Premise Objection Name: {{newMpo.name}}</h3>
 	      					<span class="btn" ng-if="!claim.arguments[currentArgIndex].editable && claim.arguments[currentArgIndex].ownerId === user.userId" ng-click="setArgumentEditMode($index, true) ; $event.stopPropagation()">
 	          					<span class="glyphicon glyphicon-edit"></span> Edit
 	        				</span>
@@ -394,10 +394,23 @@
 								{{argument.editable}}Argument name: {{claim.arguments[argumentViewingIndex].argName}}
 								<div ng-repeat="premise in claim.arguments[argumentViewingIndex].premises track by $index">
 									Premise {{$index+1}}:<br>
+									{{premise.claimStatement}}
+									<br>
+									<!-- <textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br> -->
+								</div>
+								<span ng-if="mpoEditable">Missed Premise Objection Name: <textarea ng-disabled="false" rows="1" cols="50" ng-model="newMpo.name"></textarea><br></span>
+								<span ng-if="!mpoEditable">Missed Premise Objection Name: <textarea ng-disabled="true" rows="1" cols="50" ng-model="claim.arguments[argumentViewingIndex].missedPremiseObjections[mpoViewingIndex].name"></textarea><br></span>
+								<div ng-if="mpoEditable" ng-repeat="premise in newMpo.missedPremises track by $index">
+									Missed Premise {{$index+1}}:<br>
 									<textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
 								</div>
-								<a class="btn" ng-click="addToNewArgPremiseArray($index)">Add New Missed Premise</a><br>
-								<a class="btn" ng-click="openDialog('theAddPremiseDialog')">Add Missed Premise from Pre-existing Premises</a><br>
+								<div ng-if="!mpoEditable" ng-repeat="premise in claim.arguments[argumentViewingIndex].missedPremiseObjections[mpoViewingIndex].missedPremises track by $index">
+									Missed Premise {{$index+1}}:<br>
+									<!-- <textarea  ng-disabled="true" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br> -->
+									<a ng-class="btn" style="color:black; font-size:12px" ng-click="openClaim(premise.claimId)">{{premise.claimStatement}}</a><br>
+								</div>
+								<a class="btn" ng-click="addToArgMissedPremiseArray($index)" ng-if="mpoEditable">Add New Missed Premise</a><br>
+								<a class="btn" ng-click="openDialog('theAddPremiseDialog')" ng-if="mpoEditable">Add Missed Premise from Pre-existing Premises</a><br>
 								Conclusion: 
 								<p>{{claim.claimStatement}}</p>
 								<br>
@@ -405,7 +418,7 @@
 						</div>
 					</div>
    					<div>{{editMode}}</div>
-   					<button ng-click="addAndSaveNewArgument()">Save</button>
+   					<button ng-click="addAndSaveNewMpo()">Save</button>
    					<button ng-click="closeDialog('theAddMissedPremiseGroupDialog', false)">Close</button>
    				</div>
    			</div>

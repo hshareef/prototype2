@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,13 +29,16 @@ public class Claim {
 	private Integer claimId;
 	@Column(name="claim_statement")
 	private String claimStatement;
-	@ElementCollection(targetClass=Argument.class)
+	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name="claim_id")
 	private List<Argument> arguments;
 	
 	@ManyToMany(targetEntity=Claim.class)
+	@JoinTable(name="CLAIM_OPPO_CLAIM_JT")
 	private List<Claim> oppositeClaims;
 	
 	@ManyToMany(targetEntity=MediaResource.class)
+	@JoinTable(name="CLAIM_MEDIA_RESOURCE_JT")
 	private List<MediaResource> mediaResources;
 	
 	@ElementCollection

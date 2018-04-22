@@ -38,6 +38,9 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	$scope.argumentViewingIndex = 0;
 	$scope.score = 85;
 	$scope.newArg = null;
+	$scope.newMpo = null; //MPO stands for Missing Premise Objection
+	$scope.mpoEditable = false;
+	$scope.mpoViewingIndex;
 	
  
     //for saving a claim
@@ -79,6 +82,11 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     $scope.addAndSaveNewArgument = function(){
     	$scope.claim.arguments.push($scope.newArg);
     	$scope.currentArgIndex = $scope.claim.arguments.length;
+    	$scope.saveStatement();
+    };
+    
+    $scope.addAndSaveNewMpo = function(){
+    	$scope.claim.arguments[$scope.argumentViewingIndex].missedPremiseObjections.push($scope.newMpo);
     	$scope.saveStatement();
     };
     
@@ -174,6 +182,13 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     	var premise = new Object();
     	premise.claimStatement = "";
     	$scope.newArg.premises.push(premise);
+    };
+    
+    $scope.addToArgMissedPremiseArray = function(){
+    	var missedPremise = new Object();
+    	missedPremise.claimStatement = "";
+    	$scope.newMpo.missedPremises.push(missedPremise);
+    	//$scope.claim.arguments[$scope.currentArgIndex].missedPremiseObjections.push(missedPremise);
     };
     
     $scope.getCurrentStatusId = function(argument){
@@ -324,7 +339,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 //		 }
 //	 };
 	 
-	 $scope.openDialog = function(dialogId, editArgIndex){
+	 $scope.openDialog = function(dialogId, editArgIndex, dialogMode, index){
 		 var theDialogBox = document.getElementById(dialogId);
 		 theDialogBox.style.display = "block";
 		 
@@ -346,7 +361,14 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 				 };
 		 }
 		 else if(dialogId == "theAddMissedPremiseGroupDialog"){
-			 
+			 if(dialogMode == null || dialogMode == "addNewMpo"){
+				 $scope.mpoEditable = true;
+			 	 $scope.initializeBlankMpo();
+		 	 }
+			 else if (dialogMode == "viewMpo") {
+				 $scope.mpoEditable = false;
+				 $scope.mpoViewingIndex = index;
+			 }
 		 }
 		 
 
@@ -363,6 +385,15 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 			 window.location.href = window.history.back(1);
 		 }
 	 };
+	 
+	 $scope.initializeBlankMpo = function(){
+		 $scope.newMpo = {
+				 name: "",
+				 missedPremises: []
+		 };
+		 //$scope.claim.missedPremiseObjections.push(newMpo);
+	 };
+	 
 	 
 	 $scope.searchOppositeClaims = function(){
 		 alert($scope.searchString);

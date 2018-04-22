@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -24,6 +25,9 @@ public class ArgumentState {
 	private Integer argumentStatusId;
 	@Column(name="current_flag")
 	private Boolean currentFlag;
+	
+	@ManyToOne
+	private Argument argument;
 	
 	public Integer getArgumentStateId() {
 		return argumentStateId;
@@ -55,6 +59,12 @@ public class ArgumentState {
 	}
 	public void setCurrentFlag(Boolean currentFlag) {
 		this.currentFlag = currentFlag;
+	}
+	public Argument getArgument() {
+		return argument;
+	}
+	public void setArgument(Argument argument) {
+		this.argument = argument;
 	}
 	
 	

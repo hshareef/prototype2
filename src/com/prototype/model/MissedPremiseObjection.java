@@ -6,23 +6,29 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="missed_premise_objection")
+@Table(name="MPO")
 public class MissedPremiseObjection {
 	
 	@Id
 	@GeneratedValue
-	@Column(name="missed_premise_objection_id")
+	@Column(name="MPO_ID")
 	private Integer missedPremiseObjectionId;
 	
-	@Column(name="name")
+	@Column(name="NAME")
 	private String name;
 	
 	@ManyToMany(targetEntity=Claim.class)
+	@JoinTable(name="MPO_PREMISE_JT")
 	private List<Claim> missedPremises;
+	
+	 @ManyToOne
+	 private Argument argument;
 	
 	//need to add a state history and a work flow
 	
@@ -44,6 +50,12 @@ public class MissedPremiseObjection {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public Argument getArgument() {
+		return argument;
+	}
+	public void setArgument(Argument argument) {
+		this.argument = argument;
 	}
 
 	
