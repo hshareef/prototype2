@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div id="theAddPremiseDialog" class="dialog">
+		<div class="dialog-content">
+			<span class="close" ng-click="$parent.closeDialog('theAddPremiseDialog', false)">&times;</span>
+			<p>Claim Statement: {{claim.claimStatement}}</p>
+			Search for premises:
+			<input ng-model="$parent.searchString" type="text" class="search-text" />
+			 <button ng-click="$parent.searchPremises()" class="btn btn-default">Search</button>
+			 <br>
+			 <span ng-repeat="searchedPremises in $parent.premiseSearchResults track by $index">
+			 	{{$index}} - {{searchedPremises.claimStatement}}
+			 	<a ng-click="$parent.addPremiseToClaim($index)">Select Premise</a>
+			 	<br>
+			</span>
+		</div>
+	</div>
+</body>
+</html>

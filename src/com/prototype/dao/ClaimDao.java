@@ -33,8 +33,11 @@ public class ClaimDao {
 					//premiseClaim.setClaimStatement(premise.getClaimStatement());
 					//session.save(premiseClaim);
 					//premise.setClaimId(premiseClaim.getClaimId());
+					session.saveOrUpdate(premise);
 				}
-				session.saveOrUpdate(premise);
+				else {
+					bindPremise(arg.getArgumentId(), null, premise.getClaimId(), session);
+				}
 			}
 			if(arg.getStateHistory() != null){
 				for(ArgumentState state : arg.getStateHistory()){
@@ -47,11 +50,18 @@ public class ClaimDao {
 			}
 			session.saveOrUpdate(arg.getFallacyDetails());
 			
-			for(MissedPremiseObjection mpo : arg.getMissedPremiseObjections()){
-				for(Claim premise : mpo.getMissedPremises()){
-					session.saveOrUpdate(premise);
+			if(arg.getMissedPremiseObjections() != null && arg.getMissedPremiseObjections().size() > 0){
+				for(MissedPremiseObjection mpo : arg.getMissedPremiseObjections()){
+					for(Claim premise : mpo.getMissedPremises()){
+						if(premise.getClaimId() == null){
+							session.saveOrUpdate(premise);
+						}
+						else {
+							bindPremise(null, mpo.getMissedPremiseObjectionId(), premise.getClaimId(), session);
+						}
+					}
+					session.saveOrUpdate(mpo);
 				}
-				session.saveOrUpdate(mpo);
 			}
 			
 			session.saveOrUpdate(arg);
@@ -67,6 +77,45 @@ public class ClaimDao {
 		sessionFactory.close();
 		System.out.println("saved the following claim: " + claim.getClaimStatement());
 		return claim;
+	}
+	
+	public void bindPremise(Integer argId, Integer mpoId, Integer premiseId, Session session){
+		if (argId != null && mpoId != null){
+			System.out.println("Premise must be mapped to only arg or mpo, not both");
+			try {
+				throw new Exception();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if (argId == null && mpoId == null){
+			System.out.println("Premise must be mapped to an arg or mpo");
+			try {
+				throw new Exception();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		String sql = "";
+		
+		if(argId != null){
+			sql = "insert into ARGUMENT_PREMISE_JT (ARGUMENT_ARGUMENT_ID, PREMISES_CLAIM_ID) values (:argId, :premiseId)";
+			Query query = session.createSQLQuery(sql);
+			query.setParameter("argId", argId);
+			query.setParameter("premiseId", premiseId);
+			query.executeUpdate();
+		}
+		
+		if(mpoId != null){
+			sql = "insert into MPO_PREMISE_JT (MPO_MPO_ID, MISSEDPREMISES_CLAIM_ID) values (:mpoId, :premiseId)";
+			Query query = session.createSQLQuery(sql);
+			query.setParameter("mpoId", mpoId);
+			query.setParameter("premiseId", premiseId);
+			query.executeUpdate();
+		}
+		
 	}
 	
 	public List<Claim> getTopClaims(){

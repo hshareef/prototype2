@@ -419,7 +419,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		
 	 };
 	 
-	 $scope.addPremiseToClaim = function(index){
+	 $scope.addPremiseToEditableClaim = function(index){
 //		alert("this claim id: " + claimId); 
 //		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/" + claimId)
 //		 .then(function(response){
