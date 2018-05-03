@@ -5,9 +5,9 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<div id="theAddPremiseDialog" class="dialog">
+	<div id="theAddMissedPremiseDialog" class="dialog">
 		<div class="dialog-content">
-			<span class="close" ng-click="vm.closeDialog('theAddPremiseDialog', false)">&times;</span>
+			<span class="close" ng-click="vm.closeDialog('theAddMissedPremiseDialog', false)">&times;</span>
 			<p>Claim Statement: {{vm.claim.claimStatement}}</p>
 			Search for premises:
 			<input ng-model="vm.searchString" type="text" class="search-text" />
@@ -15,7 +15,7 @@
 			 <br>
 			 <span ng-repeat="searchedPremises in vm.premiseSearchResults track by $index">
 			 	{{$index}} - {{searchedPremises.claimStatement}}
-			 	<a ng-click="vm.addPremiseToClaim($index)">Select Premise</a>
+			 	<a ng-click="vm.addMissedPremiseToMpo($index)">Select Premise</a>
 			 	<br>
 			</span>
 		</div>

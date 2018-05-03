@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div id="theOppoClaimDialog" class="dialog">
+		<div class="dialog-content">
+			<span class="close" ng-click="vm.closeDialog('theOppoClaimDialog', false)">&times;</span>
+			<p>Claim Statement: {{vm.claim.claimStatement}}</p>
+			Search for claims to mark as opposite:
+			<input ng-model="vm.searchString" type="text" class="search-text" />
+			<button ng-click="vm.searchOppositeClaims()" class="btn btn-default">Search</button>
+			<br>
+			<span ng-repeat="oppositeClaim in vm.oppositeClaimSearchResults">
+				{{oppositeClaim.claimStatement}}
+				<a ng-click="vm.setOppositeClaim(vm.claim.claimId, oppositeClaim.claimId)">Set as opposite claim</a>
+				<br>
+			</span>
+		</div>
+	</div>
+</body>
+</html>

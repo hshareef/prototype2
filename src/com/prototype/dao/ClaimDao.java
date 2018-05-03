@@ -12,6 +12,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.criterion.Restrictions;
 
+import com.prototype.common.CommonConstants;
+import com.prototype.common.CommonConstants.PremiseBindingTypes;
 import com.prototype.model.Argument;
 import com.prototype.model.ArgumentState;
 import com.prototype.model.Claim;
@@ -36,7 +38,7 @@ public class ClaimDao {
 					session.saveOrUpdate(premise);
 				}
 				else {
-					bindPremise(arg.getArgumentId(), null, premise.getClaimId(), session);
+					bindPremise(arg.getArgumentId(), premise.getClaimId(), session, CommonConstants.PremiseBindingTypes.ARG);
 				}
 			}
 			if(arg.getStateHistory() != null){
@@ -52,15 +54,16 @@ public class ClaimDao {
 			
 			if(arg.getMissedPremiseObjections() != null && arg.getMissedPremiseObjections().size() > 0){
 				for(MissedPremiseObjection mpo : arg.getMissedPremiseObjections()){
+					session.saveOrUpdate(mpo);
 					for(Claim premise : mpo.getMissedPremises()){
 						if(premise.getClaimId() == null){
 							session.saveOrUpdate(premise);
 						}
 						else {
-							bindPremise(null, mpo.getMissedPremiseObjectionId(), premise.getClaimId(), session);
+							bindPremise(mpo.getMissedPremiseObjectionId(), premise.getClaimId(), session, CommonConstants.PremiseBindingTypes.MPO);
 						}
 					}
-					session.saveOrUpdate(mpo);
+					
 				}
 			}
 			
@@ -68,7 +71,8 @@ public class ClaimDao {
 		}
 		if(claim.getOppositeClaims() != null){
 			for(Claim oppositeClaims : claim.getOppositeClaims()){
-				session.saveOrUpdate(oppositeClaims);
+				//session.saveOrUpdate(oppositeClaims);
+				bindPremise(claim.getClaimId(), oppositeClaims.getClaimId(), session, CommonConstants.PremiseBindingTypes.OPPO);
 			}
 		}
 		session.saveOrUpdate(claim);
@@ -79,42 +83,66 @@ public class ClaimDao {
 		return claim;
 	}
 	
-	public void bindPremise(Integer argId, Integer mpoId, Integer premiseId, Session session){
-		if (argId != null && mpoId != null){
-			System.out.println("Premise must be mapped to only arg or mpo, not both");
-			try {
-				throw new Exception();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
-		if (argId == null && mpoId == null){
-			System.out.println("Premise must be mapped to an arg or mpo");
-			try {
-				throw new Exception();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+//	public void bindPremise(Integer argId, Integer mpoId, Integer premiseId, Session session){
+//		if (argId != null && mpoId != null){
+//			System.out.println("Premise must be mapped to only arg or mpo, not both");
+//			try {
+//				throw new Exception();
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		
+//		if (argId == null && mpoId == null){
+//			System.out.println("Premise must be mapped to an arg or mpo");
+//			try {
+//				throw new Exception();
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		
+//		String sql = "";
+//		
+//		if(argId != null){
+//			sql = "insert into ARGUMENT_PREMISE_JT (ARGUMENT_ARGUMENT_ID, PREMISES_CLAIM_ID) values (:argId, :premiseId)";
+//			Query query = session.createSQLQuery(sql);
+//			query.setParameter("argId", argId);
+//			query.setParameter("premiseId", premiseId);
+//			query.executeUpdate();
+//		}
+//		
+//		if(mpoId != null){
+//			sql = "insert into MPO_PREMISE_JT (MPO_MPO_ID, MISSEDPREMISES_CLAIM_ID) values (:mpoId, :premiseId)";
+//			Query query = session.createSQLQuery(sql);
+//			query.setParameter("mpoId", mpoId);
+//			query.setParameter("premiseId", premiseId);
+//			query.executeUpdate();
+//		}
+//		
+//	}
+	
+	public void bindPremise(Integer parentId, Integer premiseId, Session session, PremiseBindingTypes premiseBindingType){
+		//NEED TO FIX THIS SO IT DOESN'T ADD DUPLICATE ROWS!!!!!
 		
 		String sql = "";
 		
-		if(argId != null){
-			sql = "insert into ARGUMENT_PREMISE_JT (ARGUMENT_ARGUMENT_ID, PREMISES_CLAIM_ID) values (:argId, :premiseId)";
-			Query query = session.createSQLQuery(sql);
-			query.setParameter("argId", argId);
-			query.setParameter("premiseId", premiseId);
-			query.executeUpdate();
+		if(premiseBindingType.code.equals(CommonConstants.PremiseBindingTypes.ARG.code)){
+			sql = "insert into ARGUMENT_PREMISE_JT (ARGUMENT_ARGUMENT_ID, PREMISES_CLAIM_ID) values (:parentId, :premiseId)";
+			
 		}
 		
-		if(mpoId != null){
-			sql = "insert into MPO_PREMISE_JT (MPO_MPO_ID, MISSEDPREMISES_CLAIM_ID) values (:mpoId, :premiseId)";
-			Query query = session.createSQLQuery(sql);
-			query.setParameter("mpoId", mpoId);
-			query.setParameter("premiseId", premiseId);
-			query.executeUpdate();
+		else if(premiseBindingType.code.equals(CommonConstants.PremiseBindingTypes.MPO.code)){
+			sql = "insert into MPO_PREMISE_JT (MPO_MPO_ID, MISSEDPREMISES_CLAIM_ID) values (:parentId, :premiseId)";
 		}
+		else if(premiseBindingType.code.equals(CommonConstants.PremiseBindingTypes.OPPO.code)){
+			sql = "insert into CLAIM_OPPO_CLAIM_JT (CLAIM_CLAIM_ID, OPPOSITECLAIMS_CLAIM_ID) values (:parentId, :premiseId)";
+		}
+		
+		Query query = session.createSQLQuery(sql);
+		query.setParameter("parentId", parentId);
+		query.setParameter("premiseId", premiseId);
+		query.executeUpdate();
 		
 	}
 	

@@ -26,13 +26,13 @@
 <body>
 	<div w3-include-html="headerNav.html"></div> 
 	<div w3-include-html="test.html"></div>
-	<div ng-app="ClaimModule" ng-controller="ClaimCtrl">
+	<div ng-app="ClaimModule" ng-controller="ClaimCtrl as vm">
 		<div class="row">
-			<h1>  Claim Statement: {{claim.claimStatement}}</h1>
-			<span ng-if="claim.arguments.length === 0 && !claim.usedAsPremise" class="btn delete-icon" ng-click="deleteClaim()">
+			<h1>  Claim Statement: {{vm.claim.claimStatement}}</h1>
+			<span ng-if="vm.claim.arguments.length === 0 && !vm.claim.usedAsPremise" class="btn delete-icon" ng-click="vm.deleteClaim()">
 	          	<span class="glyphicon glyphicon-trash"></span> Delete 
 	       	</span>
-			<p>Owner: {{claim.originalOwnerUsername}}</p>
+			<p>Owner: {{vm.claim.originalOwnerUsername}}</p>
 			<ul class="nav nav-pills">
 				<li class="active"><a data-toggle="pill" href="#arguments">Arguments</a></li>
 				<li><a data-toggle="pill" href="#mediaResources">Media Resources</a></li>
@@ -47,15 +47,15 @@
 					</div>
 	  				<div id="scrollable-content">
 			  			<table class="table table-inverse">
-							<tr ng-repeat="argument in claim.arguments track by $index">
-								<td class="claimRow" ng-click="changeArgViewing($index)"
-								ng-if="getCurrentStatusId(argument) === 2">Argument {{$index+1}} - {{argument.argName}}</td>
+							<tr ng-repeat="argument in vm.claim.arguments track by $index">
+								<td class="claimRow" ng-click="vm.changeArgViewing($index)"
+								ng-if="vm.getCurrentStatusId(argument) === 2">Argument {{$index+1}} - {{argument.argName}}</td>
 							</tr>
 						</table>
 			 	   </div>
 					<div id="top-claims-footer">
-						Total arguments: {{claim.arguments.length}}
-						<button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="openDialog('theCreateNewArgumentDialog')">
+						Total arguments: {{vm.claim.arguments.length}}
+						<button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="vm.openDialog('theCreateNewArgumentDialog')">
 							<span class="glyphicon glyphicon-plus "></span> Add Argument
 						</button>
 					</div>
@@ -66,32 +66,32 @@
 					</div>
 	  				<div id="scrollable-content">
 			  			<table class="table table-inverse">
-							<tr ng-repeat="argument in claim.arguments track by $index">
-								<td class="claimRow" ng-click="changeArgViewing($index)" 
-								ng-if="argument.ownerId === user.userId && getCurrentStatusId(argument) === 1">{{argument.argName}}</td>
+							<tr ng-repeat="argument in vm.claim.arguments track by $index">
+								<td class="claimRow" ng-click="vm.changeArgViewing($index)" 
+								ng-if="argument.ownerId === vm.user.userId && vm.getCurrentStatusId(argument) === 1">{{argument.argName}}</td>
 							</tr>
 						</table>
 			 	   </div>
 					<div id="top-claims-footer">
-						Total arguments: {{claim.arguments.length}}
-						<button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="openDialog('theCreateNewArgumentDialog')">
+						Total arguments: {{vm.claim.arguments.length}}
+						<button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="vm.openDialog('theCreateNewArgumentDialog')">
 							<span class="glyphicon glyphicon-plus "></span> Add Argument
 						</button>
 					</div>
 				</div>
 			</div>
 			<div class="col-sm-6">
-				<div ng-if="claim.arguments.length > 0 && argumentViewingIndex !== undefined && argumentViewingIndex !== null && argumentViewingIndex > -1">
+				<div ng-if="vm.claim.arguments.length > 0 && vm.argumentViewingIndex !== undefined && vm.argumentViewingIndex !== null && vm.argumentViewingIndex > -1">
 					<div class="argSection panel panel-primary panel-center">
 						<div  class="panel-heading">
-	      					<h3 class = "panel-title">Argument {{argumentViewingIndex+1}} - {{claim.arguments[argumentViewingIndex].argName}}</h3>
-	      					<span class="btn" ng-if="claim.arguments[argumentViewingIndex].ownerId === user.userId && getCurrentStatusId(claim.arguments[argumentViewingIndex]) === 1" ng-click="publishArg(argumentViewingIndex, 2) ; $event.stopPropagation()">
+	      					<h3 class = "panel-title">Argument {{vm.argumentViewingIndex+1}} - {{vm.claim.arguments[vm.argumentViewingIndex].argName}}</h3>
+	      					<span class="btn" ng-if="vm.claim.arguments[vm.argumentViewingIndex].ownerId === vm.user.userId && vm.getCurrentStatusId(vm.claim.arguments[vm.argumentViewingIndex]) === 1" ng-click="vm.publishArg(vm.argumentViewingIndex, 2) ; $event.stopPropagation()">
 	      						<span class="glyphicon glyphicon-plus"></span> Publish
 	      					</span>
-	      					<span class="btn" ng-if="claim.arguments[argumentViewingIndex].ownerId === user.userId" ng-click="openDialog('theEditArgumentDialog', argumentViewingIndex) ; $event.stopPropagation()">
+	      					<span class="btn" ng-if="vm.claim.arguments[vm.argumentViewingIndex].ownerId === vm.user.userId" ng-click="vm.openDialog('theEditArgumentDialog', vm.argumentViewingIndex) ; $event.stopPropagation()">
 	          					<span class="glyphicon glyphicon-edit"></span> Edit
 	        				</span>
-	        				<span ng-if="claim.arguments[argumentViewingIndex].ownerId === user.userId" class="btn delete-icon" ng-click="deleteArgument(argumentViewingIndex) ; event.stopPropagation()">
+	        				<span ng-if="vm.claim.arguments[vm.argumentViewingIndex].ownerId === vm.user.userId" class="btn delete-icon" ng-click="vm.deleteArgument(vm.argumentViewingIndex) ; event.stopPropagation()">
 	          					<span class="glyphicon glyphicon-trash"></span> Delete 
 	       					 </span>
 			   				<!-- CHANGE saveStatement() above to saveArgument(index) (and create that method) -->
@@ -99,13 +99,13 @@
 			   			<div class="container" id="{{$index}}">
 				   			<div class = "panel-body" >
 							<!-- <textarea ng-if="argument.editable" rows="1" cols="50"  type=text ng-model="argument.argName"></textarea> -->
-								<div ng-repeat="premise in claim.arguments[argumentViewingIndex].premises track by $index">
+								<div ng-repeat="premise in vm.claim.arguments[vm.argumentViewingIndex].premises track by $index">
 									Premise {{$index+1}}:
-									<a ng-class="btn" style="color:black; font-size:12px" ng-click="openClaim(premise.claimId)">{{premise.claimStatement}}</a>
+									<a ng-class="btn" style="color:black; font-size:12px" ng-click="vm.openClaim(premise.claimId)">{{premise.claimStatement}}</a>
 									<br>
 								</div>
 								<br>
-								Conclusion: {{claim.claimStatement}}	
+								Conclusion: {{vm.claim.claimStatement}}	
 								<br>
 								<div class="row">
 									<div class="col-sm-6">
@@ -115,14 +115,14 @@
 											</div>
 							  				<div id="scrollable-content">
 									  			<table class="table table-inverse">
-													<tr ng-repeat="missedPremiseObjection in claim.arguments[argumentViewingIndex].missedPremiseObjections track by $index">
-														<td class="claimRow" ng-click="openDialog('theAddMissedPremiseGroupDialog', null, 'viewMpo', $index)">Missing Premise Objection # {{$index+1}} - {{missedPremiseObjection.name}}</td>
+													<tr ng-repeat="missedPremiseObjection in vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections track by $index">
+														<td class="claimRow" ng-click="vm.openDialog('theAddMpoDialog', null, 'viewMpo', $index)">Missing Premise Objection # {{$index+1}} - {{missedPremiseObjection.name}}</td>
 													</tr>
 												</table>
 									 	   </div>
 											<div id="top-claims-footer">
-												Total Missed Premise Objections: {{claim.arguments[argumentViewingIndex].missedPremiseObjections.length}}
-												<button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="openDialog('theAddMissedPremiseGroupDialog')">
+												Total Missed Premise Objections: {{vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections.length}}
+												<button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="vm.openDialog('theAddMpoDialog')">
 													<span class="glyphicon glyphicon-plus "></span> Add Missed Premise Objection
 												</button>
 											</div>
@@ -130,7 +130,7 @@
 									</div>
 								</div>
 								<br>
-								<div class="row">
+<!-- 								<div class="row">
 									<div class="col-sm-6">
 										<div class="argSection panel panel-primary panel-center">
 											<div class="panel-heading">Argument Details</div>
@@ -176,7 +176,7 @@
 											</div>
 										</div>
 									</div>
-								</div>
+								</div> -->
 							</div>
 						</div>
 					</div>
@@ -184,10 +184,10 @@
 				<div class = "panel panel-primary panel-center">
 			   		<div class = "panel-body">
 						Claim Statement:
-						<p ng-if="!editMode">{{claim.claimStatement}}</p>
+						<p ng-if="!vm.editMode">{{claim.claimStatement}}</p>
 						<br>
-						<textarea ng-if="editMode" rows="2" cols="75" type="text" ng-model="claim.claimStatement"></textarea>
-						<p ng-if="!editMode">Owner: {{claim.originalOwnerUsername}}</p>
+						<textarea ng-if="vm.editMode" rows="2" cols="75" type="text" ng-model="vm.claim.claimStatement"></textarea>
+						<p ng-if="!vm.editMode">Owner: {{vm.claim.originalOwnerUsername}}</p>
 						<div>
 							<div class = "oppoSection panel panel-primary panel-center">
 		  						<div class="panel-heading">
@@ -196,176 +196,47 @@
 		  						</div>
 			 					 <div class="container">
 					   				<div class = "panel-body">
-					   					<p ng-if="claim.oppositeClaims.length == 0">No opposite claims. </p>
-					   					<button ng-click="openDialog('theOppoClaimDialog')">Link Opposite Claim</button>
-					   					<span ng-repeat="oppo in claim.oppositeClaims track by $index">
+					   					<p ng-if="vm.claim.oppositeClaims.length == 0">No opposite claims. </p>
+					   					<button ng-click="vm.openDialog('theOppoClaimDialog')">Link Opposite Claim</button>
+					   					<span ng-repeat="oppo in vm.claim.oppositeClaims track by $index">
 					   						<br>
-					   						<a ng-click="openClaim(claim.oppositeClaims[$index].claimId)" >{{claim.oppositeClaims[$index].claimStatement}}</a>
+					   						<a ng-click="vm.openClaim(vm.claim.oppositeClaims[$index].claimId)" >{{vm.claim.oppositeClaims[$index].claimStatement}}</a>
 					   					</span>
 					   				</div>
 			   					</div>
 			   				</div>
 						</div>
 						<div>
-							<span ng-repeat="keyword in claim.keywords track by $index">
-								<button type="button" class="btn keywordText" ng-if="!editMode">{{keyword}}&nbsp<span ng-click="deleteKeyword($index)" class="badge deleteKeywordBadge">X</span></button>
-								<textarea ng-if="editMode" rows="1" cols="20" type="text" ng-model="claim.keywords[$index]"></textarea>
+							<span ng-repeat="keyword in vm.claim.keywords track by $index">
+								<button type="button" class="btn keywordText" ng-if="!vm.editMode">{{keyword}}&nbsp<span ng-click="vm.deleteKeyword($index)" class="badge deleteKeywordBadge">X</span></button>
+								<textarea ng-if="vm.editMode" rows="1" cols="20" type="text" ng-model="vm.claim.keywords[$index]"></textarea>
 							</span>
-						</div>{{claim.keywords.length}}
-						<a ng-if="editMode" class="btn" ng-click="addKeyword()">Add Keyword</a>
-						<a class="btn" ng-click="openDialog('theEditArgumentDialog')">Add Argument</a>
+						</div>{{vm.claim.keywords.length}}
+						<a ng-if="vm.editMode" class="btn" ng-click="vm.addKeyword()">Add Keyword</a>
+						<a class="btn" ng-click="vm.openDialog('theEditArgumentDialog')">Add Argument</a>
 						<br>
-						<a ng-if="editMode" class="btn" ng-click="saveStatement()">Save</a>
+						<a ng-if="vm.editMode" class="btn" ng-click="vm.saveStatement()">Save</a>
 						<br>
 						<!--  Eventually the below div section needs to go in a separate html file -->
-						<div id="theCreateClaimDialog" class="dialog">
-							<div class="dialog-content">
-			   					<span class="close" ng-click="closeDialog('theCreateClaimDialog',true)">&times;</span>
-			   					<br>
-			   					<textarea rows="2" cols="75" type="text" ng-model="claim.claimStatement"></textarea>
-			   					<br>
-			   					<button ng-click="saveStatement()">Save</button>
-			   					<button ng-click="closeDialog('theCreateClaimDialog', true)">Close</button>
-			   				</div>
-						</div>
+						<div ng-include="'claim/dialogs/createClaimDialog.html'"></div>
+						
+
 						<!--  Eventually the below div section needs to go in a separate html file -->
-						<div id="theEditArgumentDialog" class="dialog">
-							<div class="dialog-content">
-			   					<span class="close" ng-click="closeDialog('theEditArgumentDialog', false)">&times;</span>
-					   			<div class="argSection panel panel-primary panel-center">
-									<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
-				      					<h3 class = "panel-title">Argument {{$index+1}} - {{claim.arguments[currentArgIndex].argName}}</h3>
-				      					<span class="btn" ng-if="!claim.arguments[currentArgIndex].editable && claim.arguments[currentArgIndex].ownerId === user.userId" ng-click="setArgumentEditMode($index, true) ; $event.stopPropagation()">
-				          					<span class="glyphicon glyphicon-edit"></span> Edit
-				        				</span>
-						   				<a class="btn" ng-if="claim.arguments[currentArgIndex].editable" ng-click="setArgumentEditMode($index, false) ; saveStatement() ; $event.stopPropagation()" style="color: black">Save</a>
-						   				<a class="btn" ng-if="claim.arguments[currentArgIndex].editable" ng-click="setArgumentEditMode($index, false) ; getClaim(claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a>
-						   				<!-- CHANGE saveStatement() above to saveArgument(index) (and create that method) -->
-						   			</div>
-						   			<div class="container" id="{{$index}}">
-							   			<div class = "panel-body" >
-											{{argument.editable}}Argument name:
-											<textarea rows="1" cols="50"  type=text ng-model="claim.arguments[currentArgIndex].argName"></textarea><br>
-											<div ng-repeat="premise in claim.arguments[currentArgIndex].premises track by $index">
-												Premise {{$index+1}}:<br>
-												<textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
-											</div>
-											<a class="btn" ng-click="addToCurrentArgPremiseArray($index)">Add New Premise</a><br>
-											<a class="btn" ng-click="openDialog('theAddPremiseDialog')">Add Pre-existing Premise</a><br>
-											Conclusion: 
-											<p>{{claim.claimStatement}}</p>
-											<br>
-										</div>
-									</div>
-								</div>
-			   					<div>{{editMode}}</div>
-			   					<button ng-click="saveStatement()">Save</button>
-			   					<button ng-click="closeDialog('theEditArgumentDialog', false)">Close</button>
-			   				</div>
-						</div>
+						<div ng-include="'claim/dialogs/editArgumentDialog.html'"></div>
 						
 						<!--  Eventually the below div section needs to go in a separate html file -->
-						<div id="theCreateNewArgumentDialog" class="dialog">
-							<div class="dialog-content">
-			   					<span class="close" ng-click="closeDialog('theCreateNewArgumentDialog', false)">&times;</span>
-					   			<div class="argSection panel panel-primary panel-center">
-									<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
-				      					<h3 class = "panel-title">Argument {{$index+1}} - {{newArg.argName}}</h3>
-				      					<span class="btn" ng-if="!claim.arguments[currentArgIndex].editable && claim.arguments[currentArgIndex].ownerId === user.userId" ng-click="setArgumentEditMode($index, true) ; $event.stopPropagation()">
-				          					<span class="glyphicon glyphicon-edit"></span> Edit
-				        				</span>
-						   				<a class="btn" ng-if="claim.arguments[currentArgIndex].editable" ng-click="setArgumentEditMode($index, false) ; saveStatement() ; $event.stopPropagation()" style="color: black">Save</a>
-						   				<a class="btn" ng-if="claim.arguments[currentArgIndex].editable" ng-click="setArgumentEditMode($index, false) ; getClaim(claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a>
-						   				<!-- CHANGE saveStatement() above to saveArgument(index) (and create that method) -->
-						   			</div>
-						   			<div class="container" id="{{$index}}">
-							   			<div class = "panel-body" >
-											{{argument.editable}}Argument name:
-											<textarea rows="1" cols="50"  type=text ng-model="newArg.argName"></textarea><br>
-											<div ng-repeat="premise in newArg.premises track by $index">
-												Premise {{$index+1}}:<br>
-												<textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
-											</div>
-											<a class="btn" ng-click="addToNewArgPremiseArray($index)">Add New Premise</a><br>
-											<a class="btn" ng-click="openDialog('theAddPremiseDialog')">Add Pre-existing Premise</a><br>
-											Conclusion: 
-											<p>{{claim.claimStatement}}</p>
-											<br>
-										</div>
-									</div>
-								</div>
-			   					<div>{{editMode}}</div>
-			   					<button ng-click="addAndSaveNewArgument()">Save</button>
-			   					<button ng-click="closeDialog('theCreateNewArgumentDialog', false)">Close</button>
-			   				</div>
-						</div>
+						<div ng-include="'claim/dialogs/createNewArgumentDialog.html'"></div>
+
 						
-						<div id="theAddMissedPremiseGroupDialog" class="dialog">
-			   				<div class="dialog-content">
-			   					<span class="close" ng-click="closeDialog('theAddMissedPremiseGroupDialog', false)">&times;</span>
-					   			<div class="argSection panel panel-primary panel-center">
-									<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
-				      					<h3 class = "panel-title">Missed Premise Objection Name: {{newMpo.name}}</h3>
-				      					<span class="btn" ng-if="!claim.arguments[currentArgIndex].editable && claim.arguments[currentArgIndex].ownerId === user.userId" ng-click="setArgumentEditMode($index, true) ; $event.stopPropagation()">
-				          					<span class="glyphicon glyphicon-edit"></span> Edit
-				        				</span>
-						   				<a class="btn" ng-if="claim.arguments[currentArgIndex].editable" ng-click="setArgumentEditMode($index, false) ; saveStatement() ; $event.stopPropagation()" style="color: black">Save</a>
-						   				<a class="btn" ng-if="claim.arguments[currentArgIndex].editable" ng-click="setArgumentEditMode($index, false) ; getClaim(claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a>
-						   				<!-- CHANGE saveStatement() above to saveArgument(index) (and create that method) -->
-						   			</div>
-						   			<div class="container" id="{{$index}}">
-							   			<div class = "panel-body" >
-											{{argument.editable}}Argument name: {{claim.arguments[argumentViewingIndex].argName}}
-											<div ng-repeat="premise in claim.arguments[argumentViewingIndex].premises track by $index">
-												Premise {{$index+1}}:<br>
-												{{premise.claimStatement}}
-												<br>
-												<!-- <textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br> -->
-											</div>
-											<span ng-if="mpoEditable">Missed Premise Objection Name: <textarea ng-disabled="false" rows="1" cols="50" ng-model="newMpo.name"></textarea><br></span>
-											<span ng-if="!mpoEditable">Missed Premise Objection Name: <textarea ng-disabled="true" rows="1" cols="50" ng-model="claim.arguments[argumentViewingIndex].missedPremiseObjections[mpoViewingIndex].name"></textarea><br></span>
-											<div ng-if="mpoEditable" ng-repeat="premise in newMpo.missedPremises track by $index">
-												Missed Premise {{$index+1}}:<br>
-												<textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
-											</div>
-											<div ng-if="!mpoEditable" ng-repeat="premise in claim.arguments[argumentViewingIndex].missedPremiseObjections[mpoViewingIndex].missedPremises track by $index">
-												Missed Premise {{$index+1}}:<br>
-												<!-- <textarea  ng-disabled="true" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br> -->
-												<a ng-class="btn" style="color:black; font-size:12px" ng-click="openClaim(premise.claimId)">{{premise.claimStatement}}</a><br>
-											</div>
-											<a class="btn" ng-click="addToArgMissedPremiseArray($index)" ng-if="mpoEditable">Add New Missed Premise</a><br>
-											<a class="btn" ng-click="openDialog('theAddPremiseDialog')" ng-if="mpoEditable">Add Missed Premise from Pre-existing Premises</a><br>
-											Conclusion: 
-											<p>{{claim.claimStatement}}</p>
-											<br>
-										</div>
-									</div>
-								</div>
-			   					<div>{{editMode}}</div>
-			   					<button ng-click="addAndSaveNewMpo()">Save</button>
-			   					<button ng-click="closeDialog('theAddMissedPremiseGroupDialog', false)">Close</button>
-			   				</div>
-			   			</div>
+						<div ng-include="'claim/dialogs/addMpoDialog.html'"></div>
 						
 						<!--  Eventually the below div section needs to go in a separate html file -->
-			   			<div id="theOppoClaimDialog" class="dialog">
-			   				<div class="dialog-content">
-			   					<span class="close" ng-click="closeDialog('theOppoClaimDialog', false)">&times;</span>
-			   					<p>Claim Statement: {{claim.claimStatement}}</p>
-			   					Search for claims to mark as opposite:
-			   					<input ng-model="searchString" type="text" class="search-text" />
-			   					 <button ng-click="searchOppositeClaims()" class="btn btn-default">Search</button>
-			   					 <br>
-			   					 <span ng-repeat="oppositeClaim in oppositeClaimSearchResults">
-			   					 	{{oppositeClaim.claimStatement}}
-			   					 	<a ng-click="setOppositeClaim(claim.claimId, oppositeClaim.claimId)">Set as opposite claim</a>
-			   					 	<br>
-			   					</span>
-			   				</div>
-			   			</div>
+						<div ng-include="'claim/dialogs/oppoClaimDialog.html'"></div>
+
 			   			
 			   			<!--  Eventually the below div section needs to go in a separate html file -->
-			   			<div ng-include="'claim/dialogs/addPremiseDialog.html'" ng-controller="ClaimCtrl"></div>
+			   			<div ng-include="'claim/dialogs/addPremiseDialog.html'"></div>
+			   			<div ng-include="'claim/dialogs/addMissedPremiseDialog.html'"></div>
 
 					</div>
 			  	</div>
@@ -380,15 +251,15 @@
 						</div>
 		  				<div id="scrollable-content">
 				  			<table class="table table-inverse">
-								<tr ng-repeat="mediaResource in claim.mediaResources track by $index">
-									<td class="claimRow" ng-click="changeMediaResourceViewing($index)"
-									ng-if="getCurrentStatusId(argument) === 2">Argument {{$index+1}} - {{argument.argName}}</td>
+								<tr ng-repeat="mediaResource in vm.claim.mediaResources track by $index">
+									<td class="claimRow" ng-click="vm.changeMediaResourceViewing($index)"
+									ng-if="vm.getCurrentStatusId(argument) === 2">Argument {{$index+1}} - {{argument.argName}}</td>
 								</tr>
 							</table>
 				 	   </div>
 						<div id="top-claims-footer">
-							Total Media Resources: {{claim.mediaResources.length}}
-							<button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="openDialog('theCreateNewMediaResourceDialog')">
+							Total Media Resources: {{vm.claim.mediaResources.length}}
+							<button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="vm.openDialog('theCreateNewMediaResourceDialog')">
 								<span class="glyphicon glyphicon-plus "></span> Add Media Resource
 							</button>
 						</div>
@@ -400,11 +271,11 @@
 			</div>
 			<div id="theCreateNewMediaResourceDialog" class="dialog">
    				<div class="dialog-content">
-   					<span class="close" ng-click="closeDialog('theCreateNewMediaResourceDialog', false)">&times;</span>
-   					<p>Claim Statement: {{claim.claimStatement}}</p>
-   					URL:<textarea ng-model="newMediaResource.url" rows="1" cols="75"></textarea>
+   					<span class="close" ng-click="vm.closeDialog('theCreateNewMediaResourceDialog', false)">&times;</span>
+   					<p>Claim Statement: {{vm.claim.claimStatement}}</p>
+   					URL:<textarea ng-model="vm.newMediaResource.url" rows="1" cols="75"></textarea>
    					<br>
-   					<a ng-click="addNewMediaResource()">Add New Media Resource</a>
+   					<a ng-click="vm.addNewMediaResource()">Add New Media Resource</a>
    				</div>
    			</div>
    			

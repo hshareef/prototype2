@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div id="theEditArgumentDialog" class="dialog">
+		<div class="dialog-content">
+ 			<span class="close" ng-click="vm.closeDialog('theEditArgumentDialog', false)">&times;</span>
+   			<div class="argSection panel panel-primary panel-center">
+				<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
+     				<h3 class = "panel-title">Argument {{$index+1}} - {{vm.claim.arguments[vm.currentArgIndex].argName}}</h3>
+     				<span class="btn" ng-if="!vm.claim.arguments[vm.currentArgIndex].editable && vm.claim.arguments[vm.currentArgIndex].ownerId === vm.user.userId" ng-click="vm.setArgumentEditMode($index, true) ; $event.stopPropagation()">
+         				<span class="glyphicon glyphicon-edit"></span> Edit
+       				</span>
+	   				<a class="btn" ng-if="vm.claim.arguments[vm.currentArgIndex].editable" ng-click="vm.setArgumentEditMode($index, false) ; vm.saveStatement() ; $event.stopPropagation()" style="color: black">Save</a>
+	   				<a class="btn" ng-if="vm.claim.arguments[vm.currentArgIndex].editable" ng-click="vm.setArgumentEditMode($index, false) ; vm.getClaim(vm.claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a>
+	   				<!-- CHANGE saveStatement() above to saveArgument(index) (and create that method) -->
+	   			</div>
+	   			<div class="container" id="{{$index}}">
+		   			<div class = "panel-body" >
+						{{argument.editable}}Argument name:
+						<textarea rows="1" cols="50"  type=text ng-model="vm.claim.arguments[vm.currentArgIndex].argName"></textarea><br>
+						<div ng-repeat="premise in vm.claim.arguments[vm.currentArgIndex].premises track by $index">
+							Premise {{$index+1}}:<br>
+							<textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
+						</div>
+						<a class="btn" ng-click="vm.addToCurrentArgPremiseArray($index)">Add New Premise</a><br>
+						<a class="btn" ng-click="vm.openDialog('theAddPremiseDialog')">Add Pre-existing Premise</a><br>
+						Conclusion: 
+						<p>{{vm.claim.claimStatement}}</p>
+						<br>
+					</div>
+				</div>
+			</div>
+			<div>{{vm.editMode}}</div>
+			<button ng-click="vm.saveStatement()">Save</button>
+			<button ng-click="vm.closeDialog('theEditArgumentDialog', false)">Close</button>
+ 		</div>
+	</div>
+</body>
+</html>

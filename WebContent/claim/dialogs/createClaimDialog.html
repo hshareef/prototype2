@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div id="theCreateClaimDialog" class="dialog">
+		<div class="dialog-content">
+			<span class="close" ng-click="vm.closeDialog('theCreateClaimDialog',true, 'index.html')">&times;</span>
+			<br>
+			<textarea rows="2" cols="75" type="text" ng-model="vm.claim.claimStatement"></textarea>
+			<br>
+			<button ng-click="vm.saveStatement()">Save</button>
+			<button ng-click="vm.closeDialog('theCreateClaimDialog', true, 'index.html')">Close</button>
+ 		</div>
+	</div>
+</body>
+</html>
