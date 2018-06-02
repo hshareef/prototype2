@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+				Media Resources tab - media resources in which the claim is made.
+				<div class="col-sm-6">
+					<div id="top-claims-window">
+						<div id="top-claims-header">
+							Media Resources
+						</div>
+		  				<div id="scrollable-content">
+				  			<table class="table table-inverse">
+								<tr ng-repeat="mediaResource in vm.claim.mediaResources track by $index">
+									<td class="claimRow" ng-click="vm.changeMediaResourceViewing($index)"
+									ng-if="vm.getCurrentStatusId(argument) === 2">Argument {{$index+1}} - {{argument.argName}}</td>
+								</tr>
+							</table>
+				 	   </div>
+						<div id="top-claims-footer">
+							Total Media Resources: {{vm.claim.mediaResources.length}}
+							<button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="vm.openDialog('theCreateNewMediaResourceDialog')">
+								<span class="glyphicon glyphicon-plus "></span> Add Media Resource
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					Col 2
+				</div>
+</body>
+</html>

@@ -43,10 +43,13 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	vm.newMpo = null; //MPO stands for Missing Premise Objection
 	vm.mpoEditable = false;
 	vm.mpoViewingIndex;
+	vm.tabs = ['Arguments', 'Opposite Claims', 'Media Resources', 'Claim Info'];
 	
  
     //for saving a claim
     vm.saveStatement = function(){
+    	
+    	
     	//if(vm.claim.originalOwnerId=-1){
     		//vm.claim.originalOwnerId = vm.user.userId;
     		//vm.claim.originalOwnerUsername = vm.user.username;
@@ -276,6 +279,33 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		 }
 		 vm.saveStatement();
 	 };
+	 
+	 vm.openCity = function(evt, sectionName, index){
+	    var i, tabcontent, tablinks;
+	    //tabcontent = document.getElementsByClassName("tabcontent");
+	    structureSection = document.getElementById('Structure'+index);
+	    structureSection.style.display = "none";
+	    objectionsSection = document.getElementById('Objections'+index);
+	    objectionsSection.style.display = "none";
+	    argInfoSection = document.getElementById('ArgInfo'+index);
+	    argInfoSection.style.display = "none";
+//	    for (i = 0; i < tabcontent.length; i++) {
+//	        tabcontent[i].style.display = "none";
+//	    }
+	    tablinks = document.getElementsByClassName("tablinks");
+	    for (i = 0; i < tablinks.length; i++) {
+	        tablinks[i].className = tablinks[i].className.replace(" active", "");
+	    }
+	    document.getElementById(sectionName).style.display = "block";
+	    //evt.currentTarget.className += " active";
+	 };
+	 setTimeout(function(){
+		 var defaultSections = document.getElementsByClassName("defaultOpen");
+		 for(var j = 0 ; j < defaultSections.length ; j++){
+			 defaultSections[j].click();
+		 }
+	}, 2000);
+	 
 	 
 	 vm.voteFallacy = function(type, index){
 		 alert("inside the vote");

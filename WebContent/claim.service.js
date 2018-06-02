@@ -1,24 +1,19 @@
 /**
  * 
  */
-claimApp.service('ClaimService',function(){
-	
-	var dog = "fido";
-	
-	this.getDog = function(){
-		return dog;
-	};
+claimApp.service('ClaimService',function($window){
 
-	this.saveClaim = function(){
-		
-	};
 	
-	this.printDog = function(){
-		alert(dog);
-	};
+	this.claimService = {
+			
+		testServiceObject: function(){
+			alert("inside the test service object");
+		},
 	
-	this.outsiderCall = function(){
-		alert("currently in the claim service!!");
-		return "I am your grandpa!";
+		openClaim: function(claimId){
+			$window.location.href = '/Prototype/createForm.html?claimId=' + claimId;
+		}
+			
 	};
+	return this.claimService;
 });

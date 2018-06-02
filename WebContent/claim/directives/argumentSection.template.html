@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<!-- 			  <div class="card">
+			    <div class="card-header argument-section-header" id="heading + {{index}}">
+			      <h5 class="mb-0">
+			        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="{{'#collapse' + index}}" aria-expanded="false" aria-controls="collapse + {{index}}">
+			          {{argument.argName}}
+			        </button>
+			      </h5>
+			    </div>
+ 			    <div id="{{'collapse' + index}}" class="collapse" aria-labelledby="heading + {{index}}" data-parent="#accordion">
+			      <div class="card-body argument-section-body">
+			      	<div ng-repeat="premise in argument.premises track by $index">
+			      		Premise {{$index+1}} - {{premise.claimStatement}}<br>
+			      	</div>
+			      		Conclusion: {{claimStatement}}
+			      </div>
+			    </div>
+			  </div> -->
+			  
+			  
+			  
+					<div class="argSection panel panel-primary panel-center">
+						<div  class="panel-heading">
+<!-- 	      					<button class="btn btn-link argSectionHeaderButton collapsed" data-toggle="collapse" data-target="{{'#collapse' + index}}" aria-expanded="false" aria-controls="collapse + {{index}}">
+			          			{{argument.argName}}
+			       			</button> -->
+			       			<table>
+			       				<tr>
+			       					<td class="argNameCol">{{argument.argName}}</td>
+			       					<td>			       			
+			       						<span class="btn" ng-if="true" ng-click="" data-toggle="collapse" data-target="{{'#collapse' + index}}" aria-expanded="false" aria-controls="collapse + {{index}}">
+	      									<span class="glyphicon glyphicon-plus"></span> View
+	      								</span>
+	      							</td>
+	      							<td>
+	      								<span class="btn" ng-if="true" ng-click="">
+	      									<span class="glyphicon glyphicon-send"></span> Publish
+	      								</span>
+	      							</td>
+	      							<td>
+	      								<span class="btn" ng-if="true" ng-click="test()">
+	          								<span class="glyphicon glyphicon-edit"></span> Edit
+	        							</span>
+	      							</td>
+	      							<td>
+	      								<span ng-if="true" class="btn delete-icon" ng-click="">
+	          								<span class="glyphicon glyphicon-trash"></span> Delete 
+	       					 			</span>
+	      							</td>
+			       				</tr>
+			       			</table>
+	        				
+			   			</div>
+ 			   			<div class="container collapse panel-body-container" id="{{'collapse' + index}}">
+				   			<div class = "panel-body" >
+								<div ng-repeat="premise in argument.premises track by $index">
+									Premise {{$index+1}}:
+									<a ng-class="btn" style="color:black; font-size:12px" ng-click="openClaim(premise.claimId)">{{premise.claimStatement}}</a>
+									<br>
+								</div>
+								<br>
+								Conclusion: {{claimStatement}}
+								<br>
+								<br>
+							</div>
+						</div>
+					</div>
+						
+						
+</body>
+</html>

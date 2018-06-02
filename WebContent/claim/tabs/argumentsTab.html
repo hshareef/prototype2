@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+			<!-- collapsable sections -->
+			<div ng-repeat = "argument in vm.claim.arguments track by $index">
+				<div class="argSection panel panel-primary panel-center" ng-if="vm.getCurrentStatusId(argument) === 2">
+					<div  class="panel-heading">
+		       			<table>
+		       				<tr>
+		       					<td class="argNameCol">{{argument.argName}}</td>
+		       					<td>			       			
+		       						<span class="btn" ng-if="true" ng-click="" data-toggle="collapse" data-target="{{'#collapse' + $index}}" aria-expanded="false" aria-controls="collapse + {{$index}}">
+	     									<span class="glyphicon glyphicon-plus"></span> View
+	     								</span>
+	     							</td>
+	     							<td>
+	     								<span class="btn" ng-if="vm.claim.arguments[$index].ownerId === vm.user.userId && vm.getCurrentStatusId(vm.claim.arguments[$index]) === 1" ng-click="vm.publishArg($index, 2) ; $event.stopPropagation()">
+	     									<span class="glyphicon glyphicon-send"></span> Publish
+	     								</span>
+	     							</td>
+	     							<td>
+	     								<span class="btn" ng-if="vm.claim.arguments[$index].ownerId === vm.user.userId" ng-click="vm.openDialog('theEditArgumentDialog', $index) ; $event.stopPropagation()">
+	         								<span class="glyphicon glyphicon-edit"></span> Edit
+	       							</span>
+	     							</td>
+	     							<td>
+	     								<span ng-if="vm.claim.arguments[$index].ownerId === vm.user.userId" class="btn delete-icon" ng-click="vm.deleteArgument($index) ; event.stopPropagation()">
+	         								<span class="glyphicon glyphicon-trash"></span> Delete 
+	      					 			</span>
+	     							</td>
+		       				</tr>
+		       			</table>
+	       				
+		   			</div>
+			   			<div class="container collapse panel-body-container" id="{{'collapse' + $index}}">
+			   			<div class = "panel-body" >
+							<div class="tab">
+							  	<button class="tablinks defaultOpen" ng-click="vm.openCity(event, 'Structure'+$index, $index)" id="defaultOpen">Structure</button>
+								<button class="tablinks" ng-click="vm.openCity(event, 'Objections'+$index, $index)">Objections</button>
+								<button class="tablinks" ng-click="vm.openCity(event, 'ArgInfo'+$index, $index)">Argument Info</button>
+							</div>
+							
+							<div id="{{'Structure' + $index}}" class="tabcontent">
+							  <h3>Structure</h3>
+							  	<div ng-repeat="premise in argument.premises track by $index">
+									Premise {{$index+1}}:
+									<a ng-class="btn" style="color:black; font-size:12px" ng-click="vm.openClaim(premise.claimId)">{{premise.claimStatement}}</a>
+									<br>
+								</div>
+								<br>
+								Conclusion: {{vm.claim.claimStatement}}
+								<br>
+								<br>
+							</div>
+							
+							<div id="{{'Objections'+$index}}" class="tabcontent">
+							  <div class="row">
+							  	<div class="col-md-9">
+							  		<h3>Missed Premise Objections</h3>		
+							  	</div>											
+							  	<div class="col-md-3"><button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="vm.openDialog('theAddMpoDialog')">
+									<span class="glyphicon glyphicon-plus "></span> Add Missed Premise Objection
+								</button>
+								</div>
+								</div>
+								<div>
+								  	<div ng-repeat="missedPremiseObjection in argument.missedPremiseObjections track by $index">
+										<span class="claimRow" ng-click="vm.openDialog('theAddMpoDialog', null, 'viewMpo', $index)">Missing Premise Objection # {{$index+1}} - {{missedPremiseObjection.name}}</span>
+									</div>
+								</div>
+							</div>
+							
+							<div id="{{'ArgInfo'+$index}}" class="tabcontent">
+							  <h3>Argument Info</h3>
+							  <p>List Argument Info here</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+</body>
+</html>
