@@ -113,14 +113,16 @@ public class ClaimService {
 		return false;
 	}
 
-	public void setOppositeClaim(Claim claim, Integer oppositeClaimId) {
+	public Claim setOppositeClaim(Claim claim, Integer oppositeClaimId) {
 		Claim oppoClaim = getClaim(oppositeClaimId);
 		checkAndSetOppositeClaim(claim, oppoClaim);
 		checkAndSetOppositeClaim(oppoClaim, claim);
+		clearOppositeClaimOpposites(claim);//this is to avoid an infinite loop, as the claim A will have an opposite, B, which has an opposite (A), which has opposite (B) ...
+		return claim;
 		
 	}
 	
-	public void checkAndSetOppositeClaim(Claim claim1, Claim claim2){
+	public Claim checkAndSetOppositeClaim(Claim claim1, Claim claim2){
 		boolean alreadyExists = false;
 		for(Claim oppo : claim1.getOppositeClaims()){
 			if(oppo.getClaimId() == claim2.getClaimId()){
@@ -130,8 +132,23 @@ public class ClaimService {
 		}
 		if(!alreadyExists){
 			claim1.getOppositeClaims().add(claim2);
-			saveClaim(claim1);
+			claim1 = saveClaim(claim1);
 		}
+		return claim1;
+	}
+
+	private void clearOppositeClaimOpposites(Claim claim) {
+		//clear all info except opposite claim id and claim statement
+		for(Claim oppo : claim.getOppositeClaims()){
+			oppo.setArguments(null);
+			oppo.setKeywords(null);
+			oppo.setMediaResources(null);
+			oppo.setOppositeClaims(null);
+			oppo.setOriginalOwnerId(null);
+			oppo.setOriginalOwnerUsername(null);
+			oppo.setUsedAsPremise(false);
+		}
+		
 	}
 
 	public Argument getArgumentTemplate() {

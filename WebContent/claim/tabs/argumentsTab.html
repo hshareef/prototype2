@@ -6,6 +6,10 @@
 </head>
 <body>
 			<!-- collapsable sections -->
+			<button type="button" class="btn btn-default btn-sm" ng-click="vm.openDialog('theCreateNewArgumentDialog')">
+				<span class="glyphicon glyphicon-plus "></span> Add Argument
+			</button>
+			<br><br>
 			<div ng-repeat = "argument in vm.claim.arguments track by $index">
 				<div class="argSection panel panel-primary panel-center" ng-if="vm.getCurrentStatusId(argument) === 2">
 					<div  class="panel-heading">
@@ -36,11 +40,11 @@
 		       			</table>
 	       				
 		   			</div>
-			   			<div class="container collapse panel-body-container" id="{{'collapse' + $index}}">
+			   		<div class="container collapse panel-body-container" id="{{'collapse' + $index}}">
 			   			<div class = "panel-body" >
 							<div class="tab">
 							  	<button class="tablinks defaultOpen" ng-click="vm.openCity(event, 'Structure'+$index, $index)" id="defaultOpen">Structure</button>
-								<button class="tablinks" ng-click="vm.openCity(event, 'Objections'+$index, $index)">Objections</button>
+								<button class="tablinks" ng-click="vm.openCity(event, 'Objections'+$index, $index)">Objections ({{argument.missedPremiseObjections.length}})</button>
 								<button class="tablinks" ng-click="vm.openCity(event, 'ArgInfo'+$index, $index)">Argument Info</button>
 							</div>
 							
@@ -62,14 +66,14 @@
 							  	<div class="col-md-9">
 							  		<h3>Missed Premise Objections</h3>		
 							  	</div>											
-							  	<div class="col-md-3"><button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="vm.openDialog('theAddMpoDialog')">
+							  	<div class="col-md-3"><button type="button" class="btn btn-default btn-sm add-arg-button" ng-click="vm.openDialog('theAddMpoDialog', $parent.$index, 'addNewMpo', $index)">
 									<span class="glyphicon glyphicon-plus "></span> Add Missed Premise Objection
 								</button>
 								</div>
 								</div>
 								<div>
 								  	<div ng-repeat="missedPremiseObjection in argument.missedPremiseObjections track by $index">
-										<span class="claimRow" ng-click="vm.openDialog('theAddMpoDialog', null, 'viewMpo', $index)">Missing Premise Objection # {{$index+1}} - {{missedPremiseObjection.name}}</span>
+										<span class="claimRow" ng-click="vm.openDialog('theAddMpoDialog', $parent.$index, 'viewMpo', $index)">Missing Premise Objection # {{$index+1}} - {{missedPremiseObjection.name}}</span>
 									</div>
 								</div>
 							</div>

@@ -42,24 +42,18 @@ public class ClaimResource {
 	@Produces("application/json")
 	@Consumes("application/json")
 	public Claim saveClaim(Claim claim){
-		int j=0;
-		System.out.println("Hello there you rabbit!!");
 		System.out.println(claim.getClaimStatement());
-		j++;
-		if(j==5){
-			return null;
-		}
 		claim = claimService.saveClaim(claim);
 		return claim;
 	}
 	
 	@Path("/opposites/{oppositeClaimId}")
 	@POST
-	@Produces("text/plain")
+	@Produces("application/json")
 	@Consumes("application/json")
-	public String setOppositeClaims(Claim claim, @PathParam("oppositeClaimId") Integer oppositeClaimId){
-		claimService.setOppositeClaim(claim, oppositeClaimId);
-		return "hello";
+	public Claim setOppositeClaims(Claim claim, @PathParam("oppositeClaimId") Integer oppositeClaimId){
+		claim = claimService.setOppositeClaim(claim, oppositeClaimId);
+		return claim;
 	}
 	
 	@Path("/topClaims")

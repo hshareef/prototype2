@@ -1,7 +1,11 @@
 package com.prototype.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
@@ -21,10 +25,13 @@ import com.prototype.model.ClaimRef;
 import com.prototype.model.FallacyDetails;
 import com.prototype.model.MediaResource;
 import com.prototype.model.MissedPremiseObjection;
+import com.prototype.model.PremiseBindingParameters;
 
 public class ClaimDao {
 	
 	public Claim saveClaim(Claim claim){
+		//List<PremiseBindingParameters> premisesToBind = new ArrayList<PremiseBindingParameters>();
+		Set<Integer> premisesToBindIds = new HashSet<Integer>();
 		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
@@ -38,7 +45,9 @@ public class ClaimDao {
 					session.saveOrUpdate(premise);
 				}
 				else {
-					bindPremise(arg.getArgumentId(), premise.getClaimId(), session, CommonConstants.PremiseBindingTypes.ARG);
+					premisesToBindIds.add(premise.getClaimId());
+					//premisesToBind.add(new PremiseBindingParameters(arg.getArgumentId(), premise.getClaimId(), CommonConstants.PremiseBindingTypes.ARG));
+					//bindPremise(arg.getArgumentId(), premise.getClaimId(), session, CommonConstants.PremiseBindingTypes.ARG);
 				}
 			}
 			if(arg.getStateHistory() != null){
@@ -60,7 +69,9 @@ public class ClaimDao {
 							session.saveOrUpdate(premise);
 						}
 						else {
-							bindPremise(mpo.getMissedPremiseObjectionId(), premise.getClaimId(), session, CommonConstants.PremiseBindingTypes.MPO);
+							premisesToBindIds.add(premise.getClaimId());
+							//premisesToBind.add(new PremiseBindingParameters(mpo.getMissedPremiseObjectionId(), premise.getClaimId(), CommonConstants.PremiseBindingTypes.MPO));
+							//bindPremise(mpo.getMissedPremiseObjectionId(), premise.getClaimId(), session, CommonConstants.PremiseBindingTypes.MPO);
 						}
 					}
 					
@@ -70,17 +81,58 @@ public class ClaimDao {
 			session.saveOrUpdate(arg);
 		}
 		if(claim.getOppositeClaims() != null){
-			for(Claim oppositeClaims : claim.getOppositeClaims()){
+			for(Claim oppositeClaim : claim.getOppositeClaims()){
 				//session.saveOrUpdate(oppositeClaims);
-				bindPremise(claim.getClaimId(), oppositeClaims.getClaimId(), session, CommonConstants.PremiseBindingTypes.OPPO);
+				premisesToBindIds.add(oppositeClaim.getClaimId());
+				//premisesToBind.add(new PremiseBindingParameters(claim.getClaimId(), oppositeClaims.getClaimId(), CommonConstants.PremiseBindingTypes.OPPO));
+				//bindPremise(claim.getClaimId(), oppositeClaims.getClaimId(), session, CommonConstants.PremiseBindingTypes.OPPO);
 			}
 		}
 		session.saveOrUpdate(claim);
 		session.getTransaction().commit();
+		List<PremiseBindingParameters> premisesToBind = getAllBindingParameters(premisesToBindIds, claim);
+		bindAllPremises(premisesToBind, session);
 		session.close();
 		sessionFactory.close();
 		System.out.println("saved the following claim: " + claim.getClaimStatement());
 		return claim;
+	}
+	
+	private List<PremiseBindingParameters> getAllBindingParameters(Set<Integer> premiseIds, Claim claim){
+		List<PremiseBindingParameters> premisesToBindParameters = new ArrayList<PremiseBindingParameters>();
+		for(Argument arg : claim.getArguments()){
+			for(Claim premise : arg.getPremises()){
+				if(premiseIds.contains(premise.getClaimId())){
+					premisesToBindParameters.add(new PremiseBindingParameters(arg.getArgumentId(), premise.getClaimId(), CommonConstants.PremiseBindingTypes.ARG));
+				}
+			}
+			if(arg.getMissedPremiseObjections() != null && arg.getMissedPremiseObjections().size() > 0){
+				for(MissedPremiseObjection mpo : arg.getMissedPremiseObjections()){
+					for(Claim premise : mpo.getMissedPremises()){
+						if(premiseIds.contains(premise.getClaimId())){
+							premisesToBindParameters.add(new PremiseBindingParameters(mpo.getMissedPremiseObjectionId(), premise.getClaimId(), CommonConstants.PremiseBindingTypes.MPO));
+						}
+					}
+				}
+			}
+			
+		}
+		
+		if(claim.getOppositeClaims() != null){
+			for(Claim oppositeClaim : claim.getOppositeClaims()){
+				if(premiseIds.contains(oppositeClaim.getClaimId())){
+					premisesToBindParameters.add(new PremiseBindingParameters(claim.getClaimId(), oppositeClaim.getClaimId(), CommonConstants.PremiseBindingTypes.OPPO));
+				}
+			}
+		}
+		
+		return premisesToBindParameters;
+	}
+	
+	private void bindAllPremises(List<PremiseBindingParameters> premises, Session session){
+		for(PremiseBindingParameters premise : premises){
+			bindPremise(premise.getParentId(), premise.getPremiseId(), session, premise.getPremiseBindingType());
+		}
 	}
 	
 //	public void bindPremise(Integer argId, Integer mpoId, Integer premiseId, Session session){

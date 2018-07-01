@@ -371,7 +371,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 //		 }
 //	 };
 	 
-	 vm.openDialog = function(dialogId, editArgIndex, dialogMode, index){
+	 vm.openDialog = function(dialogId, argIndex, dialogMode, mpoIndex){
 		 var theDialogBox = document.getElementById(dialogId);
 		 theDialogBox.style.display = "block";
 		 
@@ -380,7 +380,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 			 vm.addBlankArg();
 		 }
 		 else if(dialogId == "theEditArgumentDialog"){
-			 vm.currentArgIndex = editArgIndex;
+			 vm.currentArgIndex = argIndex;
 		 }
 		 else if(dialogId == "theCreateNewMediaResourceDialog"){
 			 vm.newMediaResource = 
@@ -393,13 +393,14 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 				 };
 		 }
 		 else if(dialogId == "theAddMpoDialog"){
+			 vm.argumentViewingIndex = argIndex;
+			 vm.mpoViewingIndex = mpoIndex;
 			 if(dialogMode == null || dialogMode == "addNewMpo"){
 				 vm.mpoEditable = true;
 			 	 vm.initializeBlankMpo();
 		 	 }
 			 else if (dialogMode == "viewMpo") {
 				 vm.mpoEditable = false;
-				 vm.mpoViewingIndex = index;
 			 }
 		 }
 		 
@@ -448,7 +449,9 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	 
 	 vm.setOppositeClaim = function(claimId, oppositeClaimId){
 		alert("this claim id: " + claimId + "\nOpposite claim Id: " + oppositeClaimId); 
-		var test = $http.post(ConfigService.getSettings().url + "/Prototype/prototype/claim/opposites/" + oppositeClaimId, vm.claim);
+		$http.post(ConfigService.getSettings().url + "/Prototype/prototype/claim/opposites/" + oppositeClaimId, vm.claim).then(function(response){
+			vm.claim = response.data;
+		});
 		vm.closeDialog('theOppoClaimDialog', false);
 		//location.reload();
 		
