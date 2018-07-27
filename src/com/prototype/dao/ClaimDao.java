@@ -26,6 +26,7 @@ import com.prototype.model.FallacyDetails;
 import com.prototype.model.MediaResource;
 import com.prototype.model.MissedPremiseObjection;
 import com.prototype.model.PremiseBindingParameters;
+import com.prototype.model.PremiseOrderWrapper;
 
 public class ClaimDao {
 	
@@ -90,6 +91,7 @@ public class ClaimDao {
 		}
 		session.saveOrUpdate(claim);
 		session.getTransaction().commit();
+		saveMpoPremiseOrders(claim, session);
 		List<PremiseBindingParameters> premisesToBind = getAllBindingParameters(premisesToBindIds, claim);
 		bindAllPremises(premisesToBind, session);
 		session.close();
@@ -98,6 +100,36 @@ public class ClaimDao {
 		return claim;
 	}
 	
+	private void saveMpoPremiseOrders(Claim claim, Session session) {
+		for(Argument arg : claim.getArguments()){
+			for(MissedPremiseObjection mpo : arg.getMissedPremiseObjections()){
+				if(mpo.getAllMpoPremises() != null && mpo.getPremiseOrder() == null){
+					session.beginTransaction();
+					mpo.setPremiseOrder(new ArrayList<PremiseOrderWrapper>());
+					for(int i = 0 ; i < mpo.getAllMpoPremises().size() ; i++){
+						PremiseOrderWrapper order = new PremiseOrderWrapper();
+						if(mpo.getAllMpoPremises().get(i).getClaimId() != null){
+							order.setClaimId(mpo.getAllMpoPremises().get(i).getClaimId());
+						}
+						else{
+							for(Claim premise : mpo.getMissedPremises()){
+								if(premise.getClaimStatement().equals(mpo.getAllMpoPremises().get(i).getClaimStatement())){
+									order.setClaimId(premise.getClaimId());
+								}
+							}
+						}
+						order.setMissedPremiseObjectionId(mpo.getMissedPremiseObjectionId());
+						order.setSequenceNumber(i);
+						session.saveOrUpdate(order);
+					}
+					session.getTransaction().commit();
+				}
+			}
+		}
+		
+		
+	}
+
 	private List<PremiseBindingParameters> getAllBindingParameters(Set<Integer> premiseIds, Claim claim){
 		List<PremiseBindingParameters> premisesToBindParameters = new ArrayList<PremiseBindingParameters>();
 		for(Argument arg : claim.getArguments()){
@@ -264,6 +296,7 @@ public class ClaimDao {
 		     Hibernate.initialize(argument.getMissedPremiseObjections());
 		     for(MissedPremiseObjection objection : argument.getMissedPremiseObjections()){
 		    	 Hibernate.initialize(objection.getMissedPremises());
+		    	 Hibernate.initialize(objection.getPremiseOrder());
 		    	 for(Claim premise : objection.getMissedPremises()){
 		    		 //don't want to load all the sub-info, just leave blank
 		    		 premise.setArguments(new ArrayList<Argument>());

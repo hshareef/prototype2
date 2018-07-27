@@ -44,6 +44,59 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	vm.mpoEditable = false;
 	vm.mpoViewingIndex;
 	vm.tabs = ['Arguments', 'Opposite Claims', 'Media Resources', 'Claim Info'];
+	vm.newMissedPremiseStatement = "";
+	
+    vm.treedata = [{
+        'id': 1,
+        'title': 'node1',
+        'nodes': [
+          {
+            'id': 11,
+            'title': 'node1.1',
+            'nodes': [
+              {
+                'id': 111,
+                'title': 'node1.1.1',
+                'nodes': []
+              }
+            ]
+          },
+          {
+            'id': 12,
+            'title': 'node1.2',
+            'nodes': []
+          }
+        ]
+      }, {
+        'id': 2,
+        'title': 'node2',
+        'nodrop': true, // An arbitrary property to check in custom template for nodrop-enabled
+        'nodes': [
+          {
+            'id': 21,
+            'title': 'node2.1',
+            'nodes': []
+          },
+          {
+            'id': 22,
+            'title': 'node2.2',
+            'nodes': []
+          }
+        ]
+      }, {
+        'id': 3,
+        'title': 'node3',
+        'nodes': [
+          {
+            'id': 31,
+            'title': 'node3.1',
+            'nodes': []
+          }
+        ]
+      }];
+    
+    
+    
 	
  
     //for saving a claim
@@ -194,6 +247,25 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     	missedPremise.claimStatement = "";
     	vm.newMpo.missedPremises.push(missedPremise);
     	//vm.claim.arguments[vm.currentArgIndex].missedPremiseObjections.push(missedPremise);
+    };
+    
+    vm.pushNewMissedPremiseToMPO = function(){
+    	var missedPremise = new Object();
+    	missedPremise.claimStatement = vm.newMissedPremiseStatement;
+    	missedPremise.canDelete = true;
+    	missedPremise.deleteTracker = vm.newMpo.allMpoPremises.length; //need this since ui-tree cannot use track by index (baloney!)
+    	vm.newMpo.missedPremises.push(missedPremise);//is missedPremises needed?
+    	vm.newMpo.allMpoPremises.push(missedPremise);
+    	vm.closeDialog('theAddNewMissedPremiseDialog', false);
+    };
+    
+    vm.removeMissedPremise = function(deleteTracker){
+    	for(var i = 0 ; i < vm.newMpo.allMpoPremises.length ; i++){
+    		if(vm.newMpo.allMpoPremises[i].deleteTracker && vm.newMpo.allMpoPremises[i].deleteTracker === deleteTracker){
+    			vm.newMpo.allMpoPremises.splice(i, 1);
+    			break;
+    		}
+    	}
     };
     
     vm.getCurrentStatusId = function(argument){
@@ -395,6 +467,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		 else if(dialogId == "theAddMpoDialog"){
 			 vm.argumentViewingIndex = argIndex;
 			 vm.mpoViewingIndex = mpoIndex;
+			 vm.orderMpoPremises();
 			 if(dialogMode == null || dialogMode == "addNewMpo"){
 				 vm.mpoEditable = true;
 			 	 vm.initializeBlankMpo();
@@ -425,9 +498,35 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	 vm.initializeBlankMpo = function(){
 		 vm.newMpo = {
 				 name: "",
-				 missedPremises: []
+				 missedPremises: [],
+				 allMpoPremises: []
 		 };
+		 vm.newMpo.allMpoPremises = angular.copy(vm.claim.arguments[vm.argumentViewingIndex].premises);
 		 //vm.claim.missedPremiseObjections.push(newMpo);
+	 };
+	 
+	 vm.orderMpoPremises = function(){
+		 //purpose of this function: integrate the original argument premises with the missed premises in the order that the user
+		 //has specified. If no order specified, then just display the missed premises after the original argument premises
+		 var orderedPremises = [];
+		 var order = vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections[vm.mpoViewingIndex].premiseOrder;
+		 var argPremises = vm.claim.arguments[vm.argumentViewingIndex].premises;
+		 var mpoPremises = vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections[vm.mpoViewingIndex].missedPremises;
+		 var allPremises = argPremises.concat(mpoPremises);
+		 if(order != null && order.length > 0){
+			 for(var i = 0 ; i < order.length ; i++){
+				 for(var j = 0 ; j < allPremises.length ; j++){
+					 if(order[i].claimId === allPremises[j].claimId){
+						 orderedPremises.push(allPremises[j]);
+						 break;
+					 }
+				 }
+			 }
+			 vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections[vm.mpoViewingIndex].allMpoPremises = orderedPremises;
+		 }
+		 else{
+			 vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections[vm.mpoViewingIndex].allMpoPremises = allPremises;
+		 }
 	 };
 	 
 	 
@@ -482,8 +581,10 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		 
 	 vm.addMissedPremiseToMpo = function(index){
 		 var premise = vm.premiseSearchResults[index];
+		 premise.canDelete = true;
+		 premise.deleteTracker = vm.newMpo.allMpoPremises.length; //need this since ui-tree cannot use track by index (baloney!)
 		 vm.newMpo.missedPremises.push(premise);
-		 alert("searched premise added successfully to missed premise objection!");
+		 vm.newMpo.allMpoPremises.push(premise);
 		 vm.closeDialog('theAddMissedPremiseDialog', false);
 	 };
 	 

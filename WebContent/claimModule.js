@@ -1,4 +1,4 @@
 /**
  * 
  */
-var claimApp = angular.module('ClaimModule', []);
+var claimApp = angular.module('ClaimModule', ['ui.tree']);

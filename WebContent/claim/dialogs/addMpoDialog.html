@@ -10,7 +10,10 @@
 			<span class="close" ng-click="vm.closeDialog('theAddMpoDialog', false)">&times;</span>
 			<div class="argSection panel panel-primary panel-center">
 				<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
-  					<h3 class = "panel-title">Missed Premise Objection Name: {{vm.newMpo.name}}</h3>
+  					<h3 class = "panel-title">Missed Premise Objection Name: 
+  						<span ng-if="vm.mpoEditable"><textarea ng-disabled="false" rows="1" cols="50" ng-model="vm.newMpo.name"></textarea><br></span>
+						<span ng-if="!vm.mpoEditable"><textarea ng-disabled="true" rows="1" cols="50" ng-model="vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections[vm.mpoViewingIndex].name"></textarea><br></span>
+					</h3>
   					<span class="btn" ng-if="!vm.claim.arguments[vm.currentArgIndex].editable && vm.claim.arguments[vm.currentArgIndex].ownerId === vm.user.userId" ng-click="vm.setArgumentEditMode($index, true) ; $event.stopPropagation()">
       					<span class="glyphicon glyphicon-edit"></span> Edit
     				</span>
@@ -21,34 +24,79 @@
 			 	<div class="container" id="{{$index}}">
 			  		<div class = "panel-body" >
 						{{argument.editable}}Argument name: {{vm.claim.arguments[vm.argumentViewingIndex].argName}}
-						<div ng-repeat="premise in vm.claim.arguments[vm.argumentViewingIndex].premises track by $index">
-							Premise {{$index+1}}:<br>
-							{{premise.claimStatement}}
+<!-- 						<div ng-repeat="premise in vm.claim.arguments[vm.argumentViewingIndex].premises track by $index">
+							Premise {{$index+1}}: {{premise.claimStatement}}
 							<br>
-							<!-- <textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br> -->
-						</div>
-						<span ng-if="vm.mpoEditable">Missed Premise Objection Name: <textarea ng-disabled="false" rows="1" cols="50" ng-model="vm.newMpo.name"></textarea><br></span>
-						<span ng-if="!vm.mpoEditable">Missed Premise Objection Name: <textarea ng-disabled="true" rows="1" cols="50" ng-model="vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections[vm.mpoViewingIndex].name"></textarea><br></span>
-						<div ng-if="vm.mpoEditable" ng-repeat="premise in vm.newMpo.missedPremises track by $index">
-							Missed Premise {{$index+1}}:<br>
 							<textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
+						</div> -->
+						
+						
+						
+						<br><br>
+						
+<!-- 						<div ng-if="vm.mpoEditable" ng-repeat="premise in vm.newMpo.missedPremises track by $index">
+							<p>Missed Premise {{$index+1}}: {{premise.claimStatement}}</p>
 						</div>
 						<div ng-if="!vm.mpoEditable" ng-repeat="premise in vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections[vm.mpoViewingIndex].missedPremises track by $index">
-							Missed Premise {{$index+1}}:<br>
-							<!-- <textarea  ng-disabled="true" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br> -->
+							Missed Premise {{$index+1}}:
 							<a ng-class="btn" style="color:black; font-size:12px" ng-click="vm.openClaim(premise.claimId)">{{premise.claimStatement}}</a><br>
-						</div>
-						<a class="btn" ng-click="vm.addToArgMissedPremiseArray($index)" ng-if="vm.mpoEditable">Add New Missed Premise</a><br>
-						<a class="btn" ng-click="vm.openDialog('theAddMissedPremiseDialog')" ng-if="vm.mpoEditable">Add Missed Premise from Pre-existing Premises</a><br>
-						Conclusion: 
-						<p>{{vm.claim.claimStatement}}</p>
-						<br>
+						</div> -->
+						
+						
+						
+<!-- 						<div ui-tree id="tree-root">
+		      				<ol ui-tree-nodes ng-model="vm.treedata">
+		       					<li ng-repeat="node in vm.treedata" ui-tree-node>
+		          					{{node.title}}
+						        </li>
+						    </ol> -->
+					        <!--  <ol ui-tree-nodes ng-model="row.columns">
+					            <li ng-repeat="column in row.columns" ui-tree-node>
+					              <div ui-tree-handle>
+					                {{column.name}}
+					              </div>
+					            </li>
+					        </ol>    -->
+<!-- 					    </div> -->
+					    
+					    <!-- only show this section when creating a new MPO -->
+					    <div ui-tree id="tree-root">
+		      				<ol ui-tree-nodes ng-model="vm.newMpo.allMpoPremises">
+		       					<li ng-repeat="premise in vm.newMpo.allMpoPremises" ui-tree-node>
+		          					{{premise.claimStatement}} <span ng-if="premise.canDelete"><a ng-click="vm.removeMissedPremise(premise.deleteTracker)">remove</a></span>
+						        </li>
+						    </ol>
+					    </div>
+					    
+					    <!-- only show this section for saved and loaded MPO's -->
+					    <div ng-if="vm.newMpo === undefined || vm.newMpo === null">
+		      				<ol>
+		       					<li ng-repeat="premise in vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections[vm.mpoViewingIndex].allMpoPremises">
+		          					{{premise.claimStatement}}
+						        </li>
+						    </ol>
+					    </div>
+					    
+					    Conclusion: {{vm.claim.claimStatement}}
+					    
+          
 					</div>
 				</div>
 			</div>
-			<div>{{vm.editMode}}</div>
-			<button ng-click="vm.addAndSaveNewMpo()">Save</button>
-			<button ng-click="vm.closeDialog('theAddMpoDialog', false)">Close</button>
+			
+			<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+				<div class="btn-group" role="group" ng-if="vm.mpoEditable">
+			    	<button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			     		Add Missed Premise
+			    	</button>
+			    	<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+			      		<a class="dropdown-item" ng-click="vm.openDialog('theAddNewMissedPremiseDialog')"> New Missed Premise</a>
+			      		<a class="dropdown-item" ng-click="vm.openDialog('theAddMissedPremiseDialog')" > Pre-existing Premise</a>
+			    	</div>
+			  	</div>
+			    <button type="button" class="btn btn-secondary" ng-click="vm.addAndSaveNewMpo()">Save</button>
+			  	<button type="button" class="btn btn-secondary" ng-click="vm.closeDialog('theAddMpoDialog', false)">Close</button>
+			</div>
 		</div>
  	</div>
 

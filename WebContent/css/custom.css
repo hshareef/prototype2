@@ -63,8 +63,8 @@ p {
 	border-color: white;
 }
 .btn-secondary {
-	color: #fff;
-	background-color: transparent;
+	color: black;
+	background-color: #ccc;
 	border-color: white;
 	margin-bottom: 5px;
 }
@@ -365,7 +365,7 @@ p {
 .claimRow:hover{
 	background-color: #DAD9D9;
 	cursor: pointer;
-	font-size: 24px;
+	/*font-size: 24px; */
 }
 
 .add-arg-button{

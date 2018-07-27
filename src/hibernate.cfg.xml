@@ -44,6 +44,7 @@
         <mapping class="com.prototype.model.Person" />
         <mapping class="com.prototype.model.InstitutionMember" />
         <mapping class="com.prototype.model.MissedPremiseObjection" />
+        <mapping class="com.prototype.model.PremiseOrderWrapper" />
         
 
     </session-factory>
