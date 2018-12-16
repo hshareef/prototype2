@@ -1,4 +1,6 @@
-
+:root {
+	--light-background: #DADADA;
+}
 .navbar {
 	margin-bottom: 0;
 	background: #337ab7;
@@ -18,7 +20,7 @@
 body {
 	/*background:  url("main-background.png"); */
 	background-size: 100% 100%;
-	background-color: gray;
+	background-color: var(--light-background);
 	/* color: red; */
 	font-family: 'Montserrat', sans-serif;
 }
@@ -41,15 +43,15 @@ p {
 	color: black;
 }
 
-.jumbotron {
+/* .jumbotron {
 	background: gray;
 	color: black;
 	text-align: center;
-}
-.jumbotron p {
+} */
+/* .jumbotron p {
 	color: red;
 	font-size: 26px;
-}
+} */
 
 .btn-primary {
 	color: #fff;
@@ -348,7 +350,7 @@ p {
 #scrollable-content {
   height: 250px;
   overflow: auto;
-  background-color: gray;
+  background-color: cyan;
   opacity: 0.6;
 }
 
@@ -431,9 +433,9 @@ p {
   }
 }
 
-.active {
+/* .active {
 	background-color: gray;
-}
+} */
 
 .argSectionHeaderButton {
 	color: red;

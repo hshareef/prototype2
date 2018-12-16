@@ -35,6 +35,8 @@ public class Argument {
 	 @ManyToOne
 	 private Claim claim;
 	 
+	 //need this somewhere in the app
+	 //https://stackoverflow.com/questions/5907501/when-annotating-a-class-with-component-does-this-mean-it-is-a-spring-bean-and
 	 
 	//@ElementCollection(targetClass=ClaimRef.class)
 	@ManyToMany(targetEntity=Claim.class)

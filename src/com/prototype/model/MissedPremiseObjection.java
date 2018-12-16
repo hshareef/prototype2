@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -38,6 +39,16 @@ public class MissedPremiseObjection {
 	 @OneToMany
 	 @JoinColumn(name="MPO_ID")
 	 private List<PremiseOrderWrapper> premiseOrder;
+	 
+	 @OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+	 @JoinColumn(name="MPO_ID")
+	 private List<MpoState> stateHistory;
+	 
+	 @Transient
+	 private User owner;
+	 
+	 @Column(name="OWNER_ID")
+	 private Integer ownerId;
 	 
 	 @Transient
 	 private List<Claim> allMpoPremises; //this is used just for tracking the order of unsaved missed premises
@@ -75,6 +86,25 @@ public class MissedPremiseObjection {
 	}
 	public void setPremiseOrder(List<PremiseOrderWrapper> premiseOrder) {
 		this.premiseOrder = premiseOrder;
+	}
+	
+	public List<MpoState> getStateHistory() {
+		return stateHistory;
+	}
+	public void setStateHistory(List<MpoState> stateHistory) {
+		this.stateHistory = stateHistory;
+	}
+	public User getOwner() {
+		return owner;
+	}
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
+	public Integer getOwnerId() {
+		return ownerId;
+	}
+	public void setOwnerId(Integer ownerId) {
+		this.ownerId = ownerId;
 	}
 	public List<Claim> getAllMpoPremises() {
 		return allMpoPremises;

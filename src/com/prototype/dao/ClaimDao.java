@@ -101,32 +101,35 @@ public class ClaimDao {
 	}
 	
 	private void saveMpoPremiseOrders(Claim claim, Session session) {
-		for(Argument arg : claim.getArguments()){
-			for(MissedPremiseObjection mpo : arg.getMissedPremiseObjections()){
-				if(mpo.getAllMpoPremises() != null && mpo.getPremiseOrder() == null){
-					session.beginTransaction();
-					mpo.setPremiseOrder(new ArrayList<PremiseOrderWrapper>());
-					for(int i = 0 ; i < mpo.getAllMpoPremises().size() ; i++){
-						PremiseOrderWrapper order = new PremiseOrderWrapper();
-						if(mpo.getAllMpoPremises().get(i).getClaimId() != null){
-							order.setClaimId(mpo.getAllMpoPremises().get(i).getClaimId());
-						}
-						else{
-							for(Claim premise : mpo.getMissedPremises()){
-								if(premise.getClaimStatement().equals(mpo.getAllMpoPremises().get(i).getClaimStatement())){
-									order.setClaimId(premise.getClaimId());
+		if(claim != null && claim.getArguments() != null){
+			for(Argument arg : claim.getArguments()){
+				if(arg.getMissedPremiseObjections() != null && arg.getMissedPremiseObjections().size() > 0){
+					for(MissedPremiseObjection mpo : arg.getMissedPremiseObjections()){
+						if(mpo.getAllMpoPremises() != null && mpo.getPremiseOrder() == null){
+							session.beginTransaction();
+							mpo.setPremiseOrder(new ArrayList<PremiseOrderWrapper>());
+							for(int i = 0 ; i < mpo.getAllMpoPremises().size() ; i++){
+								PremiseOrderWrapper order = new PremiseOrderWrapper();
+								if(mpo.getAllMpoPremises().get(i).getClaimId() != null){
+									order.setClaimId(mpo.getAllMpoPremises().get(i).getClaimId());
 								}
+								else{
+									for(Claim premise : mpo.getMissedPremises()){
+										if(premise.getClaimStatement().equals(mpo.getAllMpoPremises().get(i).getClaimStatement())){
+											order.setClaimId(premise.getClaimId());
+										}
+									}
+								}
+								order.setMissedPremiseObjectionId(mpo.getMissedPremiseObjectionId());
+								order.setSequenceNumber(i);
+								session.saveOrUpdate(order);
 							}
+							session.getTransaction().commit();
 						}
-						order.setMissedPremiseObjectionId(mpo.getMissedPremiseObjectionId());
-						order.setSequenceNumber(i);
-						session.saveOrUpdate(order);
 					}
-					session.getTransaction().commit();
 				}
 			}
 		}
-		
 		
 	}
 
@@ -297,6 +300,7 @@ public class ClaimDao {
 		     for(MissedPremiseObjection objection : argument.getMissedPremiseObjections()){
 		    	 Hibernate.initialize(objection.getMissedPremises());
 		    	 Hibernate.initialize(objection.getPremiseOrder());
+		    	 Hibernate.initialize(objection.getStateHistory());
 		    	 for(Claim premise : objection.getMissedPremises()){
 		    		 //don't want to load all the sub-info, just leave blank
 		    		 premise.setArguments(new ArrayList<Argument>());

@@ -1,18 +1,23 @@
 package com.prototype.service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.prototype.common.ArgumentConstants;
+import com.prototype.common.MpoConstants;
 import com.prototype.dao.ClaimDao;
 import com.prototype.model.Argument;
 import com.prototype.model.ArgumentState;
 import com.prototype.model.Claim;
 import com.prototype.model.ClaimRef;
 import com.prototype.model.FallacyDetails;
+import com.prototype.model.MissedPremiseObjection;
+import com.prototype.model.MpoState;
 import com.prototype.validators.ClaimValidator;
 
 public class ClaimService {
@@ -27,6 +32,7 @@ public class ClaimService {
 			for(Argument arg : claim.getArguments()){
 				arg.determineValidity();
 			}
+			addPrelimStates(claim);
 			claim = claimDao.saveClaim(claim);
 			return claim;
 		}
@@ -193,6 +199,45 @@ public class ClaimService {
 	
 	public boolean deleteClaim(Integer claimId){
 		return claimDao.deleteClaim(claimId);
+	}
+	
+	private void addPrelimStates(Claim claim){
+		//add prelim state for claim if needed
+		
+		//add prelim state for arguments if needed
+		
+		//add prelim state for mpo's
+		addMpoPrelimStates(claim);
+	}
+	
+	private void addMpoPrelimStates(Claim claim){
+		if(claim != null && claim.getArguments() != null && claim.getArguments().size() > 0){
+			for(Argument arg : claim.getArguments()){
+				if(arg.getMissedPremiseObjections() != null && arg.getMissedPremiseObjections().size() > 0){
+					for(MissedPremiseObjection mpo : arg.getMissedPremiseObjections()){
+						if(mpo.getStateHistory() == null || mpo.getStateHistory().size() == 0){
+							MpoState state = new MpoState();
+							state.setMpoId(mpo.getMissedPremiseObjectionId());
+							state.setMpoStatusId(MpoConstants.States.PRELIM.ID);
+							state.setCurrentFlag(true);
+							//need to revisit this user audit info
+							if(mpo.getOwner() != null && mpo.getOwner().getUsername() != null){
+								state.setCreatedUser(mpo.getOwner().getUsername());
+								state.setUpdatedUser(claim.getOriginalOwnerUsername());
+							}
+							if(mpo.getStateHistory() == null){
+								List<MpoState> stateHistory = new ArrayList<MpoState>();
+								stateHistory.add(state);
+								mpo.setStateHistory(stateHistory);
+							}
+							else{
+								mpo.getStateHistory().add(state);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 }

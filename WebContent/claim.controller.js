@@ -495,11 +495,13 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		 }
 	 };
 	 
+	 //change this to a get template backend rest call?
 	 vm.initializeBlankMpo = function(){
 		 vm.newMpo = {
 				 name: "",
 				 missedPremises: [],
-				 allMpoPremises: []
+				 allMpoPremises: [],
+				 ownerId: vm.user.userId
 		 };
 		 vm.newMpo.allMpoPremises = angular.copy(vm.claim.arguments[vm.argumentViewingIndex].premises);
 		 //vm.claim.missedPremiseObjections.push(newMpo);
