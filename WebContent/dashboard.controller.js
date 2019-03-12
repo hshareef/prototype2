@@ -1,7 +1,7 @@
 
 dashboardApp.controller('DashboardCtrl', function($scope, $http, DashboardService) {
-	
-	$scope.testDashboard = "chocobo";
+	var vm = this;
+	vm.testDashboard = "chocobo";
 //	
 //	$scope.topClaims = [];
 //	

@@ -1,0 +1,15 @@
+
+.add-arg-button{
+	float: right;
+	margin-top: 20px;
+}
+
+.add-arg-button:hover{
+	color: green;
+}
+
+.flat-button {
+	color: white;
+	background-color: var(--dark-accent-2);
+	border: 0px;
+}

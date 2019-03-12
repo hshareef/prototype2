@@ -7,12 +7,20 @@
 <body>
 	<div id="theAddNewMissedPremiseDialog" class="dialog">
 		<div class="dialog-content">
-			<span class="close" ng-click="vm.closeDialog('theAddNewMissedPremiseDialog', false)">&times;</span>
-			<br>
-			<textarea rows="1" cols="75" type="text" ng-model="vm.newMissedPremiseStatement"></textarea>
-			<br>
-			<button ng-click="vm.pushNewMissedPremiseToMPO()">Add</button>
-			<button ng-click="vm.closeDialog('theAddNewMissedPremiseDialog', false)">Close</button>
+			<div class="panel panel-primary panel-center dialog-panel">
+				<div class="panel-heading">Add New Missed Premise</div>
+				<div class="container">
+			  		<div class = "panel-body" >
+						<br>
+						<textarea rows="1" cols="75" type="text" ng-model="vm.newMissedPremiseStatement"></textarea>
+						<br>
+					</div>
+				</div>
+				<div class="panel-footer">
+					<button type="button" class="btn btn-secondary" ng-click="vm.pushNewMissedPremiseToMPO()">Add</button>
+					<button type="button" class="btn btn-secondary" ng-click="vm.closeDialog('theAddNewMissedPremiseDialog', false)">Cancel</button>
+				</div>
+			</div>
  		</div>
 	</div>
 </body>

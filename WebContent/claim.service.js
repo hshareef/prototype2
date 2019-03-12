@@ -1,7 +1,7 @@
 /**
  * 
  */
-claimApp.service('ClaimService',function($window){
+app.service('ClaimService',function($window){
 
 	
 	this.claimService = {

@@ -1,9 +1,35 @@
-:root {
-	--light-background: #DADADA;
+@import "panels.css";
+@import "buttons.css";
+@import "tabs.css";
+@import "dialogs.css";
+
+.color-scheme {
+	background-color: #25274D;
+	background-color: #464866;
+	background-color: #AAABB8;
+	background-color: #2E9CCA;
+	background-color: #29648A;
 }
+ 
+
+
+:root {
+	
+	--dark-accent-1:#25274D;
+	--light-accent-1: #464866;
+	--neutral-background: #AAABB8;
+	--light-accent-2: #2E9CCA;
+	--dark-accent-2: #29648A;
+	
+	--light-background: var(--neutral-background);
+	--tab-color: var(--light-accent-1);
+	--inactive-tab-header: var(--dark-accent-1);
+	
+}
+
 .navbar {
 	margin-bottom: 0;
-	background: #337ab7;
+	background: var(--dark-accent-1);
 	overflow:visible;
 	.container-fluid{
 	
@@ -127,8 +153,14 @@ p {
 .argSection{
 	background-color: white;
 	width: 1000px;
+	
+	.panel-primary>.panel-heading {
+		background-color: red;
+		color: yellow;	
+	}
+	
 	.panel {
-		.panel-heading:{
+		.panel-heading{
 			color: red;
 			background-color: red;
 		}
@@ -139,6 +171,11 @@ p {
 	}
 }
 
+.panel-heading {
+	background-color: red;
+	color: red;
+}
+ 
 .panel-body{
 	
 }
@@ -155,13 +192,13 @@ p {
 	background-color: #FF949E;
 }
 
-
+/* 
 .panel{
 	.panel-heading:{
 	color: red;
 	background-color: red;
 }
-}
+} */
 
 .deleteKeywordBadge:hover{
 	background-color: red;
@@ -321,19 +358,6 @@ p {
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
-.dialog-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-}
-.dialog-close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
 
 .dialog-close:hover,
 .dialog-close:focus {
@@ -370,18 +394,6 @@ p {
 	/*font-size: 24px; */
 }
 
-.add-arg-button{
-	float: right;
-}
-
-.add-arg-button:hover{
-	color: green;
-}
-
-.score{
-	font-size: 75px;
-	color: green;
-}
 .nav {
 	
 	.nav-tabs {
@@ -484,4 +496,12 @@ p {
     border-left: none;
     height: 300px;
     width: 600px;
+}
+
+.tab-container {
+	background-color: var(--tab-color);
+}
+
+.tab-active {
+	background-color: var(--tab-color);
 }

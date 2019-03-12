@@ -2,7 +2,7 @@
  * 
  */
 
-claimApp.directive('argumentSection', function(){
+app.directive('argumentSection', function(){
 	
 	var directive = {};
 	//directive.restrict = 'E';

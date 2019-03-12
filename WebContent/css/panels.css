@@ -1,0 +1,11 @@
+
+.panel-primary {
+	.panel-heading {
+		background-color: yellow;
+		color: red;
+	}	
+}
+
+.dialog-panel {
+	width: 100%;
+}

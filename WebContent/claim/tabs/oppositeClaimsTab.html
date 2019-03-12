@@ -4,26 +4,22 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
-<body>
-
-				Opposite Claims
-				
-				<div class = "oppoSection panel panel-primary panel-center">
- 						<div class="panel-heading">
-    						<h3 class = "panel-title">Opposite/Contradicting Claims</h3>
-    						
- 						</div>
- 					 <div class="container">
-		   				<div class = "panel-body">
-		   					<p ng-if="vm.claim.oppositeClaims.length == 0">No opposite claims. </p>
-		   					<button ng-click="vm.openDialog('theOppoClaimDialog')">Link Opposite Claim</button>
-		   					<span ng-repeat="oppo in vm.claim.oppositeClaims track by $index">
-		   						<br>
-		   						<a ng-click="vm.openClaim(vm.claim.oppositeClaims[$index].claimId)" >{{vm.claim.oppositeClaims[$index].claimStatement}}</a>
-		   					</span>
-		   				</div>
-   					</div>
-   				</div>
+<body>		
+	<div class = "oppoSection panel panel-primary panel-center">
+		<div class="panel-heading">
+			<h3 class = "panel-title">Opposite/Contradicting Claims</h3>	
+		</div>
+		 <div class="container">
+			<div class = "panel-body">
+				<p ng-if="vm.claim.oppositeClaims.length == 0">No opposite claims. </p>
+				<button ng-click="vm.openDialog('theOppoClaimDialog')">Link Opposite Claim</button>
+				<span ng-repeat="oppo in vm.claim.oppositeClaims track by $index">
+					<br>
+					<a ng-click="vm.openClaim(vm.claim.oppositeClaims[$index].claimId)" >{{vm.claim.oppositeClaims[$index].claimStatement}}</a>
+				</span>
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>

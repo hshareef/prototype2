@@ -7,15 +7,14 @@
 <body>
 	<div id="theEditArgumentDialog" class="dialog">
 		<div class="dialog-content">
- 			<span class="close" ng-click="vm.closeDialog('theEditArgumentDialog', false)">&times;</span>
-   			<div class="argSection panel panel-primary panel-center">
+   			<div class="panel panel-primary panel-center dialog-panel">
 				<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
      				<h3 class = "panel-title">Argument {{$index+1}} - {{vm.claim.arguments[vm.currentArgIndex].argName}}</h3>
      				<span class="btn" ng-if="!vm.claim.arguments[vm.currentArgIndex].editable && vm.claim.arguments[vm.currentArgIndex].ownerId === vm.user.userId" ng-click="vm.setArgumentEditMode($index, true) ; $event.stopPropagation()">
          				<span class="glyphicon glyphicon-edit"></span> Edit
        				</span>
-	   				<a class="btn" ng-if="vm.claim.arguments[vm.currentArgIndex].editable" ng-click="vm.setArgumentEditMode($index, false) ; vm.saveStatement() ; $event.stopPropagation()" style="color: black">Save</a>
-	   				<a class="btn" ng-if="vm.claim.arguments[vm.currentArgIndex].editable" ng-click="vm.setArgumentEditMode($index, false) ; vm.getClaim(vm.claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a>
+<!-- 	   				<a class="btn" ng-if="vm.claim.arguments[vm.currentArgIndex].editable" ng-click="vm.setArgumentEditMode($index, false) ; vm.saveStatement() ; $event.stopPropagation()" style="color: black">Save</a>
+	   				<a class="btn" ng-if="vm.claim.arguments[vm.currentArgIndex].editable" ng-click="vm.setArgumentEditMode($index, false) ; vm.getClaim(vm.claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a> -->
 	   				<!-- CHANGE saveStatement() above to saveArgument(index) (and create that method) -->
 	   			</div>
 	   			<div class="container" id="{{$index}}">
@@ -33,10 +32,11 @@
 						<br>
 					</div>
 				</div>
+				<div class="panel-footer">
+					<button ng-click="vm.saveStatement()" class="flat-button">Save</button>
+					<button ng-click="vm.closeDialog('theEditArgumentDialog', false)" class="flat-button">Close</button>
+				</div>
 			</div>
-			<div>{{vm.editMode}}</div>
-			<button ng-click="vm.saveStatement()">Save</button>
-			<button ng-click="vm.closeDialog('theEditArgumentDialog', false)">Close</button>
  		</div>
 	</div>
 </body>

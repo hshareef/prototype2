@@ -1,0 +1,17 @@
+
+
+.dialog-content {
+    background-color: none;
+    margin: auto;
+    padding: 0px;
+    border: 0px;
+    width: 50%;
+}
+.dialog-close {
+    color: red;
+    background-color: red;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+

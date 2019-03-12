@@ -1,0 +1,60 @@
+
+	<div class="row">
+		<h1>  Claim Statement: {{vm.claim.claimStatement}}</h1>
+		<span ng-if="vm.claim.arguments.length === 0 && !vm.claim.usedAsPremise" class="btn delete-icon" ng-click="vm.deleteClaim()">
+          	<span class="glyphicon glyphicon-trash"></span> Delete 
+       	</span>
+		<p class="stinky">Owner: {{vm.claim.originalOwnerUsername}}</p>	
+		<table>
+			<tr>
+				<td id="argumentsTab" class="tab-header" ng-click="vm.changeTab('arguments', 'argumentsTab')"><center>Arguments</center></td>
+				<td id="oppositeClaimsTab" class="tab-header" ng-click="vm.changeTab('oppositeClaims', 'oppositeClaimsTab')"><center>Opposite Claims</center></td>
+				<td id="mediaResourcesTab" class="tab-header" ng-click="vm.changeTab('mediaResources', 'mediaResourcesTab')"><center>Media Resources</center></td>
+				<td id="yourUpdatesTab" class="tab-header" ng-click="vm.changeTab('yourUpdates', 'yourUpdatesTab')"><center>Your Updates</center></td>
+			</tr>
+		</table>
+<!-- 		<ul class="nav nav-tabs">
+		   <li id="argumentsTab" class="tab-header"><p ng-click="vm.changeTab('arguments', 'argumentsTab')">Arguments</p></li>
+		   <li id="oppositeClaimsTab" class="tab-header"><a data-toggle="tab" ng-click="vm.changeTab('oppositeClaims', 'oppositeClaimsTab')" style="back">Opposite Claims</a></li>
+		   <li id="mediaResourcesTab" class="tab-header"><a data-toggle="tab" ng-click="vm.changeTab('mediaResources', 'mediaResourcesTab')">Media Resources</a></li>
+		   <li id="yourUpdatesTab" class="tab-header"><a data-toggle="tab" ng-click="vm.changeTab('yourUpdates', 'yourUpdatesTab')">Your Updates</a></li>
+		</ul> -->
+		<div class="tab-container"><!--  container -->
+		<div class="tab-content"><!-- tabs -->
+		<!-- <div id="arguments" class="tab-pane fade in active"> -->
+		<div id="arguments" class="tab-pane" style="display: block">
+			<div ng-include="'claim/tabs/argumentsTab.html'"></div>
+		</div>
+		<div id="oppositeClaims" class="tab-pane">
+			<div ng-include="'claim/tabs/oppositeClaimsTab.html'"></div>
+		</div>
+		<div id="mediaResources" class="tab-pane">
+			<div ng-include="'claim/tabs/mediaResourcesTab.html'"></div>
+		</div>
+		<div id="yourUpdates" class="tab-pane">
+			<div ng-include="'claim/tabs/pendingArgumentsTab.html'"></div>
+		</div>
+		
+		</div><!-- tabs -->
+		</div><!--  container -->
+		<div id="theCreateNewMediaResourceDialog" class="dialog">
+  				<div class="dialog-content">
+  					<span class="close" ng-click="vm.closeDialog('theCreateNewMediaResourceDialog', false)">&times;</span>
+  					<p>Claim Statement: {{vm.claim.claimStatement}}</p>
+  					URL:<textarea ng-model="vm.newMediaResource.url" rows="1" cols="75"></textarea>
+  					<br>
+  					<a ng-click="vm.addNewMediaResource()">Add New Media Resource</a>
+  				</div>
+  			</div>
+  			
+  			<!--  dialog html files -->
+		<div ng-include="'claim/dialogs/createClaimDialog.html'"></div>
+		<div ng-include="'claim/dialogs/editArgumentDialog.html'"></div>
+		<div ng-include="'claim/dialogs/createNewArgumentDialog.html'"></div>
+		<div ng-include="'claim/dialogs/addMpoDialog.html'"></div>
+		<div ng-include="'claim/dialogs/oppoClaimDialog.html'"></div>
+		<div ng-include="'claim/dialogs/addPremiseDialog.html'"></div>
+		<div ng-include="'claim/dialogs/addMissedPremiseDialog.html'"></div>
+		<div ng-include="'claim/dialogs/addNewMissedPremiseDialog.html'"></div>
+
+	</div>

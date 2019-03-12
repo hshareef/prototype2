@@ -7,17 +7,26 @@
 <body>
 	<div id="theAddMissedPremiseDialog" class="dialog">
 		<div class="dialog-content">
-			<span class="close" ng-click="vm.closeDialog('theAddMissedPremiseDialog', false)">&times;</span>
-			<p>Claim Statement: {{vm.claim.claimStatement}}</p>
-			Search for premises:
-			<input ng-model="vm.searchString" type="text" class="search-text" />
-			 <button ng-click="vm.searchPremises()" class="btn btn-default">Search</button>
-			 <br>
-			 <span ng-repeat="searchedPremises in vm.premiseSearchResults track by $index">
-			 	{{$index}} - {{searchedPremises.claimStatement}}
-			 	<a ng-click="vm.addMissedPremiseToMpo($index)">Select Premise</a>
-			 	<br>
-			</span>
+			<div class="panel panel-primary panel-center dialog-panel">
+				<div class="panel-heading">Search for pre-existing premise to add</div>
+				<div class="container">
+			  		<div class = "panel-body" >
+						<p>Claim Statement: {{vm.claim.claimStatement}}</p>
+						Search for premises:
+						<input ng-model="vm.searchString" type="text" class="search-text" />
+						 <button ng-click="vm.searchPremises()" class="btn btn-default">Search</button>
+						 <br>
+						 <span ng-repeat="searchedPremises in vm.premiseSearchResults track by $index">
+						 	{{$index}} - {{searchedPremises.claimStatement}}
+						 	<a ng-click="vm.addMissedPremiseToMpo($index)">Select Premise</a>
+						 	<br>
+						</span>
+					</div>
+				</div>
+				<div class="panel-footer">
+					<button type="button" class="btn btn-secondary" ng-click="vm.closeDialog('theAddMissedPremiseDialog', false)">Cancel</button>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>

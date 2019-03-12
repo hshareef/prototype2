@@ -1,5 +1,8 @@
+/**
+ * 
+ */
 
-claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location, $window, $timeout, ConfigService) {
+app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, $location, $window, $timeout, ConfigService) {
 	
 	var vm = this;
 	
@@ -103,10 +106,10 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     vm.saveStatement = function(){
     	
     	
-    	//if(vm.claim.originalOwnerId=-1){
-    		//vm.claim.originalOwnerId = vm.user.userId;
-    		//vm.claim.originalOwnerUsername = vm.user.username;
-    	//}
+    	if(vm.claim.originalOwnerId=-1){
+    		vm.claim.originalOwnerId = vm.user.userId;
+    		vm.claim.originalOwnerUsername = vm.user.username;
+    	}
     	var test = $http.post(ConfigService.getSettings().url + "/Prototype/prototype/claim/create", vm.claim).then(function(response){
         	alert("message saved!");
         	vm.claim = response.data;
@@ -141,6 +144,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     	vm.claim.arguments.push(vm.newArg);
     	vm.currentArgIndex = vm.claim.arguments.length;
     	vm.saveStatement();
+    	vm.closeDialog('theCreateNewArgumentDialog', false);
     };
     
     vm.addAndSaveNewMpo = function(){
@@ -293,12 +297,12 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
     
 	
 	
-	 vm.loadTopClaims = function(){
-		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/topClaims")
-		 .then(function(response){
-			 vm.topClaims = response.data;
-		 });
-	    };
+//	 vm.loadTopClaims = function(){
+//		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/topClaims")
+//		 .then(function(response){
+//			 vm.topClaims = response.data;
+//		 });
+//	    };
 	    
 	    
 		
@@ -306,7 +310,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 			 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/" + claimId)
 			 .then(function(response){
 				 vm.claim = response.data;
-				 vm.argumentViewingIndex = vm.getFirstPublishedArg();
+				 //vm.argumentViewingIndex = vm.getFirstPublishedArg();
 			 });
 		    };
 	    
@@ -319,7 +323,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	 };
 	 
 	 vm.openClaim = function(claimId){
-		$window.location.href = '/Prototype/createForm.html?claimId=' + claimId;
+		$window.location.href = '/Prototype/#/claim/' + claimId;
 		
 	 };
 	 
@@ -331,26 +335,26 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		 });
 	 };
 	 
-	 vm.voteValidity = function(index, valid){
-		 alert("trying to vote as valid");
-		 if(valid){
-			 if(vm.claim.arguments[index].validCount === undefined || vm.claim.arguments[index].validCount === null){
-				 vm.claim.arguments[index].validCount = 1;
-			 }
-			 else {
-				 vm.claim.arguments[index].validCount += 1;
-			 }
-		 }
-		 else{
-			 if(vm.claim.arguments[index].invalidCount === undefined || vm.claim.arguments[index].invalidCount === null){
-				 vm.claim.arguments[index].invalidCount = 1;
-			 }
-			 else {
-				 vm.claim.arguments[index].invalidCount += 1;
-			 }
-		 }
-		 vm.saveStatement();
-	 };
+//	 vm.voteValidity = function(index, valid){
+//		 alert("trying to vote as valid");
+//		 if(valid){
+//			 if(vm.claim.arguments[index].validCount === undefined || vm.claim.arguments[index].validCount === null){
+//				 vm.claim.arguments[index].validCount = 1;
+//			 }
+//			 else {
+//				 vm.claim.arguments[index].validCount += 1;
+//			 }
+//		 }
+//		 else{
+//			 if(vm.claim.arguments[index].invalidCount === undefined || vm.claim.arguments[index].invalidCount === null){
+//				 vm.claim.arguments[index].invalidCount = 1;
+//			 }
+//			 else {
+//				 vm.claim.arguments[index].invalidCount += 1;
+//			 }
+//		 }
+//		 vm.saveStatement();
+//	 };
 	 
 	 vm.openCity = function(evt, sectionName, index){
 	    var i, tabcontent, tablinks;
@@ -379,46 +383,46 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	}, 2000);
 	 
 	 
-	 vm.voteFallacy = function(type, index){
-		 alert("inside the vote");
-		 vm.claim;
-		 if(type === 'adHomniem'){
-			 vm.claim.arguments[index].fallacyDetails.adHomniemUpvotes =
-				 vm.claim.arguments[index].fallacyDetails.adHomniemUpvotes+1;
-			 var t=9;
-			 vm.claim;
-		 }
-		 else if(type === 'ignorantum'){
-			 vm.claim.arguments[index].fallacyDetails.ignorantumUpvotes =
-				 vm.claim.arguments[index].fallacyDetails.ignorantumUpvotes+1;
-		 }
-		 else if(type === 'adpopulum'){
-			 vm.claim.arguments[index].fallacyDetails.adpopulumUpvotes +=1;	 
-		 }
-		 else if(type === 'argFromAuthority'){
-			 vm.claim.arguments[index].fallacyDetails.argFromAuthorityUpvotes +=1;
-		 }
-		 else if(type === 'generalization'){
-			 vm.claim.arguments[index].fallacyDetails.generalizationUpvotes +=1;
-		 }
-		 else if(type === 'slipperySlope'){
-			 vm.claim.arguments[index].fallacyDetails.slipperySlopeUpvotes +=1;
-		 }
-		 else if(type === 'strawman'){
-			 vm.claim.arguments[index].fallacyDetails.strawmanUpvotes +=1;
-		 }
-		 else if(type === 'redHerring'){
-			 vm.claim.arguments[index].fallacyDetails.redHerringUpvotes +=1;
-		 }
-		 else if(type === 'falseDichotomy'){
-			 vm.claim.arguments[index].fallacyDetails.falseDichotomyUpvotes +=1;
-		 }
-		 else if(type === 'circularReasoning'){
-			 vm.claim.arguments[index].fallacyDetails.circularReasoningUpvotes +=1;
-		 }
-		 vm.saveStatement();
-		 
-	 };
+//	 vm.voteFallacy = function(type, index){
+//		 alert("inside the vote");
+//		 vm.claim;
+//		 if(type === 'adHomniem'){
+//			 vm.claim.arguments[index].fallacyDetails.adHomniemUpvotes =
+//				 vm.claim.arguments[index].fallacyDetails.adHomniemUpvotes+1;
+//			 var t=9;
+//			 vm.claim;
+//		 }
+//		 else if(type === 'ignorantum'){
+//			 vm.claim.arguments[index].fallacyDetails.ignorantumUpvotes =
+//				 vm.claim.arguments[index].fallacyDetails.ignorantumUpvotes+1;
+//		 }
+//		 else if(type === 'adpopulum'){
+//			 vm.claim.arguments[index].fallacyDetails.adpopulumUpvotes +=1;	 
+//		 }
+//		 else if(type === 'argFromAuthority'){
+//			 vm.claim.arguments[index].fallacyDetails.argFromAuthorityUpvotes +=1;
+//		 }
+//		 else if(type === 'generalization'){
+//			 vm.claim.arguments[index].fallacyDetails.generalizationUpvotes +=1;
+//		 }
+//		 else if(type === 'slipperySlope'){
+//			 vm.claim.arguments[index].fallacyDetails.slipperySlopeUpvotes +=1;
+//		 }
+//		 else if(type === 'strawman'){
+//			 vm.claim.arguments[index].fallacyDetails.strawmanUpvotes +=1;
+//		 }
+//		 else if(type === 'redHerring'){
+//			 vm.claim.arguments[index].fallacyDetails.redHerringUpvotes +=1;
+//		 }
+//		 else if(type === 'falseDichotomy'){
+//			 vm.claim.arguments[index].fallacyDetails.falseDichotomyUpvotes +=1;
+//		 }
+//		 else if(type === 'circularReasoning'){
+//			 vm.claim.arguments[index].fallacyDetails.circularReasoningUpvotes +=1;
+//		 }
+//		 vm.saveStatement();
+//		 
+//	 };
 
 //	 vm.openOppositeClaimDialog = function(){
 //		 var theOppoClaimDialog = document.getElementById('theOppoClaimDialog');
@@ -467,7 +471,9 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 		 else if(dialogId == "theAddMpoDialog"){
 			 vm.argumentViewingIndex = argIndex;
 			 vm.mpoViewingIndex = mpoIndex;
-			 vm.orderMpoPremises();
+			 if(vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections.length > 0){
+				 vm.orderMpoPremises();
+			 }
 			 if(dialogMode == null || dialogMode == "addNewMpo"){
 				 vm.mpoEditable = true;
 			 	 vm.initializeBlankMpo();
@@ -488,7 +494,7 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 			 vm.newMediaResource = null;
 		 }
 		 if(destination !== undefined && destination !== null){
-			 window.location.href = ConfigService.getSettings().url + "/Prototype/" + destination;
+			 window.location.href = ConfigService.getSettings().url + "/Prototype/#/" + destination;
 		 }
 		 else if(redirect){
 			 window.location.href = window.history.back(1);
@@ -636,10 +642,10 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 	};
 	
 	vm.getUser = function(userId){
-		var test = $http.get(ConfigService.getSettings().url + "/Prototype/prototype/login/"+userId)
-		.then(function(response){
-			vm.user = response.data;
-		});
+//		var test = $http.get(ConfigService.getSettings().url + "/Prototype/prototype/login/"+userId)
+//		.then(function(response){
+//			vm.user = response.data;
+//		});
 	};
 	
 	vm.setNewAcctFlag = function(flag){
@@ -662,37 +668,49 @@ claimApp.controller('ClaimCtrl', function($scope, $http, ClaimService, $location
 			var test = $http.post(ConfigService.getSettings().url + "/Prototype/prototype/login/createUser", vm.newUser);
 		}
 	};
+	
+	vm.changeTab = function(idName, tabIdName){
+		
+		//var activeTab = document.getElementById(idName);
+		var tabHeaders = document.getElementsByClassName("tab-header");
+		for(var j = 0 ; j < tabHeaders.length ; j++){
+			if(tabHeaders[j].id !== tabIdName){
+				//tabHeaders[j].classList.remove("tab-active");
+				tabHeaders[j].style.backgroundColor = "var(--inactive-tab-header)";
+			}
+			else{
+				//tabHeaders[j].className += "tab-active";
+				tabHeaders[j].style.backgroundColor = "var(--tab-color)";
+			}
+		}
+		
+		var tabPanes = document.getElementsByClassName("tab-pane");
+		for(var i = 0 ; i < tabPanes.length ; i++){
+			if(tabPanes[i].id !== idName){
+				tabPanes[i].style.display = "none";
+			}
+			else{
+				tabPanes[i].style.display = "block";	
+			}
+		}
+		
+	};
 	 
 	 vm.init = function(){
-		 if(getPageName(window.location.toString()) == "Prototype/index.html"){
-			 if(localStorage.getItem("userId") !== undefined && localStorage.getItem("userId") !== null){
-				 vm.getUser(localStorage.getItem("userId"));
-			 }
-			 vm.loadTopClaims();
+		 vm.getUser(localStorage.getItem("userId"));
+		 var claimId = $routeParams.claimId;//getUrlVariable("claimId");
+		 if(claimId === undefined || claimId === null){
+			 $timeout(function(){
+				 vm.openDialog('theCreateClaimDialog');
+			 });
+			 
 		 }
-		 if(getPageName(window.location.toString()) == "Prototype/createForm.html"){
-			 //vm.user.userId = localStorage.getItem("userId");
-			 vm.getUser(localStorage.getItem("userId"));
-			 var claimId = getUrlVariable("claimId");
-			 if(claimId === undefined || claimId === null){
-//				 setTimeout(function(){
-//					 vm.openDialog('theCreateClaimDialog');
-//					}, 2000);
-//				 document.onLoad = function(){
-//					 vm.openDialog('theCreateClaimDialog');
-//				 };
-				 $timeout(function(){
-					 vm.openDialog('theCreateClaimDialog');
-				 });
-				 
-			 }
-			 else {
-				 vm.getClaim(claimId);
-			 }
+		 else {
+			 vm.getClaim(claimId);
+			 vm.changeTab('arguments', 'argumentsTab');//by default, load arguments tab
 		 }
 	 };
 	 
 	 vm.init();
-    
-    
+	 
 });

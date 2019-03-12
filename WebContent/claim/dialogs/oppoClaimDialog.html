@@ -7,9 +7,35 @@
 <body>
 	<div id="theOppoClaimDialog" class="dialog">
 		<div class="dialog-content">
-			<span class="close" ng-click="vm.closeDialog('theOppoClaimDialog', false)">&times;</span>
+		
+			<div class="panel panel-primary panel-center dialog-panel">
+				<div class="panel-heading">
+     				Link an opposite claim:
+	   			</div>
+	   			<div class="container" id="{{$index}}">
+		   			<div class = "panel-body" >
+						<p>Claim Statement: {{vm.claim.claimStatement}}</p>
+						Search for claims to mark as opposite:
+						<input ng-model="vm.searchString" type="text" class="search-text" />
+						<button ng-click="vm.searchOppositeClaims()" class="btn btn-default">Search</button>
+						<br>
+						<span ng-repeat="oppositeClaim in vm.oppositeClaimSearchResults">
+							{{oppositeClaim.claimStatement}}
+							<a ng-click="vm.setOppositeClaim(vm.claim.claimId, oppositeClaim.claimId)">Set as opposite claim</a>
+							<br>
+						</span>
+					</div>
+				</div>
+				<div class="panel-footer">
+					<button ng-click="vm.closeDialog('theOppoClaimDialog', false)" class="flat-button">Cancel</button>
+				</div>
+			</div>
+			
+			
+			
+<!-- 			<span class="close" ng-click="vm.closeDialog('theOppoClaimDialog', false)">&times;</span>
 			<p>Claim Statement: {{vm.claim.claimStatement}}</p>
-			Search for claims to mark as opposite:
+			TEST DOG Search for claims to mark as opposite:
 			<input ng-model="vm.searchString" type="text" class="search-text" />
 			<button ng-click="vm.searchOppositeClaims()" class="btn btn-default">Search</button>
 			<br>
@@ -17,7 +43,7 @@
 				{{oppositeClaim.claimStatement}}
 				<a ng-click="vm.setOppositeClaim(vm.claim.claimId, oppositeClaim.claimId)">Set as opposite claim</a>
 				<br>
-			</span>
+			</span> -->
 		</div>
 	</div>
 </body>

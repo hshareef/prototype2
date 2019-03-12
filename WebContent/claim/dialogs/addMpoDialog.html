@@ -7,10 +7,10 @@
 <body>
 	<div id="theAddMpoDialog" class="dialog">
 		<div class="dialog-content">
-			<span class="close" ng-click="vm.closeDialog('theAddMpoDialog', false)">&times;</span>
-			<div class="argSection panel panel-primary panel-center">
+			<div class="panel panel-primary panel-center dialog-panel">
 				<div data-toggle="collapse" data-target="#{{$index}}" class="panel-heading">
   					<h3 class = "panel-title">Missed Premise Objection Name: 
+  						<!--  the below two lines need to be fixed so that there is only one line - when adding a new arg or anything, just add it to end of pre-existing list -->
   						<span ng-if="vm.mpoEditable"><textarea ng-disabled="false" rows="1" cols="50" ng-model="vm.newMpo.name"></textarea><br></span>
 						<span ng-if="!vm.mpoEditable"><textarea ng-disabled="true" rows="1" cols="50" ng-model="vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections[vm.mpoViewingIndex].name"></textarea><br></span>
 					</h3>
@@ -23,41 +23,8 @@
 	 			</div>
 			 	<div class="container" id="{{$index}}">
 			  		<div class = "panel-body" >
-						{{argument.editable}}Argument name: {{vm.claim.arguments[vm.argumentViewingIndex].argName}}
-<!-- 						<div ng-repeat="premise in vm.claim.arguments[vm.argumentViewingIndex].premises track by $index">
-							Premise {{$index+1}}: {{premise.claimStatement}}
-							<br>
-							<textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
-						</div> -->
-						
-						
-						
+						{{argument.editable}}Argument name: {{vm.claim.arguments[vm.argumentViewingIndex].argName}}		
 						<br><br>
-						
-<!-- 						<div ng-if="vm.mpoEditable" ng-repeat="premise in vm.newMpo.missedPremises track by $index">
-							<p>Missed Premise {{$index+1}}: {{premise.claimStatement}}</p>
-						</div>
-						<div ng-if="!vm.mpoEditable" ng-repeat="premise in vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections[vm.mpoViewingIndex].missedPremises track by $index">
-							Missed Premise {{$index+1}}:
-							<a ng-class="btn" style="color:black; font-size:12px" ng-click="vm.openClaim(premise.claimId)">{{premise.claimStatement}}</a><br>
-						</div> -->
-						
-						
-						
-<!-- 						<div ui-tree id="tree-root">
-		      				<ol ui-tree-nodes ng-model="vm.treedata">
-		       					<li ng-repeat="node in vm.treedata" ui-tree-node>
-		          					{{node.title}}
-						        </li>
-						    </ol> -->
-					        <!--  <ol ui-tree-nodes ng-model="row.columns">
-					            <li ng-repeat="column in row.columns" ui-tree-node>
-					              <div ui-tree-handle>
-					                {{column.name}}
-					              </div>
-					            </li>
-					        </ol>    -->
-<!-- 					    </div> -->
 					    
 					    <!-- only show this section when creating a new MPO -->
 					    <div ui-tree id="tree-root">
@@ -82,23 +49,23 @@
           
 					</div>
 				</div>
-			</div>
-			
-			<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-				<div class="btn-group" role="group" ng-if="vm.mpoEditable">
-			    	<button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			     		Add Missed Premise
-			    	</button>
-			    	<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-			      		<a class="dropdown-item" ng-click="vm.openDialog('theAddNewMissedPremiseDialog')"> New Missed Premise</a>
-			      		<a class="dropdown-item" ng-click="vm.openDialog('theAddMissedPremiseDialog')" > Pre-existing Premise</a>
-			    	</div>
-			  	</div>
-			    <button type="button" class="btn btn-secondary" ng-click="vm.addAndSaveNewMpo()">Save</button>
-			  	<button type="button" class="btn btn-secondary" ng-click="vm.closeDialog('theAddMpoDialog', false)">Close</button>
+				<div class="panel-footer">
+					<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+						<div class="btn-group" role="group" ng-if="vm.mpoEditable">
+					    	<button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					     		Add Missed Premise
+					    	</button>
+					    	<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+					      		<a class="dropdown-item" ng-click="vm.openDialog('theAddNewMissedPremiseDialog')"> New Missed Premise</a>
+					      		<a class="dropdown-item" ng-click="vm.openDialog('theAddMissedPremiseDialog')" > Pre-existing Premise</a>
+					    	</div>
+					  	</div>
+					    <button type="button" class="btn btn-secondary" ng-click="vm.addAndSaveNewMpo()">Save</button>
+					  	<button type="button" class="btn btn-secondary" ng-click="vm.closeDialog('theAddMpoDialog', false)">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
  	</div>
-
 </body>
 </html>
