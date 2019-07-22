@@ -8,6 +8,7 @@
 		<table>
 			<tr>
 				<td id="argumentsTab" class="tab-header" ng-click="vm.changeTab('arguments', 'argumentsTab')"><center>Arguments</center></td>
+				<td id="claimInfoTab" class="tab-header" ng-click="vm.changeTab('claimInfo', 'claimInfoTab')"><center>Claim Info</center></td>
 				<td id="oppositeClaimsTab" class="tab-header" ng-click="vm.changeTab('oppositeClaims', 'oppositeClaimsTab')"><center>Opposite Claims</center></td>
 				<td id="mediaResourcesTab" class="tab-header" ng-click="vm.changeTab('mediaResources', 'mediaResourcesTab')"><center>Media Resources</center></td>
 				<td id="yourUpdatesTab" class="tab-header" ng-click="vm.changeTab('yourUpdates', 'yourUpdatesTab')"><center>Your Updates</center></td>
@@ -24,6 +25,9 @@
 		<!-- <div id="arguments" class="tab-pane fade in active"> -->
 		<div id="arguments" class="tab-pane" style="display: block">
 			<div ng-include="'claim/tabs/argumentsTab.html'"></div>
+		</div>
+		<div id="claimInfo" class="tab-pane" style="display: block">
+			<div ng-include="'claim/tabs/claimInfo.html'"></div>
 		</div>
 		<div id="oppositeClaims" class="tab-pane">
 			<div ng-include="'claim/tabs/oppositeClaimsTab.html'"></div>

@@ -2,6 +2,7 @@ package com.prototype.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -47,10 +48,19 @@ public class Claim {
 	@ElementCollection
 	private List<String> keywords;
 	
+	@ElementCollection
+	private List<Integer> categoryIds;
+	
 	@Column(name="original_owner_id")
 	private Integer originalOwnerId;//id of the user who first created this claim
 	@Column(name="original_owner_username")
 	private String originalOwnerUsername;
+	
+	@Column(name="CREATED_TS")
+	private Date createdTs;
+	
+	@Column(name="UPDATED_TS")
+	private Date updatedTs;
 	
 	@Column(name="used_as_premise")
 	private boolean usedAsPremise; //flag to help determine if the claim can be deleted or not
@@ -88,6 +98,14 @@ public class Claim {
 
 	public void setKeywords(List<String> keywords) {
 		this.keywords = keywords;
+	}
+
+	public List<Integer> getCategoryIds() {
+		return categoryIds;
+	}
+
+	public void setCategoryIds(List<Integer> categoryIds) {
+		this.categoryIds = categoryIds;
 	}
 
 	public Integer getOriginalOwnerId() {
@@ -128,6 +146,22 @@ public class Claim {
 
 	public void setMediaResources(List<MediaResource> mediaResources) {
 		this.mediaResources = mediaResources;
+	}
+
+	public Date getCreatedTs() {
+		return createdTs;
+	}
+
+	public void setCreatedTs(Date createdTs) {
+		this.createdTs = createdTs;
+	}
+
+	public Date getUpdatedTs() {
+		return updatedTs;
+	}
+
+	public void setUpdatedTs(Date updatedTs) {
+		this.updatedTs = updatedTs;
 	}
 	
 	

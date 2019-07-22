@@ -46,6 +46,7 @@
         <mapping class="com.prototype.model.MissedPremiseObjection" />
         <mapping class="com.prototype.model.PremiseOrderWrapper" />
         <mapping class="com.prototype.model.MpoState" />
+        <mapping class="com.prototype.model.Lookup" />
         
 
     </session-factory>

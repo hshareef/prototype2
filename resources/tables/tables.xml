@@ -1,0 +1,30 @@
+<databaseChangeLog 
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd 
+   http://www.liquibase.org/xml/ns/dbchangelog 
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+   
+      <changeSet author="hshareef" id="20190319_create_categories">
+	    <sqlFile dbms="mysql"
+	            encoding="utf8"
+	            endDelimiter=";"
+	            path="20190319-create-categories.sql"
+	            relativeToChangelogFile="true"
+	            splitStatements="true"
+	            stripComments="true"/>
+	</changeSet>
+	
+	<changeSet author="hshareef" id="20190622_mpo_status_lkup">
+	    <sqlFile dbms="mysql"
+	            encoding="utf8"
+	            endDelimiter=";"
+	            path="20190622-mpo-status-lkup.sql"
+	            relativeToChangelogFile="true"
+	            splitStatements="true"
+	            stripComments="true"/>
+	</changeSet>
+
+</databaseChangeLog>

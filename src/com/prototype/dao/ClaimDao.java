@@ -1,6 +1,7 @@
 package com.prototype.dao;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -88,6 +89,13 @@ public class ClaimDao {
 				//premisesToBind.add(new PremiseBindingParameters(claim.getClaimId(), oppositeClaims.getClaimId(), CommonConstants.PremiseBindingTypes.OPPO));
 				//bindPremise(claim.getClaimId(), oppositeClaims.getClaimId(), session, CommonConstants.PremiseBindingTypes.OPPO);
 			}
+		}
+		if(claim.getClaimId() == null){
+			claim.setCreatedTs(Calendar.getInstance().getTime());
+			claim.setUpdatedTs(claim.getCreatedTs());
+		}
+		else{
+			claim.setUpdatedTs(Calendar.getInstance().getTime());
 		}
 		session.saveOrUpdate(claim);
 		session.getTransaction().commit();
@@ -249,6 +257,7 @@ public class ClaimDao {
 			claim.setArguments(arguments);
 			ArrayList <String> keywords = new ArrayList<String>();
 			claim.setKeywords(keywords);
+			claim.setCategoryIds(null);
 			ArrayList <Claim> oppositeClaims = new ArrayList<Claim>();
 			claim.setOppositeClaims(oppositeClaims);
 			ArrayList <MediaResource> mediaResources = new ArrayList<MediaResource>();
@@ -277,6 +286,7 @@ public class ClaimDao {
 		
 	     Hibernate.initialize(claim.getArguments());
 	     Hibernate.initialize(claim.getKeywords());
+	     Hibernate.initialize(claim.getCategoryIds());
 	     Hibernate.initialize(claim.getMediaResources());
 	     
 		
@@ -290,6 +300,7 @@ public class ClaimDao {
 		 		premise.setArguments(premiseArguments); 
 		 		ArrayList<String> keywords = new ArrayList<String>();
 		 		premise.setKeywords(keywords);
+		 		premise.setCategoryIds(null);
 		 		ArrayList <Claim> oppositeClaims = new ArrayList<Claim>();
 		 		premise.setOppositeClaims(oppositeClaims);
 		 		ArrayList <MediaResource> mediaResources = new ArrayList<MediaResource>();
@@ -305,6 +316,7 @@ public class ClaimDao {
 		    		 //don't want to load all the sub-info, just leave blank
 		    		 premise.setArguments(new ArrayList<Argument>());
 		    		 premise.setKeywords(new ArrayList<String>());
+		    		 premise.setCategoryIds(null);
 		    		 premise.setOppositeClaims(new ArrayList<Claim>());
 		    		 premise.setMediaResources(new ArrayList<MediaResource>());
 		    	 }

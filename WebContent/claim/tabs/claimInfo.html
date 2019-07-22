@@ -1,0 +1,21 @@
+<br>
+<p class="light-text">Claim statement: {{vm.claim.claimStatement}}</p>
+<p class="light-text">Owner: {{vm.claim.originalOwnerUsername}}</p>
+<p class="light-text">Number of arguments: {{vm.claim.arguments.length}}</p>
+<p class="light-text">Created: {{vm.claim.createdTs | date}}</p>
+<p class="light-text">Last Updated: {{vm.claim.updatedTs | date}}</p>
+<p class="light-text">Keywords: </p>
+<div ng-repeat="keyword in vm.claim.keywords track by $index" class="chip">
+  {{keyword}}
+  <span class="close" ng-click="vm.removeKeyword($index)">&times;</span>
+</div>
+<input type="text" id="keyword-input"/>
+<p class="light-text">Categories: </p>
+    <select class="form-control" id="exampleFormControlSelect1">
+      <option ng-repeat="option in vm.testOptions">{{option}}</option>
+    </select>
+    
+<p class="light-text">Categories for realz: </p>
+<select class="form-control" id="exampleFormControlSelect1">
+  <option ng-repeat="option in vm.categoryOptions">{{option.description}}</option>
+</select>

@@ -15,8 +15,10 @@
 
 :root {
 	
-	--dark-accent-1:#25274D;
-	--light-accent-1: #464866;
+	--dark-accent-1-saved:#25274D;
+	--dark-accent-1:#B9B9B9;
+	--light-accent-1-saved: #464866;
+	--light-accent-1: #E2E2E2;
 	--neutral-background: #AAABB8;
 	--light-accent-2: #2E9CCA;
 	--dark-accent-2: #29648A;
@@ -24,6 +26,8 @@
 	--light-background: var(--neutral-background);
 	--tab-color: var(--light-accent-1);
 	--inactive-tab-header: var(--dark-accent-1);
+	
+	--light-text: white;
 	
 }
 
@@ -504,4 +508,14 @@ p {
 
 .tab-active {
 	background-color: var(--tab-color);
+}
+
+.chip {
+  display: inline-block;
+  padding: 0px 10px 0px 10px;
+  height: 20px;
+  font-size: 12px;
+  line-height: 20px;
+  border-radius: 10px;
+  background-color: #f1f1f1;
 }

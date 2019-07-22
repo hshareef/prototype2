@@ -2,7 +2,7 @@
  * 
  */
 
-app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, $location, $window, $timeout, ConfigService) {
+app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, $location, $window, $timeout, ConfigService, LookupService) {
 	
 	var vm = this;
 	
@@ -49,55 +49,62 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	vm.tabs = ['Arguments', 'Opposite Claims', 'Media Resources', 'Claim Info'];
 	vm.newMissedPremiseStatement = "";
 	
-    vm.treedata = [{
-        'id': 1,
-        'title': 'node1',
-        'nodes': [
-          {
-            'id': 11,
-            'title': 'node1.1',
-            'nodes': [
-              {
-                'id': 111,
-                'title': 'node1.1.1',
-                'nodes': []
-              }
-            ]
-          },
-          {
-            'id': 12,
-            'title': 'node1.2',
-            'nodes': []
-          }
-        ]
-      }, {
-        'id': 2,
-        'title': 'node2',
-        'nodrop': true, // An arbitrary property to check in custom template for nodrop-enabled
-        'nodes': [
-          {
-            'id': 21,
-            'title': 'node2.1',
-            'nodes': []
-          },
-          {
-            'id': 22,
-            'title': 'node2.2',
-            'nodes': []
-          }
-        ]
-      }, {
-        'id': 3,
-        'title': 'node3',
-        'nodes': [
-          {
-            'id': 31,
-            'title': 'node3.1',
-            'nodes': []
-          }
-        ]
-      }];
-    
+	vm.testOptions = LookupService.getFakeOptions();
+	//vm.categoryOptions = LookupService.getLookup("CLAIM_CATEGORIES_LKUP");
+	LookupService.getLookup("CLAIM_CATEGORIES_LKUP").then(function(response){
+		vm.categoryOptions = response;
+	});
+	
+//    vm.treedata = [{
+//        'id': 1,
+//        'title': 'node1',
+//        'nodes': [
+//          {
+//            'id': 11,
+//            'title': 'node1.1',
+//            'nodes': [
+//              {
+//                'id': 111,
+//                'title': 'node1.1.1',
+//                'nodes': []
+//              }
+//            ]
+//          },
+//          {
+//            'id': 12,
+//            'title': 'node1.2',
+//            'nodes': []
+//          }
+//        ]
+//      }, {
+//        'id': 2,
+//        'title': 'node2',
+//        'nodrop': true, // An arbitrary property to check in custom template for nodrop-enabled
+//        'nodes': [
+//          {
+//            'id': 21,
+//            'title': 'node2.1',
+//            'nodes': []
+//          },
+//          {
+//            'id': 22,
+//            'title': 'node2.2',
+//            'nodes': []
+//          }
+//        ]
+//      }, {
+//        'id': 3,
+//        'title': 'node3',
+//        'nodes': [
+//          {
+//            'id': 31,
+//            'title': 'node3.1',
+//            'nodes': []
+//          }
+//        ]
+//      }];
+	
+
     
     
 	
@@ -111,7 +118,7 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
     		vm.claim.originalOwnerUsername = vm.user.username;
     	}
     	var test = $http.post(ConfigService.getSettings().url + "/Prototype/prototype/claim/create", vm.claim).then(function(response){
-        	alert("message saved!");
+        	//alert("message saved!");
         	vm.claim = response.data;
         	vm.editMode=false;
         	vm.oneUnsavedArgument = false;
@@ -310,7 +317,7 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 			 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/" + claimId)
 			 .then(function(response){
 				 vm.claim = response.data;
-				 //vm.argumentViewingIndex = vm.getFirstPublishedArg();
+				 console.log(vm.claim);
 			 });
 		    };
 	    
@@ -328,7 +335,7 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	 };
 	 
 	 vm.searchClaims = function(){
-		 alert(vm.searchString);
+		 //alert(vm.searchString);
 		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/searchClaims/" + vm.searchString)
 		 .then(function(response){
 			 vm.topClaims = response.data;
@@ -356,6 +363,7 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 //		 vm.saveStatement();
 //	 };
 	 
+	 //need to rename this to like openTab or something
 	 vm.openCity = function(evt, sectionName, index){
 	    var i, tabcontent, tablinks;
 	    //tabcontent = document.getElementsByClassName("tabcontent");
@@ -598,7 +606,7 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	 
 	 vm.publishArg = function(index, targetStateId){
 		 //update the state to published
-		 alert("test publish");
+		 //alert("test publish");
 		 $http.post(ConfigService.getSettings().url + "/Prototype/prototype/claim/updateState/" + targetStateId, vm.claim.arguments[index]).then(function(response){
 			 vm.claim.arguments[index] = response.data;
 		 });
@@ -694,6 +702,38 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 			}
 		}
 		
+		if(idName == "claimInfo"){
+		//stuff to do when opening claim info tab
+		//keyword stuff
+	    var keywordInput = document.getElementById("keyword-input");
+	    
+	    keywordInput.addEventListener("keyup", function(event) {
+	    	  // Number 13 is the "Enter" key on the keyboard
+	    	  if (event.keyCode === 13) {
+	    	    // Cancel the default action, if needed
+	    	    //event.preventDefault();
+	    	    // Trigger the button element with a click
+	    	    //document.getElementById("myBtn").click();
+	    		 // var keyword = keywordInput.value;
+	    		 // alert(keyword);
+	    		  vm.addKeyword(keywordInput.value);
+	    		  document.getElementById("keyword-input").value = "";
+	    		  
+	    	  }
+	    	});
+		}
+	};
+	
+	vm.addKeyword = function(keyword){
+		if(keyword != null && keyword != ""){
+			vm.claim.keywords.push(keyword);
+			vm.saveStatement();
+		}
+	};
+	
+	vm.removeKeyword = function(index){
+		vm.claim.keywords.splice(index, 1);
+		vm.saveStatement();
 	};
 	 
 	 vm.init = function(){

@@ -1,28 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-	<div id="theCreateClaimDialog" class="dialog">
-		<div class="dialog-content">
-			<span class="close" ng-click="vm.closeDialog('theCreateClaimDialog',true, 'index.html')">&times;</span>   			
-			<div class="panel panel-primary panel-center dialog-panel">
-				<div class="panel-heading">
-					Create new claim
-				</div>
-				<div class="container" id="{{$index}}">
-		   			<div class = "panel-body" >
-		   				<textarea rows="2" cols="90" type="text" ng-model="vm.claim.claimStatement"></textarea>
-		   			</div>
-		   		</div>
-		   		<div class="panel-footer">
-		   			<button ng-click="vm.saveStatement()" class="flat-button">Save</button>
-					<button ng-click="vm.closeDialog('theCreateClaimDialog', true, 'index.html')" class="flat-button">Close</button>
-		   		</div>
+<div id="theCreateClaimDialog" class="dialog">
+	<div class="dialog-content">
+		<span class="close" ng-click="vm.closeDialog('theCreateClaimDialog',true, 'index.html')">&times;</span>   			
+		<div class="panel panel-primary panel-center dialog-panel">
+			<div class="panel-heading">
+				Create new claim
 			</div>
- 		</div>
-	</div>
-</body>
-</html>
+			<div class="container" id="{{$index}}">
+	   			<div class = "panel-body" >
+	   				<textarea rows="2" cols="90" type="text" ng-model="vm.claim.claimStatement"></textarea>
+	   			</div>
+	   		</div>
+	   		<div>
+	   			<p class="light-text">Category:</p>
+				<select class="form-control" id="exampleFormControlSelect1">
+				  <option ng-repeat="option in vm.categoryOptions">{{option.description}}</option>
+				</select>
+	   		</div>
+	   		<div class="panel-footer">
+	   			<button ng-click="vm.saveStatement()" class="flat-button">Save</button>
+				<button ng-click="vm.closeDialog('theCreateClaimDialog', true, 'index.html')" class="flat-button">Close</button>
+	   		</div>
+		</div>
+		</div>
+</div>
