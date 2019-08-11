@@ -11,8 +11,15 @@
 	<div id="top-claims-window">
 
 	<div id="top-claims-header">
-		Top Claims
+		&nbsp;Filter Claims by Category:&nbsp;
+		<div class="btn-group">
+			<span ng-repeat="category in vm.categoryOptions">
+				<button class="category-button" ng-click="vm.activateCategoryButton(category.description);vm.loadClaimsForCategory(category.id)">{{category.description}}</button>
+			</span>
+		</div>
+
 	</div>
+	<hr class="claims-window-bar">
 
   <div id="scrollable-content">
   

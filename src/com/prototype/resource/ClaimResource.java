@@ -56,12 +56,12 @@ public class ClaimResource {
 		return claim;
 	}
 	
-	@Path("/topClaims")
+	@Path("/topClaims/{categoryId}")
 	@GET
 	@Produces("application/json")
-	public List<Claim> getTopClaims() {
+	public List<Claim> getTopClaims(@PathParam("categoryId") Integer categoryId) {
 		System.out.println("Attempting to get the top claims...");
-		return claimService.getTopClaims();
+		return claimService.getTopClaims(categoryId);
 	}
 	
 	@Path("/searchClaims/{searchString}")

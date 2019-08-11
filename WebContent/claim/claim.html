@@ -5,7 +5,19 @@
           	<span class="glyphicon glyphicon-trash"></span> Delete 
        	</span>
 		<p class="stinky">Owner: {{vm.claim.originalOwnerUsername}}</p>	
-		<table>
+		
+		<div class="btn-group">
+			<span>
+				<button class="category-button" ng-click="vm.activateCategoryButton('Arguments');vm.changeTab('arguments', 'argumentsTab')">Arguments</button>
+				<button class="category-button" ng-click="vm.activateCategoryButton('Claim Info');vm.changeTab('claimInfo', 'claimInfoTab')">Claim Info</button>
+				<button class="category-button" ng-click="vm.activateCategoryButton('Opposite Claims');vm.changeTab('oppositeClaims', 'oppositeClaimsTab')">Opposite Claims</button>
+				<button class="category-button" ng-click="vm.activateCategoryButton('Media Resources');vm.changeTab('mediaResources', 'mediaResourcesTab')">Media Resources</button>
+				<button class="category-button" ng-click="vm.activateCategoryButton('Your Updates');vm.changeTab('yourUpdates', 'yourUpdatesTab')">Your Updates</button>
+			</span>
+		</div>
+		<hr class="claims-window-bar">
+		
+<!-- 		<table>
 			<tr>
 				<td id="argumentsTab" class="tab-header" ng-click="vm.changeTab('arguments', 'argumentsTab')"><center>Arguments</center></td>
 				<td id="claimInfoTab" class="tab-header" ng-click="vm.changeTab('claimInfo', 'claimInfoTab')"><center>Claim Info</center></td>
@@ -13,7 +25,7 @@
 				<td id="mediaResourcesTab" class="tab-header" ng-click="vm.changeTab('mediaResources', 'mediaResourcesTab')"><center>Media Resources</center></td>
 				<td id="yourUpdatesTab" class="tab-header" ng-click="vm.changeTab('yourUpdates', 'yourUpdatesTab')"><center>Your Updates</center></td>
 			</tr>
-		</table>
+		</table> -->
 <!-- 		<ul class="nav nav-tabs">
 		   <li id="argumentsTab" class="tab-header"><p ng-click="vm.changeTab('arguments', 'argumentsTab')">Arguments</p></li>
 		   <li id="oppositeClaimsTab" class="tab-header"><a data-toggle="tab" ng-click="vm.changeTab('oppositeClaims', 'oppositeClaimsTab')" style="back">Opposite Claims</a></li>

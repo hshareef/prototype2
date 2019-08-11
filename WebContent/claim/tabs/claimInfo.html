@@ -10,12 +10,16 @@
   <span class="close" ng-click="vm.removeKeyword($index)">&times;</span>
 </div>
 <input type="text" id="keyword-input"/>
-<p class="light-text">Categories: </p>
-    <select class="form-control" id="exampleFormControlSelect1">
-      <option ng-repeat="option in vm.testOptions">{{option}}</option>
-    </select>
     
-<p class="light-text">Categories for realz: </p>
-<select class="form-control" id="exampleFormControlSelect1">
-  <option ng-repeat="option in vm.categoryOptions">{{option.description}}</option>
+<p class="light-text">Categories: </p>
+<div ng-repeat="categoryId in vm.claim.categoryIds track by $index" class="chip">
+  {{vm.categoryOptionsMap[categoryId].description}}
+  <span class="close" ng-click="vm.removeCategory($index)">&times;</span>
+</div>
+<select class="form-control" 
+		ng-options = "option as option.description for option in vm.categoryOptions"
+		ng-model="vm.categorySelected" 
+		ng-change="vm.addCategory(vm.categorySelected)"
+>
+ 
 </select>

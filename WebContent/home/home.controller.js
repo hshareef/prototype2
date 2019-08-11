@@ -1,5 +1,5 @@
 
-app.controller('HomeCtrl', function($scope, $http, ClaimService, $location, $window, $timeout, ConfigService) {
+app.controller('HomeCtrl', function($scope, $http, ClaimService, $location, $window, $timeout, ConfigService, LookupService) {
 	
 	var vm = this;
 	  
@@ -38,7 +38,7 @@ app.controller('HomeCtrl', function($scope, $http, ClaimService, $location, $win
 	
 	
 	 vm.loadTopClaims = function(){
-		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/topClaims")
+		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/topClaims/1")
 		 .then(function(response){
 			 vm.topClaims = response.data;
 		 });
@@ -65,7 +65,6 @@ app.controller('HomeCtrl', function($scope, $http, ClaimService, $location, $win
 	 };
 	 
 	 vm.searchClaims = function(){
-		 alert(vm.searchString);
 		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/searchClaims/" + vm.searchString)
 		 .then(function(response){
 			 vm.topClaims = response.data;
@@ -188,12 +187,37 @@ app.controller('HomeCtrl', function($scope, $http, ClaimService, $location, $win
 			var test = $http.post(ConfigService.getSettings().url + "/Prototype/prototype/login/createUser", vm.newUser);
 		}
 	};
+	
+	vm.loadClaimsForCategory = function(id) {
+		//alert("loading claims for category " + id);
+		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/topClaims/" + id)
+		 .then(function(response){
+			 vm.topClaims = response.data;
+		 });
+	};
+	
+	vm.activateCategoryButton = function(description) {
+		var categoryButtons = document.getElementsByClassName("category-button");
+		for(var i = 0 ; i < categoryButtons.length ; i++){
+			if(categoryButtons[i].innerHTML == description){
+				categoryButtons[i].style.backgroundColor = "var(--dark-accent-2)";
+			}
+			else {
+				categoryButtons[i].style.backgroundColor = "var(--dark-accent-1-saved)";
+			}
+		}
+	};
 	 
 	 vm.init = function(){
-		 if(localStorage.getItem("userId") !== undefined && localStorage.getItem("userId") !== null){
-			 vm.getUser(localStorage.getItem("userId"));
-		 }
-		 vm.loadTopClaims();
+		 LookupService.getLookup("CLAIM_CATEGORIES_LKUP").then(function(response){
+			 
+			 vm.categoryOptions = response;
+			 if(localStorage.getItem("userId") !== undefined && localStorage.getItem("userId") !== null){
+				 vm.getUser(localStorage.getItem("userId"));
+			 }
+			 vm.loadTopClaims();
+			 vm.activateCategoryButton("Law"); //default to politics
+		 });
 	 };
 	 
 	 vm.init();

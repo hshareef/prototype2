@@ -2,6 +2,8 @@
 @import "buttons.css";
 @import "tabs.css";
 @import "dialogs.css";
+@import "navs.css";
+@import "homepage.css";
 
 .color-scheme {
 	background-color: #25274D;
@@ -19,7 +21,7 @@
 	--dark-accent-1:#B9B9B9;
 	--light-accent-1-saved: #464866;
 	--light-accent-1: #E2E2E2;
-	--neutral-background: #AAABB8;
+	--neutral-background: #F1EDF4;
 	--light-accent-2: #2E9CCA;
 	--dark-accent-2: #29648A;
 	
@@ -31,21 +33,6 @@
 	
 }
 
-.navbar {
-	margin-bottom: 0;
-	background: var(--dark-accent-1);
-	overflow:visible;
-	.container-fluid{
-	
-		.navbar-collapse{
-			.navbar-nav{
-				.dropdown{
-				overflow:visible;
-				}
-			}
-		}
-	}
-}
 
 body {
 	/*background:  url("main-background.png"); */
@@ -157,11 +144,10 @@ p {
 .argSection{
 	background-color: white;
 	width: 1000px;
+	margin-bottom: 0px;
+	border-radius: 0px;
 	
-	.panel-primary>.panel-heading {
-		background-color: red;
-		color: yellow;	
-	}
+
 	
 	.panel {
 		.panel-heading{
@@ -173,6 +159,21 @@ p {
 			background-color: red;
 		}
 	}
+}
+
+.panel-primary>.arg-panel-heading {
+	background-color: white;
+	color: black;
+	border-color: black;
+}
+
+.argSection>.panel-body-container>.panel-body {
+	background-color: white;
+	width: 980px;
+}
+
+.arg-panel-heading {
+	background-color: red;
 }
 
 .panel-heading {
@@ -371,25 +372,27 @@ p {
 }
 
 #top-claims-window {
-  height: 300px;
+  height: 735px;
   border: 1px black solid;
 }
 
 #scrollable-content {
-  height: 250px;
+  height: 650px;
   overflow: auto;
-  background-color: cyan;
-  opacity: 0.6;
+  background-color: white;
+  opacity: 1;
 }
 
 #top-claims-footer {
   height: 30px;
-  background-color: #337ab7;
+  background-color: var(--dark-accent-1-saved);
+  color: white;
 }
 
 #top-claims-header{
-	height: 20px;
-	background-color: #337ab7;
+	height: 40px;
+	background-color: var(--dark-accent-1-saved);
+	color: white;
 }
 
 .claimRow:hover{

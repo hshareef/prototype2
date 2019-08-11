@@ -1,0 +1,39 @@
+.btn-group button {
+  background-color: var(--dark-accent-1-saved);
+  border-top: 0px;
+  border-bottom: 0px;
+  border-left: 1px solid white;
+  border-right: 1px solid white;
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+  height: 40px;
+  outline: none;
+}
+
+/* Clear floats (clearfix hack) */
+.btn-group:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.btn-group button:not(:last-child) {
+  border-right: none; /* Prevent double borders */
+}
+
+/* Add a background color on hover */
+.btn-group button:hover {
+  background-color: white;
+  color: red;
+  cursor: pointer;
+}
+
+.claims-window-bar {
+	height: 15px;
+	color: var(--dark-accent-2);
+	background: var(--dark-accent-2);
+	margin: 0px 0px 0px 0px;
+	border-top: 0px;
+}

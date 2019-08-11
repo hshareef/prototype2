@@ -7,30 +7,32 @@
 			<br><br>
 			<div ng-repeat = "argument in vm.claim.arguments track by $index">
 				<div class="argSection panel panel-primary panel-center" ng-if="vm.getCurrentStatusId(argument) === 2">
-					<div  class="panel-heading">
+					<div class="arg-panel-heading panel-heading">
 		       			<table>
 		       				<tr>
 		       					<td class="argNameCol">{{argument.argName}}</td>
 		       					<td>			       			
-		       						<span class="btn" ng-if="true" ng-click="" data-toggle="collapse" data-target="{{'#collapse' + $index}}" aria-expanded="false" aria-controls="collapse + {{$index}}">
-	     									<span class="glyphicon glyphicon-plus"></span> View
-	     								</span>
-	     							</td>
-	     							<td>
-	     								<span class="btn" ng-if="vm.claim.arguments[$index].ownerId === vm.user.userId && vm.getCurrentStatusId(vm.claim.arguments[$index]) === 1" ng-click="vm.publishArg($index, 2) ; $event.stopPropagation()">
-	     									<span class="glyphicon glyphicon-send"></span> Publish
-	     								</span>
-	     							</td>
-	     							<td>
-	     								<span class="btn" ng-if="vm.claim.arguments[$index].ownerId === vm.user.userId" ng-click="vm.openDialog('theEditArgumentDialog', $index) ; $event.stopPropagation()">
-	         								<span class="glyphicon glyphicon-edit"></span> Edit
-	       							</span>
-	     							</td>
-	     							<td>
-	     								<span ng-if="vm.claim.arguments[$index].ownerId === vm.user.userId" class="btn delete-icon" ng-click="vm.deleteArgument($index) ; event.stopPropagation()">
-	         								<span class="glyphicon glyphicon-trash"></span> Delete 
-	      					 			</span>
-	     							</td>
+		       						<span class="btn" ng-click="vm.openCity(event, 'Structure'+$index, $index); vm.toggleViewIcon($index)" ng-if="true" id="{{'arg-header-'+$index}}" data-toggle="collapse" data-target="{{'#collapse' + $index}}" aria-expanded="false" aria-controls="collapse + {{$index}}">
+	     									<span id="{{'view-plus-'+$index}}" class="glyphicon glyphicon-plus"></span>
+	     									<span id="{{'view-minus-'+$index}}" class="glyphicon glyphicon-minus initial-invisible"></span> 
+	     									View
+	     							</span>
+     							</td>
+     							<td>
+     								<span class="btn" ng-if="vm.claim.arguments[$index].ownerId === vm.user.userId && vm.getCurrentStatusId(vm.claim.arguments[$index]) === 1" ng-click="vm.publishArg($index, 2) ; $event.stopPropagation()">
+     									<span class="glyphicon glyphicon-send"></span> Publish
+     								</span>
+     							</td>
+     							<td>
+     								<span class="btn" ng-if="vm.claim.arguments[$index].ownerId === vm.user.userId" ng-click="vm.openDialog('theEditArgumentDialog', $index) ; $event.stopPropagation()">
+         								<span class="glyphicon glyphicon-edit"></span> Edit
+       							</span>
+     							</td>
+     							<td>
+     								<span ng-if="vm.claim.arguments[$index].ownerId === vm.user.userId" class="btn delete-icon" ng-click="vm.deleteArgument($index) ; event.stopPropagation()">
+         								<span class="glyphicon glyphicon-trash"></span> Delete 
+      					 			</span>
+     							</td>
 		       				</tr>
 		       			</table>
 	       				

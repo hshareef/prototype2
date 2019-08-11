@@ -16,3 +16,7 @@
 .light-text {
 	color: white;
 }
+
+.initial-invisible {
+	display: none;
+}

@@ -46,8 +46,8 @@ public class ClaimService {
 		return claimDao.saveArgument(arg);
 	}
 	
-	public List<Claim> getTopClaims(){
-		return claimDao.getTopClaims();
+	public List<Claim> getTopClaims(int categoryId){
+		return claimDao.getTopClaims(categoryId);
 	}
 
 	public Claim getClaim(Integer claimId) {

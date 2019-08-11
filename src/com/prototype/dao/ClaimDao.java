@@ -241,15 +241,16 @@ public class ClaimDao {
 		
 	}
 	
-	public List<Claim> getTopClaims(){
+	public List<Claim> getTopClaims(int categoryId){
 		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
 		List<Claim> topClaims = new ArrayList<Claim>();
 		System.out.println("Hibernate attempting to load the claim...");
 		
-		Query query = session.createSQLQuery(getAllClaimsQuery()).addEntity(Claim.class);
-		
+		Query query = session.createSQLQuery(getClaimsByCategoryQuery()).addEntity(Claim.class);
+		query.setInteger("categoryId", categoryId);
+
 		topClaims = query.list();
 		for(Claim claim : topClaims){
 			System.out.println(claim.getClaimStatement());
@@ -272,6 +273,16 @@ public class ClaimDao {
 	
 	public String getAllClaimsQuery(){
 		return "select * from claim";
+	}
+	
+	public String getClaimsByCategoryQuery(){
+		//maybe instead of select * we can return id and statement?
+		StringBuffer query = new StringBuffer("select *");
+		query.append(" from Prototype.Claim clm");
+		query.append(" join Prototype.claim_categoryIds cci on clm.claim_id = cci.claim_claim_id");
+		query.append(" where categoryIds = :categoryId");
+		query.append(" order by created_ts");
+		return query.toString();
 	}
 
 	public Claim getClaim(Integer claimId) {
@@ -329,6 +340,7 @@ public class ClaimDao {
 	 		oppo.setArguments(premiseArguments); 
 	 		ArrayList<String> keywords = new ArrayList<String>();
 	 		oppo.setKeywords(keywords);
+	 		oppo.setCategoryIds(null);
 	 		ArrayList <Claim> oppositeClaims = new ArrayList<Claim>();
 	 		oppo.setOppositeClaims(oppositeClaims);
 	 		ArrayList <MediaResource> mediaResources = new ArrayList<MediaResource>();
@@ -357,6 +369,7 @@ public class ClaimDao {
 			System.out.println(claim.getClaimStatement());
 			ArrayList<Argument> arguments = new ArrayList<Argument>();
 			claim.setArguments(arguments);
+			claim.setCategoryIds(null);
 			ArrayList <String> keywords = new ArrayList<String>();
 			claim.setKeywords(keywords);
 			claim.setOppositeClaims(new ArrayList<Claim>());

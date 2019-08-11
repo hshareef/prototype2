@@ -48,12 +48,8 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	vm.mpoViewingIndex;
 	vm.tabs = ['Arguments', 'Opposite Claims', 'Media Resources', 'Claim Info'];
 	vm.newMissedPremiseStatement = "";
-	
-	vm.testOptions = LookupService.getFakeOptions();
-	//vm.categoryOptions = LookupService.getLookup("CLAIM_CATEGORIES_LKUP");
-	LookupService.getLookup("CLAIM_CATEGORIES_LKUP").then(function(response){
-		vm.categoryOptions = response;
-	});
+	vm.openArgSections = {}; //track the open args so that you can toggle css classes
+
 	
 //    vm.treedata = [{
 //        'id': 1,
@@ -106,10 +102,13 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	
 
     
-    
+//    vm.getOptionById = function(lookupType, id){
+//    	var options = LookupService.getOptionById(lookupType, id);
+//    	return options;
+//    };
 	
  
-    //for saving a claim
+    //for saving a claim - should probably change name to saveClaim or something
     vm.saveStatement = function(){
     	
     	
@@ -680,17 +679,17 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	vm.changeTab = function(idName, tabIdName){
 		
 		//var activeTab = document.getElementById(idName);
-		var tabHeaders = document.getElementsByClassName("tab-header");
-		for(var j = 0 ; j < tabHeaders.length ; j++){
-			if(tabHeaders[j].id !== tabIdName){
-				//tabHeaders[j].classList.remove("tab-active");
-				tabHeaders[j].style.backgroundColor = "var(--inactive-tab-header)";
-			}
-			else{
-				//tabHeaders[j].className += "tab-active";
-				tabHeaders[j].style.backgroundColor = "var(--tab-color)";
-			}
-		}
+//		var tabHeaders = document.getElementsByClassName("tab-header");
+//		for(var j = 0 ; j < tabHeaders.length ; j++){
+//			if(tabHeaders[j].id !== tabIdName){
+//				//tabHeaders[j].classList.remove("tab-active");
+//				tabHeaders[j].style.backgroundColor = "var(--inactive-tab-header)";
+//			}
+//			else{
+//				//tabHeaders[j].className += "tab-active";
+//				tabHeaders[j].style.backgroundColor = "var(--tab-color)";
+//			}
+//		}
 		
 		var tabPanes = document.getElementsByClassName("tab-pane");
 		for(var i = 0 ; i < tabPanes.length ; i++){
@@ -703,28 +702,28 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 		}
 		
 		if(idName == "claimInfo"){
-		//stuff to do when opening claim info tab
-		//keyword stuff
-	    var keywordInput = document.getElementById("keyword-input");
-	    
-	    keywordInput.addEventListener("keyup", function(event) {
+			//stuff to do when opening claim info tab
+			//keyword stuff
+		    var keywordInput = document.getElementById("keyword-input");
+		    
+		    keywordInput.addEventListener("keyup", function(event) {
 	    	  // Number 13 is the "Enter" key on the keyboard
 	    	  if (event.keyCode === 13) {
-	    	    // Cancel the default action, if needed
-	    	    //event.preventDefault();
-	    	    // Trigger the button element with a click
-	    	    //document.getElementById("myBtn").click();
-	    		 // var keyword = keywordInput.value;
-	    		 // alert(keyword);
+	    	      // Cancel the default action, if needed
+	    	      //event.preventDefault();
+	    	      // Trigger the button element with a click
+	    	      //document.getElementById("myBtn").click();
+	    		  // var keyword = keywordInput.value;
+	    		  // alert(keyword);
 	    		  vm.addKeyword(keywordInput.value);
 	    		  document.getElementById("keyword-input").value = "";
-	    		  
 	    	  }
 	    	});
 		}
 	};
 	
 	vm.addKeyword = function(keyword){
+		//need to also check if keyword already exists
 		if(keyword != null && keyword != ""){
 			vm.claim.keywords.push(keyword);
 			vm.saveStatement();
@@ -735,20 +734,87 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 		vm.claim.keywords.splice(index, 1);
 		vm.saveStatement();
 	};
+	
+	vm.addCategory = function(category) {
+		if(vm.claim.categoryIds == null){
+			vm.claim.categoryIds = [];
+		}
+		if(categorySelected(category.id)){
+			alert("The claim is already part of that category!");
+		}
+		else{
+			vm.claim.categoryIds.push(category.id);
+			vm.saveStatement();
+		}
+	};
+	
+	vm.removeCategory = function(index) {
+		vm.claim.categoryIds.splice(index, 1);
+		vm.saveStatement();
+	};
+	
+	function categorySelected (id) {
+		for(var i = 0 ; i < vm.claim.categoryIds.length ; i++) {
+			if (vm.claim.categoryIds[i] == id) {
+				return true;
+			}
+		}
+		return false;
+	};
+	
+	vm.activateCategoryButton = function(description) {
+		var categoryButtons = document.getElementsByClassName("category-button");
+		for(var i = 0 ; i < categoryButtons.length ; i++){
+			if(categoryButtons[i].innerHTML == description){
+				categoryButtons[i].style.backgroundColor = "var(--dark-accent-2)";
+			}
+			else {
+				categoryButtons[i].style.backgroundColor = "var(--dark-accent-1-saved)";
+			}
+		}
+	};
+	
+	vm.toggleViewIcon = function(index) {
+		var ariaExpanded = document.getElementById("arg-header-" + index).getAttribute("aria-expanded");
+		if (ariaExpanded == "true") {
+			document.getElementById("view-plus-"+index).style.display = "inline";
+			document.getElementById("view-minus-"+index).style.display = "none";
+		}
+		else {
+			document.getElementById("view-plus-"+index).style.display = "none";
+			document.getElementById("view-minus-"+index).style.display = "inline";
+		}
+	};
+	
+//	vm.showMinusIcon = function(index) {
+//		var element = document.getElementById("arg-header-" + index);
+//		var expanded = element.getAttribute("aria-expanded");
+//		return expanded == "true";
+//		//return document.getElementById("arg-header-" + index).getAttribute("aria-expanded");
+//	};
+	
+//	vm.forceDigest = function() {
+//		//$scope.$apply();
+//		//vm.forcer = 1;
+//	};
 	 
 	 vm.init = function(){
-		 vm.getUser(localStorage.getItem("userId"));
-		 var claimId = $routeParams.claimId;//getUrlVariable("claimId");
-		 if(claimId === undefined || claimId === null){
-			 $timeout(function(){
-				 vm.openDialog('theCreateClaimDialog');
-			 });
-			 
-		 }
-		 else {
-			 vm.getClaim(claimId);
-			 vm.changeTab('arguments', 'argumentsTab');//by default, load arguments tab
-		 }
+		LookupService.getLookup("CLAIM_CATEGORIES_LKUP").then(function(response){
+			vm.categoryOptions = response;
+			vm.categoryOptionsMap = LookupService.getMappedLookup(vm.categoryOptions);
+			vm.getUser(localStorage.getItem("userId"));
+			var claimId = $routeParams.claimId;//getUrlVariable("claimId");
+			if(claimId === undefined || claimId === null){
+				$timeout(function(){
+					vm.openDialog('theCreateClaimDialog');
+				});
+				 
+			}
+			else {
+				vm.getClaim(claimId);
+				vm.changeTab('arguments', 'argumentsTab');//by default, load arguments tab
+			}
+		});
 	 };
 	 
 	 vm.init();
