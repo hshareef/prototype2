@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 			<br><br>
 			<!-- collapsable sections -->
-			<button type="button" class="btn btn-default btn-sm flat-button" ng-click="vm.openDialog('theCreateNewArgumentDialog')">
+			<button ng-if="vm.user.userId !== null"
+					type="button" 
+					class="btn btn-default btn-sm flat-button" 
+					ng-click="vm.openDialog('theCreateNewArgumentDialog')">
 				<span class="glyphicon glyphicon-plus "></span> Add Argument
 			</button>
 			<br><br>

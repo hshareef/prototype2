@@ -4,6 +4,8 @@
 @import "dialogs.css";
 @import "navs.css";
 @import "homepage.css";
+@import "login.css";
+@import "errors.css";
 
 .color-scheme {
 	background-color: #25274D;
@@ -521,4 +523,13 @@ p {
   line-height: 20px;
   border-radius: 10px;
   background-color: #f1f1f1;
+}
+
+textarea {
+	resize: none;
+}
+
+.text-area-label {
+	margin-bottom: 10px;
+	padding: 0px 0xp 10px 0px;
 }

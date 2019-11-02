@@ -159,13 +159,13 @@ public class ClaimService {
 
 	public Argument getArgumentTemplate() {
 		Argument arg = new Argument();
-		arg.setArgName("default name from template");
+		arg.setArgName("");
 		arg.setEditable(true);
-		arg.setSound(false);
-		arg.setValid(false);
-		arg.setValidCount(0);
-		arg.setInvalidCount(0);
-		arg.setFallacyDetails(new FallacyDetails());
+		arg.setSound(false);//need to remove
+		arg.setValid(false);//need to remove
+		arg.setValidCount(0);//need to remove
+		arg.setInvalidCount(0);//need to remove
+		arg.setFallacyDetails(new FallacyDetails());//need to remove
 		arg.setPremises(new ArrayList<Claim>());
 		arg.setStateHistory(new ArrayList<ArgumentState>());
 		addArgState(arg, ArgumentConstants.States.PRELIM.id);

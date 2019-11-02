@@ -5,7 +5,7 @@
 	<br><br><br>
 	<div ng-repeat = "argument in vm.claim.arguments track by $index">
 		<div class="argSection panel panel-primary panel-center" ng-if="argument.ownerId === vm.user.userId && vm.getCurrentStatusId(argument) === 1">
-			<div  class="panel-heading">
+			<div  class="arg-panel-heading panel-heading">
        			<table>
        				<tr>
        					<td class="argNameCol">{{argument.argName}}</td>

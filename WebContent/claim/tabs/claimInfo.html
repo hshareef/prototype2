@@ -1,7 +1,7 @@
 <br>
 <p class="light-text">Claim statement: {{vm.claim.claimStatement}}</p>
 <p class="light-text">Owner: {{vm.claim.originalOwnerUsername}}</p>
-<p class="light-text">Number of arguments: {{vm.claim.arguments.length}}</p>
+<p class="light-text">Number of arguments: {{vm.claim.arguments.length}}</p><!-- wrong, need to only count published args -->
 <p class="light-text">Created: {{vm.claim.createdTs | date}}</p>
 <p class="light-text">Last Updated: {{vm.claim.updatedTs | date}}</p>
 <p class="light-text">Keywords: </p>
@@ -19,7 +19,7 @@
 <select class="form-control" 
 		ng-options = "option as option.description for option in vm.categoryOptions"
 		ng-model="vm.categorySelected" 
-		ng-change="vm.addCategory(vm.categorySelected)"
+		ng-change="vm.addCategory(vm.categorySelected, true)"
 >
  
 </select>

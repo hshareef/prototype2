@@ -12,6 +12,7 @@ import com.prototype.model.Claim;
 import com.prototype.model.User;
 import com.prototype.service.LoginService;
  
+//may be better to change this to User Resource and /user eventually
 @Path("/login")
 public class LoginResource {
 	

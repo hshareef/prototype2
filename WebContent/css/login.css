@@ -1,0 +1,10 @@
+.login-button {
+	width: 130px;
+	height: 50px;
+	font-size: 18px;
+	border-radius: 5px;
+}
+
+.login-panel {
+	margin-top: 100px;
+}

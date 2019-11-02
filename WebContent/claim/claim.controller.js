@@ -49,6 +49,13 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	vm.tabs = ['Arguments', 'Opposite Claims', 'Media Resources', 'Claim Info'];
 	vm.newMissedPremiseStatement = "";
 	vm.openArgSections = {}; //track the open args so that you can toggle css classes
+	
+	//claim error messages - need to eventually move these to the DB
+	vm.needAtLeastOneCategory = "You must add at least one category to create this claim (it can be changed later).";
+	vm.mpoNeedsName = "Your missed premise objection must have a name.";
+	vm.argNeedsName = "Your argument must have a name";
+	vm.argNeedsPremise = "Your argument must have at least one premise.";
+	vm.errorMessages = [];
 
 	
 //    vm.treedata = [{
@@ -107,12 +114,27 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 //    	return options;
 //    };
 	
+	
+	 vm.createNewClaim = function(){
+		 
+		 //clear out error messages
+		 vm.errorMessages = [];
+		//check rules
+		 if(vm.claim.categoryIds == null || vm.claim.categoryIds.length == 0){
+			 vm.errorMessages.push(vm.needAtLeastOneCategory);
+		 }
+		 //add more if statements for other rules
+		 
+		 if (vm.errorMessages.length == 0) {
+			 vm.saveStatement();
+		 }
+	 };
  
     //for saving a claim - should probably change name to saveClaim or something
     vm.saveStatement = function(){
     	
     	
-    	if(vm.claim.originalOwnerId=-1){
+    	if(vm.claim.originalOwnerId == -1){
     		vm.claim.originalOwnerId = vm.user.userId;
     		vm.claim.originalOwnerUsername = vm.user.username;
     	}
@@ -136,7 +158,7 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
     };
     
     vm.addBlankArg = function(){
-		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/argTemplate")
+		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/argTemplate")//think about moving this to front end
 		 .then(function(response){
 			 vm.newArg = response.data;
 			 vm.newArg.ownerId = vm.user.userId;
@@ -147,15 +169,43 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
     };
     
     vm.addAndSaveNewArgument = function(){
-    	vm.claim.arguments.push(vm.newArg);
-    	vm.currentArgIndex = vm.claim.arguments.length;
-    	vm.saveStatement();
-    	vm.closeDialog('theCreateNewArgumentDialog', false);
+    	
+    	//clear out error messages
+    	vm.errorMessages = [];
+    	
+    	if (vm.newArg.argName == null || vm.newArg.argName.length == 0) {
+    		vm.errorMessages.push(vm.argNeedsName);
+    	}
+    	
+    	if (vm.newArg.premises == null || vm.newArg.premises.length == 0) {
+    		vm.errorMessages.push(vm.argNeedsPremise);
+    	}
+    	
+    	if (vm.errorMessages.length == 0) {
+        	if (vm.claim.arguments == null) {
+        		vm.claim.arguments = [];
+        	}
+        	vm.claim.arguments.push(vm.newArg);
+        	vm.currentArgIndex = vm.claim.arguments.length;//look into if vm.currentArgIndex is still being used
+        	vm.saveStatement();
+        	vm.closeDialog('theCreateNewArgumentDialog', false);
+    	}
+    	
     };
     
     vm.addAndSaveNewMpo = function(){
-    	vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections.push(vm.newMpo);
-    	vm.saveStatement();
+    	//clear error messages
+    	vm.errorMessages = [];
+    	//check rules first
+    	if(vm.newMpo.name == null || vm.newMpo.name.length == 0){
+    		vm.errorMessages.push(vm.mpoNeedsName);
+    	}
+    	if(vm.errorMessages.length == 0){
+        	vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections.push(vm.newMpo);
+        	vm.saveStatement();
+        	vm.closeDialog('theAddMpoDialog', false)
+    	}
+
     };
     
     vm.addToArgumentArray = function(){
@@ -216,6 +266,8 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
     };
     
     vm.changeArgViewing = function(index){
+    	//this argument viewing index way doesn;t make sense anymore cause we can now view multiple arguments at once
+    	//need to rework this
     	vm.argumentViewingIndex = index;
     };
     
@@ -319,10 +371,6 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 				 console.log(vm.claim);
 			 });
 		    };
-	    
-	 vm.createNewClaim = function(){
-		 
-	 };
 	 
 	 vm.callClaimServiceFunction = function(){
 		 alert("Going to call the claim service function, or not...maybe");
@@ -478,7 +526,8 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 		 else if(dialogId == "theAddMpoDialog"){
 			 vm.argumentViewingIndex = argIndex;
 			 vm.mpoViewingIndex = mpoIndex;
-			 if(vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections.length > 0){
+			 if(vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections != null &&
+					 vm.claim.arguments[vm.argumentViewingIndex].missedPremiseObjections.length > 0){
 				 vm.orderMpoPremises();
 			 }
 			 if(dialogMode == null || dialogMode == "addNewMpo"){
@@ -587,6 +636,7 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 		 vm.closeDialog('theAddPremiseDialog', false);
 	 };
 	 
+	 //probably need to rename this
 	 vm.addPremiseToClaim = function(index){
 			 var premise = vm.premiseSearchResults[index];
 			 vm.newArg.premises.push(premise);
@@ -649,10 +699,10 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	};
 	
 	vm.getUser = function(userId){
-//		var test = $http.get(ConfigService.getSettings().url + "/Prototype/prototype/login/"+userId)
-//		.then(function(response){
-//			vm.user = response.data;
-//		});
+		$http.get(ConfigService.getSettings().url + "/Prototype/prototype/login/"+userId)
+		.then(function(response){
+			vm.user = response.data;
+		});
 	};
 	
 	vm.setNewAcctFlag = function(flag){
@@ -735,7 +785,7 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 		vm.saveStatement();
 	};
 	
-	vm.addCategory = function(category) {
+	vm.addCategory = function(category, save) {
 		if(vm.claim.categoryIds == null){
 			vm.claim.categoryIds = [];
 		}
@@ -744,7 +794,9 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 		}
 		else{
 			vm.claim.categoryIds.push(category.id);
-			vm.saveStatement();
+			if(save){
+				vm.saveStatement();
+			}
 		}
 	};
 	

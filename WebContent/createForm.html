@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -16,10 +16,10 @@
   <link href="css/custom.css" rel="stylesheet">
 	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
 	<script src="https://www.w3schools.com/lib/w3data.js"></script>
-    <!--[if lt IE 9]>
+    [if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <![endif]
        <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.13.4.js"></script>
 
   <link data-require="angular-ui-tree@*" data-semver="2.8.0" rel="stylesheet" href="https://cdn.rawgit.com/angular-ui-tree/angular-ui-tree/master/dist/angular-ui-tree.min.css" />
@@ -41,9 +41,9 @@
 	       	</span>
 			<p>Owner: {{vm.claim.originalOwnerUsername}}</p>
 			
-<!-- 			<div ng-repeat = "argument in vm.claim.arguments track by $index">
+			<div ng-repeat = "argument in vm.claim.arguments track by $index">
 				<div argument-section name="test" argument="argument" index="{{$index}}"></div>
-			</div> -->
+			</div>
 			
 			
 			<ul class="nav nav-tabs">
@@ -55,15 +55,15 @@
 			<br>
 		
   
-<!-- 			<ul class="nav nav-pills">
+			<ul class="nav nav-pills">
 				<li class="active"><a data-toggle="pill" href="#arguments">Arguments</a></li>
 				<li><a data-toggle="pill" href="#mediaResources">Media Resources</a></li>
-			</ul> -->
-			<div><!--  container -->
-			<div class="tab-content"><!-- tabs -->
+			</ul>
+			<div> container
+			<div class="tab-content">tabs
 			<div id="arguments" class="tab-pane fade in active">
 				<div ng-include="'claim/tabs/argumentsTab.html'"></div>
-<!-- 				<div class="col-sm-6">
+				<div class="col-sm-6">
 					<div id="top-claims-window">
 						<div id="top-claims-header">
 							Arguments Test
@@ -102,8 +102,8 @@
 							</button>
 						</div>
 					</div>
-				</div> -->
-<!-- 				<div class="col-sm-6">
+				</div>
+				<div class="col-sm-6">
 					<div ng-if="vm.claim.arguments.length > 0 && vm.argumentViewingIndex !== undefined && vm.argumentViewingIndex !== null && vm.argumentViewingIndex > -1">
 						<div class="argSection panel panel-primary panel-center">
 							<div  class="panel-heading">
@@ -197,7 +197,7 @@
 	
 						</div>
 				  	</div>
-				</div> -->
+				</div>
 			</div>
 			<div id="oppositeClaims" class="tab-pane fade">
 				<div ng-include="'claim/tabs/oppositeClaimsTab.html'"></div>
@@ -218,7 +218,7 @@
    				</div>
    			</div>
    			
-   			<!--  dialog html files -->
+   			 dialog html files
 			<div ng-include="'claim/dialogs/createClaimDialog.html'"></div>
 			<div ng-include="'claim/dialogs/editArgumentDialog.html'"></div>
 			<div ng-include="'claim/dialogs/createNewArgumentDialog.html'"></div>
@@ -228,8 +228,8 @@
    			<div ng-include="'claim/dialogs/addMissedPremiseDialog.html'"></div>
    			<div ng-include="'claim/dialogs/addNewMissedPremiseDialog.html'"></div>
 
-			</div><!-- tabs -->
-			</div><!--  container -->
+			</div>tabs
+			</div> container
 		</div>
 	</div>			
 	<script src="claimModule.js"></script>
@@ -240,4 +240,4 @@
 	<script src="testClaimDirective.js"></script>
 	<script>w3IncludeHTML();</script>
 </body>
-</html>
+</html> -->

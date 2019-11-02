@@ -167,26 +167,26 @@ app.controller('HomeCtrl', function($scope, $http, ClaimService, $location, $win
 		});
 	};
 	
-	vm.setNewAcctFlag = function(flag){
-		vm.createNewAcctFlag = flag;
-		if(flag){
-
-		}
-		else{
-			vm.newUser = null;
-			vm.confirmPassword = null;
-		}
-			
-	};
+//	vm.setNewAcctFlag = function(flag){
+//		vm.createNewAcctFlag = flag;
+//		if(flag){
+//
+//		}
+//		else{
+//			vm.newUser = null;
+//			vm.confirmPassword = null;
+//		}
+//			
+//	};
 	
-	vm.createNewUserAcct = function(){
-		alert("trying to create new user account...");
-		if(vm.newUser.password !== vm.confirmPassword){
-			alert("passwords don't match");
-		}else{
-			var test = $http.post(ConfigService.getSettings().url + "/Prototype/prototype/login/createUser", vm.newUser);
-		}
-	};
+//	vm.createNewUserAcct = function(){
+//		alert("trying to create new user account...");
+//		if(vm.newUser.password !== vm.confirmPassword){
+//			alert("passwords don't match");
+//		}else{
+//			var test = $http.post(ConfigService.getSettings().url + "/Prototype/prototype/login/createUser", vm.newUser);
+//		}
+//	};
 	
 	vm.loadClaimsForCategory = function(id) {
 		//alert("loading claims for category " + id);

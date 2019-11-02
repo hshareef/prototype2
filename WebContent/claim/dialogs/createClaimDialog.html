@@ -11,13 +11,25 @@
 	   			</div>
 	   		</div>
 	   		<div>
-	   			<p class="light-text">Category:</p>
-				<select class="form-control" id="exampleFormControlSelect1">
-				  <option ng-repeat="option in vm.categoryOptions">{{option.description}}</option>
+	   			<p>Category:</p>
+	   			<div ng-repeat="categoryId in vm.claim.categoryIds track by $index" class="chip">
+				  {{vm.categoryOptionsMap[categoryId].description}}
+				  <span class="close" ng-click="vm.removeCategory($index)">&times;</span>
+				</div>
+				
+				<select class="form-control" 
+					ng-options = "option as option.description for option in vm.categoryOptions"
+					ng-model="vm.categorySelected" 
+					ng-change="vm.addCategory(vm.categorySelected, false)"
+				>
 				</select>
+
+	   		</div>
+	   		<div>
+	   			<p class="error-text" ng-repeat="message in  vm.errorMessages">{{message}}</p>
 	   		</div>
 	   		<div class="panel-footer">
-	   			<button ng-click="vm.saveStatement()" class="flat-button">Save</button>
+	   			<button ng-click="vm.createNewClaim()" class="flat-button">Save</button>
 				<button ng-click="vm.closeDialog('theCreateClaimDialog', true, 'index.html')" class="flat-button">Close</button>
 	   		</div>
 		</div>

@@ -43,11 +43,14 @@
 						        </li>
 						    </ol>
 					    </div>
-					    
+					    <br>
 					    Conclusion: {{vm.claim.claimStatement}}
 					    
           
 					</div>
+			   		<div>
+			   			<p class="error-text" ng-repeat="message in  vm.errorMessages">{{message}}</p>
+			   		</div>
 				</div>
 				<div class="panel-footer">
 					<div class="btn-group" role="group" aria-label="Button group with nested dropdown">

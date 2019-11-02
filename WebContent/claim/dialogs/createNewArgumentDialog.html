@@ -13,28 +13,42 @@
      					<span class="btn" ng-if="!vm.claim.arguments[vm.currentArgIndex].editable && vm.claim.arguments[vm.currentArgIndex].ownerId === vm.user.userId" ng-click="vm.setArgumentEditMode($index, true) ; $event.stopPropagation()">
          					<span class="glyphicon glyphicon-edit"></span> Edit
        				</span>
-	   				<a class="btn" ng-if="vm.claim.arguments[vm.currentArgIndex].editable" ng-click="vm.setArgumentEditMode($index, false) ; vm.saveStatement() ; $event.stopPropagation()" style="color: black">Save</a>
-	   				<a class="btn" ng-if="vm.claim.arguments[vm.currentArgIndex].editable" ng-click="vm.setArgumentEditMode($index, false) ; vm.getClaim(claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a>
+ 	   				<!-- <a class="btn" ng-if="vm.claim.arguments[vm.currentArgIndex].editable" ng-click="vm.setArgumentEditMode($index, false) ; vm.saveStatement() ; $event.stopPropagation()" style="color: black">Save</a> -->
+	   				<!-- <a class="btn" ng-if="vm.claim.arguments[vm.currentArgIndex].editable" ng-click="vm.setArgumentEditMode($index, false) ; vm.getClaim(claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a> -->
 	   				<!-- CHANGE saveStatement() above to saveArgument(index) (and create that method) -->
 	   			</div>
 	   			<div class="container" id="{{$index}}">
 		   			<div class = "panel-body" >
-						{{argument.editable}}Argument name:
+						<!-- {{argument.editable}}Argument name: -->
+						<p class="text-area-label">Argument Name Yo</p>
 						<textarea rows="1" cols="50"  type=text ng-model="vm.newArg.argName"></textarea><br>
 						<div ng-repeat="premise in vm.newArg.premises track by $index">
 							Premise {{$index+1}}:<br>
 							<textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
 						</div>
-						<a class="btn" ng-click="vm.addToNewArgPremiseArray($index)">Add New Premise</a><br>
-						<a class="btn" ng-click="vm.openDialog('theAddPremiseDialog')">Add Pre-existing Premise</a><br>
-						Conclusion: 
-						<p>{{vm.claim.claimStatement}}</p>
+<!-- 						<a class="btn" ng-click="vm.addToNewArgPremiseArray($index)">Add New Premise</a><br>
+						<a class="btn" ng-click="vm.openDialog('theAddPremiseDialog')">Add Pre-existing Premise</a><br> -->
+						<p>Conclusion: {{vm.claim.claimStatement}}</p>
 						<br>
 					</div>
 				</div>
+				<div>
+		   			<p class="error-text" ng-repeat="message in  vm.errorMessages">{{message}}</p>
+		   		</div>
 				<div class="panel-footer">
-					<button ng-click="vm.addAndSaveNewArgument()" class="flat-button">Save</button>
-					<button ng-click="vm.closeDialog('theCreateNewArgumentDialog', false)" class="flat-button">Close</button>
+					<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+						<div class="btn-group" role="group">
+							<button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					     		Add Premise
+					    	</button>
+							<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+					      		<a class="dropdown-item" ng-click="vm.addToNewArgPremiseArray($index)">Add New Premise</a>
+					      		<a class="dropdown-item" ng-click="vm.openDialog('theAddPremiseDialog')" >Add Pre-existing Premise</a>
+					    	</div>
+				    	</div>
+						<button ng-click="vm.addAndSaveNewArgument()" class="flat-button">Save</button>
+						<button ng-click="vm.closeDialog('theCreateNewArgumentDialog', false)" class="flat-button">Close</button>
+					</div>
 				</div>
 			</div>
 			

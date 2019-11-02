@@ -10,6 +10,11 @@
 
 .flat-button {
 	color: white;
-	background-color: var(--dark-accent-2);
-	border: 0px;
+	background-color: var(--dark-accent-1-saved);
+	border: 0px;	
+}
+
+.flat-button:hover {
+	background-color: black;
+	color: red;
 }
