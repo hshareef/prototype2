@@ -53,11 +53,11 @@
             			<li><a href="#">Profile Settings</a></li>
           			</ul>
         		</li>
-				<a ng-if="vm.user.userId !== null" class="btn search-button" href="/Prototype/#/claim" role="button" >Create a new Claim</a>		
-				<a ng-if="vm.user.userId !== null" class="btn search-button" href="/Prototype/mediaResource.html" role="button" >Create a new Media Resource</a>
-				<a ng-if="vm.user.userId !== null" class="btn search-button" href="/Prototype/author.html" role="button" >Add a new Author</a>
-				<a ng-if="vm.user.userId !== null" class="btn search-button" href="/Prototype/institution.html" role="button" >Add a new Institution</a>
-				<a ng-if="vm.user.userId === null" href="/Prototype/#/login">Login</a>
+				<a ng-if="vm.user.userId != null" class="btn search-button" href="/Prototype/#/claim" role="button" >Create a new Claim</a>		
+				<a ng-if="vm.user.userId != null" class="btn search-button" href="/Prototype/mediaResource.html" role="button" >Create a new Media Resource</a>
+				<a ng-if="vm.user.userId != null" class="btn search-button" href="/Prototype/author.html" role="button" >Add a new Author</a>
+				<a ng-if="vm.user.userId != null" class="btn search-button" href="/Prototype/institution.html" role="button" >Add a new Institution</a>
+				<a ng-if="vm.user.userId == null" href="/Prototype/#/login">Login</a>
    			</div>
 		</div>
 		<div class = "panel panel-primary panel-right">

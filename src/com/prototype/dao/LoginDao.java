@@ -17,12 +17,14 @@ public class LoginDao {
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
 		List <User> users;
-		Query query = ((SQLQuery) session.createSQLQuery(getUserQuery()).setParameter("sn", username).setParameter("pw", password)).addEntity(User.class);
+		Query query = ((SQLQuery) session.createSQLQuery(getUserQuery()).setParameter("sn", username)).addEntity(User.class);
 		users = query.list();
-		
 		session.close();
 		sessionFactory.close();
-		if (users.size() > 0){
+		if (users.size() > 1) {
+			System.out.println("Error: found mutiple users with same username");
+			return null;
+		} else if (users.size()  == 1){
 			return users.get(0);
 		}else{
 			return null;
@@ -31,7 +33,22 @@ public class LoginDao {
 	}
 	
 	private String getUserQuery(){
-		return "select * from User where username= :sn and password= :pw";
+		return "select * from user where username= :sn";
+	}
+	
+	public boolean updateToken (int userId, String loginToken) {
+		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		String sql = "update Prototype.user set login_token = :login_token, token_expiration = TIMESTAMPADD(DAY, 1, CURRENT_TIMESTAMP) where user_id = :user_id";
+		Query query = session.createSQLQuery(sql);
+		query.setParameter("login_token", loginToken);
+		query.setParameter("user_id", userId);
+		int numUpdates = query.executeUpdate();
+		session.getTransaction().commit();
+		session.close();
+		sessionFactory.close();
+		return numUpdates > 0;
 	}
 	
 	//FOR DEVELOPMENT PURPOSES ONLY!

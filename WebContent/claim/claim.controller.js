@@ -636,6 +636,11 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 		 vm.closeDialog('theAddPremiseDialog', false);
 	 };
 	 
+	 vm.removeUnsavedPremise = function(index){
+		 vm.newArg.premises.splice(index, 1);
+		 alert(index);
+	 };
+	 
 	 //probably need to rename this
 	 vm.addPremiseToClaim = function(index){
 			 var premise = vm.premiseSearchResults[index];
@@ -814,6 +819,7 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 		return false;
 	};
 	
+	//probably want to just set class of the button insteead of doing this
 	vm.activateCategoryButton = function(description) {
 		var categoryButtons = document.getElementsByClassName("category-button");
 		for(var i = 0 ; i < categoryButtons.length ; i++){
@@ -864,6 +870,7 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 			}
 			else {
 				vm.getClaim(claimId);
+				vm.activateCategoryButton('Arguments');//default to argument tab, this is bad practice, shouldn't have string hardcoded here
 				vm.changeTab('arguments', 'argumentsTab');//by default, load arguments tab
 			}
 		});

@@ -23,7 +23,7 @@
 						<p class="text-area-label">Argument Name Yo</p>
 						<textarea rows="1" cols="50"  type=text ng-model="vm.newArg.argName"></textarea><br>
 						<div ng-repeat="premise in vm.newArg.premises track by $index">
-							Premise {{$index+1}}:<br>
+							Premise {{$index+1}}:<span class="glyphicon glyphicon-trash" ng-click="vm.removeUnsavedPremise($index)"></span><br>
 							<textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
 						</div>
 <!-- 						<a class="btn" ng-click="vm.addToNewArgPremiseArray($index)">Add New Premise</a><br>

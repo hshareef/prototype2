@@ -31,7 +31,8 @@ public class ClaimResource {
 	public String convertCtoFfromInput(@PathParam("c") Double c) {
 		Double fahrenheit;
 		Double celsius = c;
-		fahrenheit = ((celsius * 9) / 5) + 32;
+		//fahrenheit = ((celsius * 9) / 5) + 32;
+		fahrenheit = 10.0;
  
 		String result = "@Produces(\"application/xml\") Output: \n\nC to F Converter Output: \n\n" + fahrenheit;
 		return "<ctofservice>" + "<celsius>" + celsius + "</celsius>" + "<ctofoutput>" + result + "</ctofoutput>" + "</ctofservice>";

@@ -212,11 +212,9 @@ app.controller('HomeCtrl', function($scope, $http, ClaimService, $location, $win
 		 LookupService.getLookup("CLAIM_CATEGORIES_LKUP").then(function(response){
 			 
 			 vm.categoryOptions = response;
-			 if(localStorage.getItem("userId") !== undefined && localStorage.getItem("userId") !== null){
-				 vm.getUser(localStorage.getItem("userId"));
-			 }
+			 vm.user = JSON.parse(localStorage.getItem("user"));
 			 vm.loadTopClaims();
-			 vm.activateCategoryButton("Law"); //default to politics
+			 vm.activateCategoryButton("Politics"); //default to politics
 		 });
 	 };
 	 

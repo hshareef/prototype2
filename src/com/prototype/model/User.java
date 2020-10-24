@@ -4,9 +4,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
+import java.util.Date;
+
 @Entity
+@Table(name="user")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
 	
 	@Id
@@ -19,11 +26,20 @@ public class User {
 	private String lastName;
 	@Column(name="email_address")
 	private String emailAddress;
+	@Column(name="username")
 	private String username;
+	@Transient
 	private String password;
 	@Transient
 	private boolean loggedIn;
-	
+	@Column(name="salt")
+	private String salt;
+	@Column(name="hashed_string")
+	private String hashedString;
+	@Column(name="login_token")
+	private String loginToken;
+	@Column(name="token_expiration")
+	private Date tokenExpiration;
 	
 	public Integer getUserId() {
 		return userId;
@@ -68,7 +84,29 @@ public class User {
 	public void setLoggedIn(boolean loggedIn) {
 		this.loggedIn = loggedIn;
 	}
+	public String getSalt() {
+		return salt;
+	}
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+	public String getHashedString() {
+		return hashedString;
+	}
+	public void setHashedString(String hashedString) {
+		this.hashedString = hashedString;
+	}
+	public String getLoginToken() {
+		return loginToken;
+	}
+	public void setLoginToken(String loginToken) {
+		this.loginToken = loginToken;
+	}
+	public Date getTokenExpiration() {
+		return tokenExpiration;
+	}
+	public void setTokenExpiration(Date tokenExpiration) {
+		this.tokenExpiration = tokenExpiration;
+	}	
 	
-	
-
 }

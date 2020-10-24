@@ -25,20 +25,35 @@ public class LoginResource {
 	@Produces("application/json")
 	@Consumes("application/json")
 	public User login(User loginUser){
-
 		System.out.println("in the login resource...");
 		User user = loginService.login(loginUser.getUsername(), loginUser.getPassword());
 		return user;
 	}
 	
+	@Path("/debug")
+	@POST
+	@Produces("application/json")
+	@Consumes("application/json")
+	public User login2(User loginUser){
+		User user = new User();
+		user.setEmailAddress("tesetEmial");
+		user.setFirstName("fart");
+		user.setLastName("dog");
+		user.setLoggedIn(true);
+		user.setLoginToken("12344");
+		user.setUserId(99999);
+		user.setUsername("fartname");
+		return user;
+	}
+	
 	@Path("/createUser")
 	@POST
-	@Produces("text/plain")
+	@Produces("application/json")
 	@Consumes("application/json")
-	public String createNewUser(User newUser){
-
+	public User createNewUser(User newUser){
 		System.out.println("trying to create a new user...");
-		return loginService.createNewUser(newUser);
+		User user = loginService.createNewUser(newUser);
+		return user;
 	}
 
 	@Path("/{userId}")
