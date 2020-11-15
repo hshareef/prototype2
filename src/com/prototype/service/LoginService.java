@@ -3,8 +3,11 @@ package com.prototype.service;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
+import java.util.Calendar;
 
 import com.prototype.dao.LoginDao;
+import com.prototype.model.AuthResponse;
 import com.prototype.model.User;
 
 public class LoginService {
@@ -99,26 +102,33 @@ public class LoginService {
 		user.setHashedString(null);
 	}
 
-	public User createNewUser(User newUser) {
+	public AuthResponse createNewUser(User newUser) {
+		AuthResponse createNewUserResponse = new AuthResponse();
+		//TODO: need to combine both of these into a single dao call but still allow distinct error message
 		boolean emailAddressUsed = emailAddressUsed(newUser.getEmailAddress());
 		boolean userNameAvail = usernameAvailable(newUser.getUsername());
 		if(!emailAddressUsed && userNameAvail){
 			newUser.setSalt(generateString(6));
 			newUser.setHashedString(getHashedString(newUser.getPassword() + newUser.getSalt()));
 			newUser.setLoginToken(generateString(24));
+			Calendar c = Calendar.getInstance();
+			c.add(Calendar.DAY_OF_MONTH, 1);
+			Date tokenExpiration = c.getTime();
+			newUser.setTokenExpiration(tokenExpiration);
 			loginDao.createNewUser(newUser);
 			removeSensitiveUserInfo(newUser);
-			return newUser;
+			createNewUserResponse.setUser(newUser);
 			//return "Account created successfully!";
 		}
-//		else if(emailAddressUsed){
-//			return "The email address " + newUser.getEmailAddress() + " is already in use.";
-//		}
-//		else if(!userNameAvail){
-//			return "The username " + newUser.getUsername() + " is already in use. Please select a new username.";
-//		}
-		return null;//should never hit, but just a sanity check
-		
+		else if(emailAddressUsed){
+			String message = "The email address " + newUser.getEmailAddress() + " is already in use.";
+			createNewUserResponse.setMessage(message);
+		}
+		else if(!userNameAvail){
+			String message = "The username " + newUser.getUsername() + " is already in use. Please select a new username.";
+			createNewUserResponse.setMessage(message);
+		}
+		return createNewUserResponse;
 	}
 	
 	public boolean emailAddressUsed(String emailAddress){
@@ -146,5 +156,10 @@ public class LoginService {
 		guest.setLastName("");
 		guest.setLoggedIn(false);
 		return guest;
+	}
+
+	public boolean logout(Integer userId, String loginToken) {
+		boolean tokenExpired = loginDao.expireToken(userId, loginToken);
+		return tokenExpired;
 	}
 }

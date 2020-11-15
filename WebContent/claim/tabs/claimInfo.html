@@ -1,20 +1,20 @@
 <br>
-<p class="light-text">Claim statement: {{vm.claim.claimStatement}}</p>
-<p class="light-text">Owner: {{vm.claim.originalOwnerUsername}}</p>
-<p class="light-text">Number of arguments: {{vm.claim.arguments.length}}</p><!-- wrong, need to only count published args -->
-<p class="light-text">Created: {{vm.claim.createdTs | date}}</p>
-<p class="light-text">Last Updated: {{vm.claim.updatedTs | date}}</p>
-<p class="light-text">Keywords: </p>
+<p>Claim statement: {{vm.claim.claimStatement}}</p>
+<p>Owner: {{vm.claim.originalOwnerUsername}}</p>
+<p>Number of arguments: {{vm.claim.arguments.length}}</p><!-- wrong, need to only count published args -->
+<p>Created: {{vm.claim.createdTs | date}}</p>
+<p>Last Updated: {{vm.claim.updatedTs | date}}</p>
+<p>Keywords: </p>
 <div ng-repeat="keyword in vm.claim.keywords track by $index" class="chip">
   {{keyword}}
   <span class="close" ng-click="vm.removeKeyword($index)">&times;</span>
 </div>
 <input type="text" id="keyword-input"/>
     
-<p class="light-text">Categories: </p>
+<p>Categories: </p>
 <div ng-repeat="categoryId in vm.claim.categoryIds track by $index" class="chip">
   {{vm.categoryOptionsMap[categoryId].description}}
-  <span class="close" ng-click="vm.removeCategory($index)">&times;</span>
+  <span class="close" ng-click="vm.removeCategory($index, true)">&times;</span>
 </div>
 <select class="form-control" 
 		ng-options = "option as option.description for option in vm.categoryOptions"

@@ -4,7 +4,7 @@
 			<button ng-if="vm.user.userId !== null"
 					type="button" 
 					class="btn btn-default btn-sm flat-button" 
-					ng-click="vm.openDialog('theCreateNewArgumentDialog')">
+					ng-click="vm.openDialog('theCreateEditArgumentDialog', null, 'create')">
 				<span class="glyphicon glyphicon-plus "></span> Add Argument
 			</button>
 			<br><br>
@@ -27,7 +27,7 @@
      								</span>
      							</td>
      							<td>
-     								<span class="btn" ng-if="vm.claim.arguments[$index].ownerId === vm.user.userId" ng-click="vm.openDialog('theEditArgumentDialog', $index) ; $event.stopPropagation()">
+     								<span class="btn" ng-if="vm.claim.arguments[$index].ownerId === vm.user.userId" ng-click="vm.openDialog('theCreateEditArgumentDialog', $index, 'edit') ; $event.stopPropagation()">
          								<span class="glyphicon glyphicon-edit"></span> Edit
        							</span>
      							</td>

@@ -49,9 +49,12 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	vm.tabs = ['Arguments', 'Opposite Claims', 'Media Resources', 'Claim Info'];
 	vm.newMissedPremiseStatement = "";
 	vm.openArgSections = {}; //track the open args so that you can toggle css classes
+	vm.argCreateEditMode = null;
+	vm.editArgDuplicate = null;
 	
 	//claim error messages - need to eventually move these to the DB
 	vm.needAtLeastOneCategory = "You must add at least one category to create this claim (it can be changed later).";
+	vm.claimStatementEmpty = "Claim statement cannot be empty";
 	vm.mpoNeedsName = "Your missed premise objection must have a name.";
 	vm.argNeedsName = "Your argument must have a name";
 	vm.argNeedsPremise = "Your argument must have at least one premise.";
@@ -123,6 +126,9 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 		 if(vm.claim.categoryIds == null || vm.claim.categoryIds.length == 0){
 			 vm.errorMessages.push(vm.needAtLeastOneCategory);
 		 }
+		 if (vm.claim.claimStatement == null || vm.claim.claimStatement == "") {
+			 vm.errorMessages.push(vm.claimStatementEmpty);
+		 }
 		 //add more if statements for other rules
 		 
 		 if (vm.errorMessages.length == 0) {
@@ -168,30 +174,74 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 		 });
     };
     
-    vm.addAndSaveNewArgument = function(){
-    	
-    	//clear out error messages
-    	vm.errorMessages = [];
-    	
-    	if (vm.newArg.argName == null || vm.newArg.argName.length == 0) {
-    		vm.errorMessages.push(vm.argNeedsName);
-    	}
-    	
-    	if (vm.newArg.premises == null || vm.newArg.premises.length == 0) {
-    		vm.errorMessages.push(vm.argNeedsPremise);
-    	}
-    	
+    vm.handleCreateEditArg = function(){
+    	vm.validateCreateEditArg();
     	if (vm.errorMessages.length == 0) {
-        	if (vm.claim.arguments == null) {
-        		vm.claim.arguments = [];
+        	if (vm.argCreateEditMode == 'create') {
+        		vm.addNewArg();
+        	} else if (vm.argCreateEditMode == 'edit') {
+            	//vm.saveStatement();
         	}
-        	vm.claim.arguments.push(vm.newArg);
-        	vm.currentArgIndex = vm.claim.arguments.length;//look into if vm.currentArgIndex is still being used
-        	vm.saveStatement();
-        	vm.closeDialog('theCreateNewArgumentDialog', false);
+    		vm.saveStatement();
+    		vm.closeDialog('theCreateEditArgumentDialog', false);	
+    	} else {
+    		alert('we have calidation errors');
     	}
-    	
     };
+    
+    vm.validateCreateEditArg = function () {
+    	vm.errorMessages = [];
+    	if (vm.argCreateEditMode == 'create') {
+        	if (vm.newArg.argName == null || vm.newArg.argName.length == 0) {
+        		vm.errorMessages.push(vm.argNeedsName);
+        	}
+        	
+        	if (vm.newArg.premises == null || vm.newArg.premises.length == 0) {
+        		vm.errorMessages.push(vm.argNeedsPremise);
+        	}
+    	} else if (vm.argCreateEditMode == 'edit') {
+        	if (vm.claim.arguments[vm.currentArgIndex].argName == null || vm.claim.arguments[vm.currentArgIndex].argName.length == 0) {
+        		vm.errorMessages.push(vm.argNeedsName);
+        	}
+        	
+        	if (vm.claim.arguments[vm.currentArgIndex].premises == null || vm.claim.arguments[vm.currentArgIndex].premises.length == 0) {
+        		vm.errorMessages.push(vm.argNeedsPremise);
+        	}
+    	}
+    };
+    
+    vm.addNewArg = function(){
+		if (vm.claim.arguments == null) {
+			vm.claim.arguments = [];
+		}
+		vm.claim.arguments.push(vm.newArg);
+		vm.currentArgIndex = vm.claim.arguments.length;//look into if vm.currentArgIndex is still being used
+    };
+    
+//    vm.addNewArgAndSaveClaim = function(){
+//    	
+//    	//clear out error messages
+//    	vm.errorMessages = [];
+//    	
+//    	if (vm.newArg.argName == null || vm.newArg.argName.length == 0) {
+//    		vm.errorMessages.push(vm.argNeedsName);
+//    	}
+//    	
+//    	if (vm.newArg.premises == null || vm.newArg.premises.length == 0) {
+//    		vm.errorMessages.push(vm.argNeedsPremise);
+//    	}
+//    	
+//    	if (vm.errorMessages.length == 0) {
+//        	if (vm.claim.arguments == null) {
+//        		vm.claim.arguments = [];
+//        	}
+//        	vm.claim.arguments.push(vm.newArg);
+//        	vm.currentArgIndex = vm.claim.arguments.length;//look into if vm.currentArgIndex is still being used
+//        	vm.saveStatement();
+//        	vm.closeDialog('theCreateEditArgumentDialog', false);
+//    	}
+//    	
+//    };
     
     vm.addAndSaveNewMpo = function(){
     	//clear error messages
@@ -506,12 +556,14 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 		 var theDialogBox = document.getElementById(dialogId);
 		 theDialogBox.style.display = "block";
 		 
-		 //if its the add argument dialog box
-		 if(dialogId == "theCreateNewArgumentDialog"){
-			 vm.addBlankArg();
-		 }
-		 else if(dialogId == "theEditArgumentDialog"){
-			 vm.currentArgIndex = argIndex;
+		 if(dialogId == "theCreateEditArgumentDialog"){
+			 vm.argCreateEditMode = dialogMode;
+			 if (vm.argCreateEditMode == "create") {
+				 vm.addBlankArg();
+			 } else if (vm.argCreateEditMode == "edit") {
+				 vm.currentArgIndex = argIndex;
+				 //vm.editArgDuplicate = vm.claim.arguments[vm.currentArgIndex];
+			 }
 		 }
 		 else if(dialogId == "theCreateNewMediaResourceDialog"){
 			 vm.newMediaResource = 
@@ -544,6 +596,8 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	 };
 	 
 	 vm.closeDialog = function(dialogId, redirect, destination){
+		 vm.errorMessages = [];//maybe rename to dialogErrorMessages or something
+		 console.log(vm.claim);
 		 var theDialogBox = document.getElementById(dialogId);
 		 theDialogBox.style.display = "none";
 		 if(dialogId == "theCreateNewMediaResourceDialog"){
@@ -620,34 +674,35 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 		
 	 };
 	 
-	 vm.addPremiseToEditableClaim = function(index){
-//		alert("this claim id: " + claimId); 
-//		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/" + claimId)
-//		 .then(function(response){
-//			 var premise = response.data;
-//			 premise.usedAsPremise = true;
-//			 vm.claim.arguments[vm.currentArgIndex].premises.push(premise);
-//			 alert("searched premise added successfully!");
-//			 vm.closeDialog('theAddPremiseDialog', false);
-//		 });
-		 var premise = vm.premiseSearchResults[index];
-		 vm.claim.arguments[vm.currentArgIndex].premises.push(premise);
-		 alert("searched premise added successfully!");
-		 vm.closeDialog('theAddPremiseDialog', false);
-	 };
+//	 vm.addPremiseToEditableClaim = function(index){
+////		alert("this claim id: " + claimId); 
+////		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/" + claimId)
+////		 .then(function(response){
+////			 var premise = response.data;
+////			 premise.usedAsPremise = true;
+////			 vm.claim.arguments[vm.currentArgIndex].premises.push(premise);
+////			 alert("searched premise added successfully!");
+////			 vm.closeDialog('theAddPremiseDialog', false);
+////		 });
+//		 var premise = vm.premiseSearchResults[index];
+//		 vm.claim.arguments[vm.currentArgIndex].premises.push(premise);
+//		 vm.closeDialog('theAddPremiseDialog', false);
+//	 };
 	 
 	 vm.removeUnsavedPremise = function(index){
 		 vm.newArg.premises.splice(index, 1);
 		 alert(index);
 	 };
 	 
-	 //probably need to rename this
-	 vm.addPremiseToClaim = function(index){
-			 var premise = vm.premiseSearchResults[index];
+	 vm.addPremiseToArg = function(index){
+		 var premise = vm.premiseSearchResults[index];
+		 if (vm.argCreateEditMode == 'create') {
 			 vm.newArg.premises.push(premise);
-			 alert("searched premise added successfully to new argument!");
-			 vm.closeDialog('theAddPremiseDialog', false);
-		 };
+		 } else if (vm.argCreateEditMode == 'edit') {
+			 vm.claim.arguments[vm.currentArgIndex].premises.push(premise);
+		 }
+		 vm.closeDialog('theAddPremiseDialog', false);
+	 };
 		 
 	 vm.addMissedPremiseToMpo = function(index){
 		 var premise = vm.premiseSearchResults[index];
@@ -805,9 +860,11 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 		}
 	};
 	
-	vm.removeCategory = function(index) {
+	vm.removeCategory = function(index, save) {
 		vm.claim.categoryIds.splice(index, 1);
-		vm.saveStatement();
+		if (save) {
+			vm.saveStatement();
+		}
 	};
 	
 	function categorySelected (id) {

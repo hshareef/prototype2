@@ -51,6 +51,21 @@ public class LoginDao {
 		return numUpdates > 0;
 	}
 	
+	public boolean expireToken (int userId, String loginToken) {
+		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		String sql = "update Prototype.user set token_expiration = CURRENT_TIMESTAMP where user_id = :user_id and login_token= :login_token";
+		Query query = session.createSQLQuery(sql);
+		query.setParameter("login_token", loginToken);
+		query.setParameter("user_id", userId);
+		int numUpdates = query.executeUpdate();
+		session.getTransaction().commit();
+		session.close();
+		sessionFactory.close();
+		return numUpdates > 0;
+	}
+	
 	//FOR DEVELOPMENT PURPOSES ONLY!
 	public void saveUser(String username, String password, String firstName, String lastName, String emailAddress){
 		User user = new User();
@@ -72,15 +87,12 @@ public class LoginDao {
 	}
 
 	public void createNewUser(User newUser) {
-		
+		//TODO: throw exception or something in case insert fails
 		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
-
 		session.save(newUser);
-		
 		session.getTransaction().commit();
-		
 		session.close();
 		sessionFactory.close();
 	}

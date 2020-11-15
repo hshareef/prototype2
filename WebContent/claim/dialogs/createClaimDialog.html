@@ -1,33 +1,27 @@
 <div id="theCreateClaimDialog" class="dialog">
 	<div class="dialog-content">
-		<span class="close" ng-click="vm.closeDialog('theCreateClaimDialog',true, 'index.html')">&times;</span>   			
 		<div class="panel panel-primary panel-center dialog-panel">
 			<div class="panel-heading">
 				Create new claim
 			</div>
-			<div class="container" id="{{$index}}">
-	   			<div class = "panel-body" >
+<!-- 			<div class="container" id="{{$index}}">
+ -->	   			<div class = "panel-body" >
 	   				<textarea rows="2" cols="90" type="text" ng-model="vm.claim.claimStatement"></textarea>
+	   				<p>Category:</p>
+		   			<div ng-repeat="categoryId in vm.claim.categoryIds track by $index" class="chip">
+					  {{vm.categoryOptionsMap[categoryId].description}}
+					  <span class="close" ng-click="vm.removeCategory($index, false)">&times;</span>
+					</div>
+					
+					<select class="form-control" 
+						ng-options="option as option.description for option in vm.categoryOptions"
+						ng-model="vm.categorySelected" 
+						ng-change="vm.addCategory(vm.categorySelected, false)"
+					>
+					</select>
+					<p class="error-text" ng-repeat="message in  vm.errorMessages">{{message}}</p>
 	   			</div>
-	   		</div>
-	   		<div>
-	   			<p>Category:</p>
-	   			<div ng-repeat="categoryId in vm.claim.categoryIds track by $index" class="chip">
-				  {{vm.categoryOptionsMap[categoryId].description}}
-				  <span class="close" ng-click="vm.removeCategory($index)">&times;</span>
-				</div>
-				
-				<select class="form-control" 
-					ng-options = "option as option.description for option in vm.categoryOptions"
-					ng-model="vm.categorySelected" 
-					ng-change="vm.addCategory(vm.categorySelected, false)"
-				>
-				</select>
-
-	   		</div>
-	   		<div>
-	   			<p class="error-text" ng-repeat="message in  vm.errorMessages">{{message}}</p>
-	   		</div>
+	   		<!-- </div> -->
 	   		<div class="panel-footer">
 	   			<button ng-click="vm.createNewClaim()" class="flat-button">Save</button>
 				<button ng-click="vm.closeDialog('theCreateClaimDialog', true, 'index.html')" class="flat-button">Close</button>

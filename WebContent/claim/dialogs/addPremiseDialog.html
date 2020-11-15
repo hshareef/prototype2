@@ -7,11 +7,9 @@
 <body>
 	<div id="theAddPremiseDialog" class="dialog">
 		<div class="dialog-content">
-		
-		
 		   	<div class="panel panel-primary panel-center dialog-panel">
 				<div class="panel-heading">
-     				Add a pre-existing premise to your argument
+     				Add a pre-existing premise to your argument yo
 	   			</div>
 	   			<div class="container" id="{{$index}}">
 		   			<div class = "panel-body" >
@@ -22,7 +20,7 @@
 						 <br>
 						 <span ng-repeat="searchedPremises in vm.premiseSearchResults track by $index">
 						 	{{$index}} - {{searchedPremises.claimStatement}}
-						 	<a ng-click="vm.addPremiseToClaim($index)">Select Premise</a>
+						 	<a ng-click="vm.addPremiseToArg($index)">Select Premise</a>
 						 	<br>
 						</span>
 					</div>

@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
 <body>
-<!-- WHY DO WE NEED THIS FILE? CAN WE JUST USE ONLY THE createNewArgumentDialog.html file? -->
+WHY DO WE NEED THIS FILE? CAN WE JUST USE ONLY THE createNewArgumentDialog.html file?
 	<div id="theEditArgumentDialog" class="dialog">
 		<div class="dialog-content">
    			<div class="panel panel-primary panel-center dialog-panel">
@@ -14,9 +14,9 @@
      				<span class="btn" ng-if="!vm.claim.arguments[vm.currentArgIndex].editable && vm.claim.arguments[vm.currentArgIndex].ownerId === vm.user.userId" ng-click="vm.setArgumentEditMode($index, true) ; $event.stopPropagation()">
          				<span class="glyphicon glyphicon-edit"></span> Edit
        				</span>
-<!-- 	   				<a class="btn" ng-if="vm.claim.arguments[vm.currentArgIndex].editable" ng-click="vm.setArgumentEditMode($index, false) ; vm.saveStatement() ; $event.stopPropagation()" style="color: black">Save</a>
-	   				<a class="btn" ng-if="vm.claim.arguments[vm.currentArgIndex].editable" ng-click="vm.setArgumentEditMode($index, false) ; vm.getClaim(vm.claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a> -->
-	   				<!-- CHANGE saveStatement() above to saveArgument(index) (and create that method) -->
+	   				<a class="btn" ng-if="vm.claim.arguments[vm.currentArgIndex].editable" ng-click="vm.setArgumentEditMode($index, false) ; vm.saveStatement() ; $event.stopPropagation()" style="color: black">Save</a>
+	   				<a class="btn" ng-if="vm.claim.arguments[vm.currentArgIndex].editable" ng-click="vm.setArgumentEditMode($index, false) ; vm.getClaim(vm.claim.claimId) ; $event.stopPropagation()" style="color: black">Cancel</a>
+	   				CHANGE saveStatement() above to saveArgument(index) (and create that method)
 	   			</div>
 	   			<div class="container" id="{{$index}}">
 		   			<div class = "panel-body" >
@@ -41,4 +41,4 @@
  		</div>
 	</div>
 </body>
-</html>
+</html> -->

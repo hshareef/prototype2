@@ -155,9 +155,18 @@ app.controller('HomeCtrl', function($scope, $http, ClaimService, $location, $win
 	};
 	
 	vm.logout = function(){
-		alert("trying to log out!");
-		localStorage.clear();
-		location.reload();
+		var loginToken = localStorage.getItem("loginToken");
+		var userId = localStorage.getItem("userId");
+		vm.user = {
+				loginToken: loginToken,
+				userId: userId
+		};
+		localStorage.removeItem("userId");
+		localStorage.removeItem("username");
+		localStorage.removeItem("loginToken");
+		localStorage.removeItem("user");
+		$http.post(ConfigService.getSettings().url + "/Prototype/prototype/login/logout", vm.user);
+		$window.location.href = "/Prototype/#/";
 	};
 	
 	vm.getUser = function(userId){
