@@ -47,7 +47,7 @@
         <mapping class="com.prototype.model.PremiseOrderWrapper" />
         <mapping class="com.prototype.model.MpoState" />
         <mapping class="com.prototype.model.Lookup" />
-        
+        <mapping class="com.prototype.model.ClaimState" />
 
     </session-factory>
 

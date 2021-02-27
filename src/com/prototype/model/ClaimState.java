@@ -6,36 +6,33 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 @Entity
-@Table(name="argument_state")
-public class ArgumentState {
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Table(name="claim_state")
+public class ClaimState {
 	
 	@Id
 	@GeneratedValue
-	@Column(name="argument_state_id")
-	private Integer argumentStateId;
+	@Column(name="claim_state_id")
+	private Integer claimStateId;
 	@Column(name="created_ts")
 	private Timestamp createdTs;
 	@Column(name="updated_ts")
 	private Timestamp updatedTs;
-	@Column(name="argument_status_id")
-	private Integer argumentStatusId;
+	@Column(name="claim_status_id")
+	private Integer claimStatusId;
 	@Column(name="current_flag")
 	private Boolean currentFlag;
-	
-	@ManyToOne
-	private Argument argument;//delete this?
-	
-	public Integer getArgumentStateId() {
-		return argumentStateId;
+	public Integer getClaimStateId() {
+		return claimStateId;
 	}
-	public void setArgumentStateId(Integer argumentStateId) {
-		this.argumentStateId = argumentStateId;
+	public void setClaimStateId(Integer claimStateId) {
+		this.claimStateId = claimStateId;
 	}
-
 	public Timestamp getCreatedTs() {
 		return createdTs;
 	}
@@ -48,23 +45,17 @@ public class ArgumentState {
 	public void setUpdatedTs(Timestamp updatedTs) {
 		this.updatedTs = updatedTs;
 	}
-	public Integer getArgumentStatusId() {
-		return argumentStatusId;
+	public Integer getClaimStatusId() {
+		return claimStatusId;
 	}
-	public void setArgumentStatusId(Integer argumentStatusId) {
-		this.argumentStatusId = argumentStatusId;
+	public void setClaimStatusId(Integer claimStatusId) {
+		this.claimStatusId = claimStatusId;
 	}
 	public Boolean getCurrentFlag() {
 		return currentFlag;
 	}
 	public void setCurrentFlag(Boolean currentFlag) {
 		this.currentFlag = currentFlag;
-	}
-	public Argument getArgument() {
-		return argument;
-	}
-	public void setArgument(Argument argument) {
-		this.argument = argument;
 	}
 	
 	

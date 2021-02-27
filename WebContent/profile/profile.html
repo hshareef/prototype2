@@ -1,9 +1,37 @@
 
-<br><br><br><br><br><br><br><br><br>
 
 <h1>Profile Page</h1>
 
-<div class="row">
+<div class="btn-group">
+	<span>
+		<button class="entity-tab category-button" ng-click="vm.activate('Your Claims', 'entity-tab');vm.changeTab('yourClaims', 'dumbvalue')">Your Claims</button>
+		<button class="entity-tab category-button" ng-click="vm.activate('Your Arguments', 'entity-tab');vm.changeTab('yourArguments', 'dumbvalue')">Your Arguments</button>
+		<button class="entity-tab category-button" ng-click="vm.activate('Your Objections', 'entity-tab');vm.changeTab('yourObjections', 'dumbvalue')">Your Objections</button>
+	</span>
+</div>
+<hr class="claims-window-bar">
+<div class="tab-container"><!--  container -->
+<div class="tab-content"><!-- tabs -->
+<!-- <div id="arguments" class="tab-pane fade in active"> -->
+<div id="yourClaims" class="tab-pane" style="display: block">
+	<div ng-include="'profile/tabs/yourClaimsTab.html'"></div>
+</div>
+<div id="yourArguments" class="tab-pane" style="display: block">
+	<div ng-include="'profile/tabs/yourArgumentsTab.html'"></div>
+</div>
+<div id="yourObjections" class="tab-pane">
+	<div ng-include="'profile/tabs/yourObjectionsTab.html'"></div>
+</div>
+		<div ng-include="'profile/dialogs/createClaimDialog.html'"></div>
+		<div ng-include="'profile/dialogs/editClaimDialog.html'"></div>
+		<div ng-include="'profile/dialogs/createEditArgumentDialog.html'"></div>
+		<div ng-include="'profile/dialogs/addPremiseDialog.html'"></div>
+		<div ng-include="'profile/dialogs/searchClaimDialog.html'"></div>
+		<div ng-include="'profile/dialogs/errorMessageDialog.html'"></div>
+		
+		
+		
+<!-- <div class="row">
 	<div class="col-sm-6">
 		<div id="top-claims-window">
 			<div id="top-claims-header">
@@ -25,4 +53,4 @@
 		</div>
 	</div>
 </div>
-	
+	 -->

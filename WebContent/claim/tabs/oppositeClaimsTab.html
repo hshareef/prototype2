@@ -12,7 +12,10 @@
 		 <div class="container">
 			<div class = "panel-body">
 				<p ng-if="vm.claim.oppositeClaims.length == 0">No opposite claims. </p>
-				<button ng-click="vm.openDialog('theOppoClaimDialog')">Link Opposite Claim</button>
+				<button 
+					ng-if="vm.user.userId !== null && vm.claim.currentStatusId == 2"
+					ng-click="vm.openDialog('theOppoClaimDialog')"
+				>Link Opposite Claim</button>
 				<span ng-repeat="oppo in vm.claim.oppositeClaims track by $index">
 					<br>
 					<a ng-click="vm.openClaim(vm.claim.oppositeClaims[$index].claimId)" >{{vm.claim.oppositeClaims[$index].claimStatement}}</a>

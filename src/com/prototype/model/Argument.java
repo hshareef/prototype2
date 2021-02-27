@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 //@XmlRootElement(name="Argument")
@@ -33,7 +34,13 @@ public class Argument {
 	private String argName;
 	
 	 @ManyToOne
-	 private Claim claim;
+	 private Claim claim;//we can probably delete this
+	 
+	 @Transient
+	 private Integer claimId;
+	 
+	 @Transient
+	 private String claimStatement;
 	 
 	 //need this somewhere in the app
 	 //https://stackoverflow.com/questions/5907501/when-annotating-a-class-with-component-does-this-mean-it-is-a-spring-bean-and
@@ -211,6 +218,25 @@ public class Argument {
 			List<MissedPremiseObjection> missedPremiseObjections) {
 		this.missedPremiseObjections = missedPremiseObjections;
 	}
+	
+	public Integer getClaimId() {
+		return claimId;
+	}
+
+
+	public void setClaimId(Integer claimId) {
+		this.claimId = claimId;
+	}
+
+
+	public String getClaimStatement() {
+		return claimStatement;
+	}
+
+
+	public void setClaimStatement(String claimStatement) {
+		this.claimStatement = claimStatement;
+	}
 
 
 	public Claim getClaim() {
@@ -222,6 +248,7 @@ public class Argument {
 		this.claim = claim;
 	}
 
+	
 
 //	public ArrayList<String> getKeywords() {
 //		return keywords;

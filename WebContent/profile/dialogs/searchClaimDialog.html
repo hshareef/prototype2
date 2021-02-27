@@ -1,0 +1,23 @@
+<div id="theSearchClaimDialog" class="dialog">
+	<div class="dialog-content">
+	   	<div class="panel panel-primary panel-center dialog-panel">
+			<div class="panel-heading">
+    				Add a pre-existing premise to your argument
+   			</div>
+	   		<div class = "panel-body" >
+				Search for premises:
+				<input ng-model="vm.searchString" type="text" class="search-text" />
+				 <button ng-click="vm.searchPremises()" class="btn btn-default">Search</button>
+				 <br>
+				 <span ng-repeat="searchedPremises in vm.premiseSearchResults track by $index">
+				 	{{$index}} - {{searchedPremises.claimStatement}}
+				 	<a ng-click="vm.addPremiseToArg($index)">Select Premise</a>
+				 	<br>
+				</span>
+			</div>
+			<div class="panel-footer">
+				<button ng-click="vm.closeDialog('theSearchClaimDialog', false)" class="flat-button">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>

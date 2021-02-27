@@ -17,6 +17,7 @@ import javax.ws.rs.QueryParam;
 import com.prototype.model.Argument;
 import com.prototype.model.Claim;
 import com.prototype.model.ClaimRef;
+import com.prototype.response.ArgumentResponse;
 import com.prototype.service.ClaimService;
  
 @Path("/claim")
@@ -42,6 +43,16 @@ public class ClaimResource {
 	@POST
 	@Produces("application/json")
 	@Consumes("application/json")
+	public Claim createClaim(Claim claim){
+		System.out.println(claim.getClaimStatement());
+		claim = claimService.createClaim(claim);
+		return claim;
+	}
+	
+	@Path("/save")
+	@POST
+	@Produces("application/json")
+	@Consumes("application/json")
 	public Claim saveClaim(Claim claim){
 		System.out.println(claim.getClaimStatement());
 		claim = claimService.saveClaim(claim);
@@ -63,6 +74,21 @@ public class ClaimResource {
 	public List<Claim> getTopClaims(@PathParam("categoryId") Integer categoryId) {
 		System.out.println("Attempting to get the top claims...");
 		return claimService.getTopClaims(categoryId);
+	}
+	
+//	@Path("/claimsForUserArgs/{userId}")
+//	@GET
+//	@Produces("application/json")
+//	public List<Claim> getClaimsForUserArgs(@PathParam("userId") Integer userId) {
+//		return claimService.getClaimsForUserArgs(userId);
+//	}
+	
+	@Path("/userClaims/{userId}")
+	@GET
+	@Produces("application/json")
+	public List<Claim> getUserClaims(@PathParam("userId") Integer userId) {
+		System.out.println("Attempting to get user's claims...");
+		return claimService.getUserClaims(userId);
 	}
 	
 	@Path("/searchClaims/{searchString}")
@@ -91,13 +117,21 @@ public class ClaimResource {
 		return arg;
 	}
 	
+	//why is this here? should it be in argument resource?
 	@Path("/updateState/{targetStateId}")
 	@POST
 	@Produces("application/json")
 	@Consumes("application/json")
-	public Argument updateArgumentState(Argument argument, @PathParam("targetStateId") Integer targetStateId){
-		argument = claimService.updateArgState(argument, targetStateId);
-		return argument;
+	public ArgumentResponse updateArgumentState(Argument argument, @PathParam("targetStateId") Integer targetStateId){
+		ArgumentResponse ar = claimService.updateArgState(argument, targetStateId);
+		return ar;
+	}
+	
+	@Path("/updateClaimStatus/{claimId}/{targetStatusId}")
+	@GET
+	@Produces("application/json")
+	public boolean updateClaimStatus(@PathParam("claimId") Integer claimId, @PathParam("targetStatusId") Integer targetStatusId){
+		return claimService.updateClaimStatus(claimId, targetStatusId);
 	}
 	
 	@Path("/delete/{claimId}")

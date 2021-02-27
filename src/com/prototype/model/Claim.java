@@ -63,7 +63,15 @@ public class Claim {
 	private Date updatedTs;
 	
 	@Column(name="used_as_premise")
-	private boolean usedAsPremise; //flag to help determine if the claim can be deleted or not
+	private boolean usedAsPremise; //flag to help determine if the claim can be deleted or not NEED TO DELETE THIS FIELD!!
+	
+	@OneToMany(cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name="CLAIM_ID")
+	private List<ClaimState> stateHistory;
+	
+	
+//	@Transient
+//	private boolean canDelete;
 	
 	//the claim needs to have a state history, because if it was created as part of a preliminary argument, then it should be preliminary
 	//when the argument is published, then the claims should be moved to published state as well
@@ -166,6 +174,32 @@ public class Claim {
 	public void setUpdatedTs(Date updatedTs) {
 		this.updatedTs = updatedTs;
 	}
+
+	public List<ClaimState> getStateHistory() {
+		return stateHistory;
+	}
+
+	public void setStateHistory(List<ClaimState> stateHistory) {
+		this.stateHistory = stateHistory;
+	}
+	
+	public ClaimState getCurrentState() {
+		for(ClaimState state : this.stateHistory) {
+			if (state.getCurrentFlag()) {
+				return state;
+			}
+		}
+		return null;
+	}
+
+	
+//	public boolean isCanDelete() {
+//		return canDelete;
+//	}
+//
+//	public void setCanDelete(boolean canDelete) {
+//		this.canDelete = canDelete;
+//	}
 	
 	
 	

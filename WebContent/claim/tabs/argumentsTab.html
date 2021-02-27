@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 			<br><br>
 			<!-- collapsable sections -->
-			<button ng-if="vm.user.userId !== null"
-					type="button" 
+			<button ng-if="vm.user.userId !== null && vm.claim.currentStatusId == 2"
+					type="button"
 					class="btn btn-default btn-sm flat-button" 
 					ng-click="vm.openDialog('theCreateEditArgumentDialog', null, 'create')">
 				<span class="glyphicon glyphicon-plus "></span> Add Argument

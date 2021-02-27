@@ -10,19 +10,19 @@
    			<div class="panel panel-primary panel-center dialog-panel">
 				<div class="panel-heading">
      				<h3 ng-if="vm.argCreateEditMode == 'create'" class = "panel-title">Create Argument {{$index+1}} - {{vm.newArg.argName}}</h3>
-     				<h3 ng-if="vm.argCreateEditMode == 'edit'" class = "panel-title">Edit Argument {{$index+1}} - {{vm.claim.arguments[vm.currentArgIndex].argName}}</h3>
+     				<h3 ng-if="vm.argCreateEditMode == 'edit'" class = "panel-title">Edit Argument {{$index+1}} - {{vm.editArgDuplicate.argName}}</h3>
 	   			</div>
 	   			<div class="container" id="{{$index}}">
 		   			<div class = "panel-body" >
 						<p class="text-area-label">Argument Name</p>
 						<textarea ng-if="vm.argCreateEditMode == 'create'" rows="1" cols="50"  type=text ng-model="vm.newArg.argName"></textarea>
-						<textarea ng-if="vm.argCreateEditMode == 'edit'" rows="1" cols="50"  type=text ng-model="vm.claim.arguments[vm.currentArgIndex].argName"></textarea>
+						<textarea ng-if="vm.argCreateEditMode == 'edit'" rows="1" cols="50"  type=text ng-model="vm.editArgDuplicate.argName"></textarea>
 						<br>
 						<div ng-if="vm.argCreateEditMode == 'create'" ng-repeat="premise in vm.newArg.premises track by $index">
 							Premise {{$index+1}}:<span class="glyphicon glyphicon-trash" ng-click="vm.removeUnsavedPremise($index)"></span><br>
 							<textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
 						</div>
-						<div ng-if="vm.argCreateEditMode == 'edit'" ng-repeat="premise in vm.claim.arguments[vm.currentArgIndex].premises track by $index">
+						<div ng-if="vm.argCreateEditMode == 'edit'" ng-repeat="premise in vm.editArgDuplicate.premises track by $index">
 							Premise {{$index+1}}:<br>
 							<textarea  ng-disabled="premise.claimId != null" rows="2" cols="75" type=text ng-model="premise.claimStatement"></textarea><br>
 						</div>

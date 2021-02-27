@@ -5,6 +5,7 @@ public class BlankFieldError extends Error {
 	private String fieldName;
 	
 	public BlankFieldError(String fieldName){
+		super( "The field \"" + fieldName + "\" cannot be blank.");
 		this.fieldName = fieldName;
 	}
 	

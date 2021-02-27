@@ -23,6 +23,7 @@ import com.prototype.model.Argument;
 import com.prototype.model.ArgumentState;
 import com.prototype.model.Claim;
 import com.prototype.model.ClaimRef;
+import com.prototype.model.ClaimState;
 import com.prototype.model.FallacyDetails;
 import com.prototype.model.MediaResource;
 import com.prototype.model.MissedPremiseObjection;
@@ -37,6 +38,11 @@ public class ClaimDao {
 		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
 		Session session = sessionFactory.openSession();
 		session.beginTransaction();
+		if (claim.getStateHistory() != null) {
+			for(ClaimState state : claim.getStateHistory()) {
+				session.saveOrUpdate(state);
+			}
+		}
 		for(Argument arg : claim.getArguments()){
 			for(Claim premise : arg.getPremises()){
 				if(premise.getClaimId() == null){
@@ -44,6 +50,7 @@ public class ClaimDao {
 					//premiseClaim.setClaimStatement(premise.getClaimStatement());
 					//session.save(premiseClaim);
 					//premise.setClaimId(premiseClaim.getClaimId());
+					premise.setUsedAsPremise(true);
 					session.saveOrUpdate(premise);
 				}
 				else {
@@ -248,7 +255,7 @@ public class ClaimDao {
 		List<Claim> topClaims = new ArrayList<Claim>();
 		System.out.println("Hibernate attempting to load the claim...");
 		
-		Query query = session.createSQLQuery(getClaimsByCategoryQuery()).addEntity(Claim.class);
+		Query query = session.createSQLQuery(getTopClaimsByCategoryQuery()).addEntity(Claim.class);
 		query.setInteger("categoryId", categoryId);
 
 		topClaims = query.list();
@@ -263,6 +270,8 @@ public class ClaimDao {
 			claim.setOppositeClaims(oppositeClaims);
 			ArrayList <MediaResource> mediaResources = new ArrayList<MediaResource>();
 			claim.setMediaResources(mediaResources);
+			ArrayList <ClaimState> stateHistory = new ArrayList<ClaimState>();
+			claim.setStateHistory(stateHistory);
 		}
 		
 		
@@ -275,11 +284,13 @@ public class ClaimDao {
 		return "select * from claim";
 	}
 	
-	public String getClaimsByCategoryQuery(){
-		//maybe instead of select * we can return id and statement?
-		StringBuffer query = new StringBuffer("select *");
+	//currently returns all the claims, need to somehow sort by importance, maybe by views?
+	public String getTopClaimsByCategoryQuery(){
+		//maybe instead of select * we can select id and statement?
+		StringBuffer query = new StringBuffer("select clm.*");
 		query.append(" from Prototype.Claim clm");
 		query.append(" join Prototype.claim_categoryIds cci on clm.claim_id = cci.claim_claim_id");
+		query.append(" join prototype.claim_state cs on cs.claim_id = clm.claim_id and cs.current_flag = 1 and cs.claim_status_id = 2 \n");//only want published claims
 		query.append(" where categoryIds = :categoryId");
 		query.append(" order by created_ts");
 		return query.toString();
@@ -299,7 +310,7 @@ public class ClaimDao {
 	     Hibernate.initialize(claim.getKeywords());
 	     Hibernate.initialize(claim.getCategoryIds());
 	     Hibernate.initialize(claim.getMediaResources());
-	     
+	     Hibernate.initialize(claim.getStateHistory());
 		
 		for(Argument argument : claim.getArguments()){
 			 Hibernate.initialize(argument.getFallacyDetails());
@@ -316,6 +327,7 @@ public class ClaimDao {
 		 		premise.setOppositeClaims(oppositeClaims);
 		 		ArrayList <MediaResource> mediaResources = new ArrayList<MediaResource>();
 		 		premise.setMediaResources(mediaResources);
+	    		premise.setStateHistory(new ArrayList<ClaimState>());
 		     }
 
 		     Hibernate.initialize(argument.getMissedPremiseObjections());
@@ -330,6 +342,7 @@ public class ClaimDao {
 		    		 premise.setCategoryIds(null);
 		    		 premise.setOppositeClaims(new ArrayList<Claim>());
 		    		 premise.setMediaResources(new ArrayList<MediaResource>());
+		    		 premise.setStateHistory(new ArrayList<ClaimState>());
 		    	 }
 		     }
 		}
@@ -345,6 +358,7 @@ public class ClaimDao {
 	 		oppo.setOppositeClaims(oppositeClaims);
 	 		ArrayList <MediaResource> mediaResources = new ArrayList<MediaResource>();
 	 		oppo.setMediaResources(mediaResources);
+	 		oppo.setStateHistory(new ArrayList<ClaimState>());
 	     }
 		
 		session.close();
@@ -375,6 +389,7 @@ public class ClaimDao {
 			claim.setOppositeClaims(new ArrayList<Claim>());
 	 		ArrayList <MediaResource> mediaResources = new ArrayList<MediaResource>();
 	 		claim.setMediaResources(mediaResources);
+	 		claim.setStateHistory(new ArrayList<ClaimState>());
 		}
 		
 		
@@ -389,7 +404,9 @@ public class ClaimDao {
 		
 		StringBuffer query = new StringBuffer();
 		query.append(" select  claim.*, null as occurance \n");
-		query.append(" from prototype.claim claim where claim_statement like concat('% ', :param0, ' %')\n");
+		query.append(" from prototype.claim claim \n");
+		query.append(" join prototype.claim_state cs on cs.claim_id = claim.claim_id and cs.current_flag = 1 and cs.claim_status_id = 2 \n");//only want published claims
+		query.append(" where claim_statement like concat('% ', :param0, ' %')\n");
 		query.append(" or claim_statement like concat(:param0, ' %')\n");
 		query.append(" or claim_statement like concat('% ', :param0, '_')\n");
 		query.append(" or claim_statement like concat('% ', :param0)\n");
@@ -399,7 +416,8 @@ public class ClaimDao {
 		query.append("select claim.*, count(claim_id) as occurance from \n");
 		query.append("( \n");
 		for(int i = 1; i < words.size(); i++){
-			query.append(" select  * from prototype.claim \n");
+			query.append(" select  claim.* from prototype.claim \n");
+			query.append(" join prototype.claim_state cs on cs.claim_id = claim.claim_id and cs.current_flag = 1 and cs.claim_status_id = 2 \n");//only want published claims
 			query.append("where ( claim_statement like concat('% ', :param"+i+", ' %') \n");
 			query.append("OR claim_statement like concat(:param"+i+", ' %') \n");
 			query.append("OR claim_statement like concat('% ', :param"+i+") \n");
@@ -512,12 +530,140 @@ public class ClaimDao {
 		for(ClaimRef claimRef : searchedClaimRefs){
 			System.out.println(claimRef.getClaimStatement());
 		}
-		
-		
 		session.close();
 		sessionFactory.close();
 		return searchedClaimRefs;
 	}
+
+	public List<Claim> getUserClaims(Integer userId) {
+		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		List<Claim> userClaims = new ArrayList<Claim>();
+		System.out.println("Hibernate attempting to load the claims for user " + userId + "...");
+		
+		Query query = session.createSQLQuery(getClaimsByUserQuery()).addEntity(Claim.class);
+		query.setInteger("userId", userId);
+
+		userClaims = query.list();
+		for(Claim claim : userClaims){
+			System.out.println(claim.getClaimStatement());
+		    Hibernate.initialize(claim.getStateHistory());
+			claim.setArguments(new ArrayList<Argument>());
+			claim.setKeywords(new ArrayList<String>());
+			Hibernate.initialize(claim.getCategoryIds());
+			claim.setOppositeClaims(new ArrayList<Claim>());
+			claim.setMediaResources(new ArrayList<MediaResource>());
+		}
+		session.close();
+		sessionFactory.close();
+		return userClaims;
+	}
+
+	private String getClaimsByUserQuery() {
+		//maybe instead of select * we can select id and statement?
+		StringBuffer query = new StringBuffer("select clm.*");
+		query.append(" from Prototype.Claim clm");
+		query.append(" join prototype.claim_state cs on cs.claim_id = clm.claim_id and cs.current_flag = 1 and cs.claim_status_id in (1,2) \n");//only want pending or published claims
+		query.append(" where clm.original_owner_id = :userId");
+		query.append(" order by created_ts desc");
+		return query.toString();
+	}
+
+	//loads the claims that contain arguments from a given user
+	public List<Claim> getClaimsForUserArgs(Integer userId) {
+		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		List<Claim> userClaims = new ArrayList<Claim>();
+		System.out.println("Hibernate attempting to load the claims for user " + userId + "...");
+		
+		Query query = session.createSQLQuery(getClaimsForUserArgsQuery()).addEntity(Claim.class);
+		query.setInteger("userId", userId);
+
+		userClaims = query.list();
+		for(Claim claim : userClaims){
+			System.out.println(claim.getClaimStatement());
+		    Hibernate.initialize(claim.getStateHistory());
+		    Hibernate.initialize(claim.getArguments());//need to see if we can only load for user, not all arguments
+		    for (Argument argument : claim.getArguments()) {
+		    	//argument.setPremises(new ArrayList<Claim>());
+		    	Hibernate.initialize(argument.getStateHistory());
+		    	argument.setMissedPremiseObjections(new ArrayList<MissedPremiseObjection>());
+		    	Hibernate.initialize(argument.getPremises());
+		    	for (Claim premise : argument.getPremises()) {
+		    		premise.setArguments(new ArrayList<Argument>());
+		    		Hibernate.initialize(premise.getStateHistory());
+		    		//premise.setStateHistory(new ArrayList<ClaimState>());
+		    		premise.setOppositeClaims(new ArrayList<Claim>());
+		    		premise.setCategoryIds(new ArrayList<Integer>());
+		    		premise.setKeywords(new ArrayList<String>());
+		    		premise.setMediaResources(new ArrayList<MediaResource>());
+		    	}
+		    }
+			claim.setKeywords(new ArrayList<String>());
+			claim.setCategoryIds(null);
+			claim.setOppositeClaims(new ArrayList<Claim>());
+			claim.setMediaResources(new ArrayList<MediaResource>());
+		}
+		session.close();
+		sessionFactory.close();
+		return userClaims;		
+	}
+
+	private String getClaimsForUserArgsQuery() {
+		StringBuffer query = new StringBuffer("select distinct clm.*");
+		query.append(" from Prototype.Claim clm");
+		query.append(" join prototype.claim_state cs on cs.claim_id = clm.claim_id and cs.current_flag = 1 and cs.claim_status_id = 2 \n");//only want published claims
+		query.append(" join prototype.argument ag on ag.claim_id = clm.claim_id and ag.owner_id = :userId \n");
+		query.append(" join prototype.argument_state ags on ags.argument_id = ag.argument_id and ags.current_flag = 1 and ags.argument_status_id in (1,2) \n");//only want pending or published arguments (no deleted)
+		query.append(" order by created_ts desc");
+		return query.toString();
+	}
+
+	public List<ClaimRef> getClaimRefsForUser(Integer userId) {
+		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+		Session session = sessionFactory.openSession();
+		session.beginTransaction();
+		List<ClaimRef> userClaims = new ArrayList<ClaimRef>();
+		System.out.println("Hibernate attempting to load the claims for user " + userId + "...");
+		
+		Query query = session.createSQLQuery(getClaimsForUserQuery()).addEntity(ClaimRef.class);
+		query.setInteger("userId", userId);
+
+		userClaims = query.list();
+		session.close();
+		sessionFactory.close();
+		return userClaims;
+	}
+
+	private String getClaimsForUserQuery() {
+		StringBuffer query = new StringBuffer("select clm.*");
+		query.append(" from Prototype.Claim clm");
+		query.append(" join prototype.claim_state cs on cs.claim_id = clm.claim_id and cs.current_flag = 1 and cs.claim_status_id = 2 \n");//only want published claims
+		query.append(" join prototype.argument ag on ag.claim_id = clm.claim_id \n");
+		query.append(" join prototype.argument_state ags on ags.argument_id = ag.argument_id and ags.current_flag = 1 and ags.argument_status_id in (1,2) \n");//only want pending or published arguments
+		query.append(" where ag.owner_id = :userId");
+		query.append(" order by created_ts desc");
+		return query.toString();
+	}
+
+//	public boolean claimUsedAsPremise(Integer claimId) {
+//		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+//		Session session = sessionFactory.openSession();
+//		session.beginTransaction();
+//		System.out.println("Determinging if " + claimId + " used as a premise...");
+//		Query query = session.createSQLQuery(getClaimUsedAsPremiseQuery());
+//		query.setInteger("claimId", claimId);
+//		List result = query.list();
+//		session.close();
+//		sessionFactory.close();
+//		return result.size() > 0;
+//	}
+//	
+//	public String getClaimUsedAsPremiseQuery(){
+//		return " select 1 from Prototype.argument_premise_jt where premises_claim_id = :claimId limit 1";
+//	}
 	
 //	public void linkOppositeClaim(int claimId, int oppositeClaimId){
 //		SessionFactory sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();

@@ -1,0 +1,17 @@
+.exclamation-tooltip:hover .premise-pending-tooltiptext {
+  visibility: visible;
+}
+
+.premise-pending-tooltiptext {
+  visibility: hidden;
+  width: 210px;
+  background-color: black;
+  color: #fff;
+/*   text-align: center; */
+  padding: 2px 2px 2px 2px;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}

@@ -14,6 +14,7 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	vm.claim.keywords = [];
 	vm.claim.originalOwnerId=-1;
 	vm.claim.originalOwnerUsername = "";
+	vm.claim.canDelete = false;
 	vm.editMode = false;
 	vm.user = {
 			userId: null,
@@ -50,7 +51,7 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	vm.newMissedPremiseStatement = "";
 	vm.openArgSections = {}; //track the open args so that you can toggle css classes
 	vm.argCreateEditMode = null;
-	vm.editArgDuplicate = null;
+	vm.editArgDuplicate = null;//when editing an arg, make edits to this duplicate. If save, replace original with this dup and save
 	
 	//claim error messages - need to eventually move these to the DB
 	vm.needAtLeastOneCategory = "You must add at least one category to create this claim (it can be changed later).";
@@ -132,14 +133,11 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 		 //add more if statements for other rules
 		 
 		 if (vm.errorMessages.length == 0) {
-			 vm.saveStatement();
+			 vm.createClaimCall();
 		 }
 	 };
- 
-    //for saving a claim - should probably change name to saveClaim or something
-    vm.saveStatement = function(){
-    	
-    	
+	 
+    vm.createClaimCall = function(){
     	if(vm.claim.originalOwnerId == -1){
     		vm.claim.originalOwnerId = vm.user.userId;
     		vm.claim.originalOwnerUsername = vm.user.username;
@@ -151,16 +149,43 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
         	vm.oneUnsavedArgument = false;
         	//vm.closeCreateClaimDialog(false);
         	vm.closeDialog('theCreateClaimDialog', false);
+        	vm.openClaim(vm.claim.claimId);//dont do this, pending claims should not have a page?
+    	});
+
+    }; 
+	    
+ 
+    //for saving a claim - should probably change name to saveClaim or something
+    vm.saveStatement = function(){
+    	
+    	
+    	if(vm.claim.originalOwnerId == -1){
+    		vm.claim.originalOwnerId = vm.user.userId;
+    		vm.claim.originalOwnerUsername = vm.user.username;
+    	}
+    	var test = $http.post(ConfigService.getSettings().url + "/Prototype/prototype/claim/save", vm.claim).then(function(response){
+        	//alert("message saved!");
+        	vm.claim = response.data;
+        	vm.editMode=false;
+        	vm.oneUnsavedArgument = false;
+        	//vm.closeCreateClaimDialog(false);
+        	vm.closeDialog('theCreateClaimDialog', false);
         	vm.openClaim(vm.claim.claimId);
     	});
 
     }; 
     
+    vm.setCanDelete = function() {
+    	vm.claim.canDelete = vm.user.userId == vm.claim.originalOwnerId && vm.claim.arguments.length == 0;
+    };
+    
     vm.deleteClaim = function(){
-    	alert("going to delete claim!");
-    	$http.post(ConfigService.getSettings().url + "/Prototype/prototype/claim/delete/"+vm.claim.claimId).then(function(response){
-    		alert("claim deleted!");
-    	});
+    	if (vm.claim.canDelete) {
+        	alert("going to delete claim!");
+        	$http.post(ConfigService.getSettings().url + "/Prototype/prototype/claim/delete/"+vm.claim.claimId).then(function(response){
+        		alert("claim deleted!");
+        	});
+    	}
     };
     
     vm.addBlankArg = function(){
@@ -180,12 +205,13 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
         	if (vm.argCreateEditMode == 'create') {
         		vm.addNewArg();
         	} else if (vm.argCreateEditMode == 'edit') {
-            	//vm.saveStatement();
+        		//update the claim's arg with the temporary edited one
+        		vm.claim.arguments[vm.currentArgIndex] = vm.editArgDuplicate;
         	}
     		vm.saveStatement();
     		vm.closeDialog('theCreateEditArgumentDialog', false);	
     	} else {
-    		alert('we have calidation errors');
+    		alert('we have validation errors');
     	}
     };
     
@@ -305,6 +331,7 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
     };
     
     vm.deleteArgument = function(index){
+    	//this needs to change. need to set argument status to deleted and save, not splice
     	vm.claim.arguments.splice(index, 1);
     	vm.saveStatement();
     };
@@ -345,7 +372,7 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
     	premise.claimStatement="";
     	//premise.originalOwnerId = vm.user.userId;
     	//premise.originalOwnerUsername = vm.user.username;
-    	vm.claim.arguments[vm.currentArgIndex].premises.push(premise);
+    	vm.editArgDuplicate.premises.push(premise);
     };
     
     vm.addToNewArgPremiseArray = function(){
@@ -414,13 +441,14 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	    
 	    
 		
-		 vm.getClaim = function(claimId){
-			 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/" + claimId)
-			 .then(function(response){
-				 vm.claim = response.data;
-				 console.log(vm.claim);
-			 });
-		    };
+	 vm.getClaim = function(claimId){
+		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/" + claimId)
+		 .then(function(response){
+			 vm.claim = response.data;
+			 console.log(vm.claim);
+			 vm.postLoadClaimActions();
+		 });
+    };
 	 
 	 vm.callClaimServiceFunction = function(){
 		 alert("Going to call the claim service function, or not...maybe");
@@ -480,6 +508,8 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	    document.getElementById(sectionName).style.display = "block";
 	    //evt.currentTarget.className += " active";
 	 };
+	 
+	 //find out where this is being used
 	 setTimeout(function(){
 		 var defaultSections = document.getElementsByClassName("defaultOpen");
 		 for(var j = 0 ; j < defaultSections.length ; j++){
@@ -562,7 +592,10 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 				 vm.addBlankArg();
 			 } else if (vm.argCreateEditMode == "edit") {
 				 vm.currentArgIndex = argIndex;
-				 //vm.editArgDuplicate = vm.claim.arguments[vm.currentArgIndex];
+				 vm.editArgDuplicate = JSON.parse(JSON.stringify(vm.claim.arguments[vm.currentArgIndex]));
+//				 vm.editArgDuplicate.argName = "the new cloned argument";
+//				 console.log(vm.claim.arguments[vm.currentArgIndex]);
+//				 console.log(vm.editArgDuplicate);
 			 }
 		 }
 		 else if(dialogId == "theCreateNewMediaResourceDialog"){
@@ -597,11 +630,15 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	 
 	 vm.closeDialog = function(dialogId, redirect, destination){
 		 vm.errorMessages = [];//maybe rename to dialogErrorMessages or something
-		 console.log(vm.claim);
+		 vm.argumentViewingIndex = null;//no longer viewing a particular argument
 		 var theDialogBox = document.getElementById(dialogId);
 		 theDialogBox.style.display = "none";
 		 if(dialogId == "theCreateNewMediaResourceDialog"){
 			 vm.newMediaResource = null;
+		 } else if (dialogId == "theAddPremiseDialog") {
+			 //clear out data
+			 vm.searchString = null;
+			 vm.premiseSearchResults = null;
 		 }
 		 if(destination !== undefined && destination !== null){
 			 window.location.href = ConfigService.getSettings().url + "/Prototype/#/" + destination;
@@ -657,7 +694,6 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 	 };
 	 
 	 vm.searchPremises = function(){
-		 alert(vm.searchString);
 		 $http.get(ConfigService.getSettings().url + "/Prototype/prototype/claim/searchClaims/" + vm.searchString)
 		 .then(function(response){
 			 vm.premiseSearchResults = response.data;
@@ -699,7 +735,7 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 		 if (vm.argCreateEditMode == 'create') {
 			 vm.newArg.premises.push(premise);
 		 } else if (vm.argCreateEditMode == 'edit') {
-			 vm.claim.arguments[vm.currentArgIndex].premises.push(premise);
+			 vm.editArgDuplicate.premises.push(premise);
 		 }
 		 vm.closeDialog('theAddPremiseDialog', false);
 	 };
@@ -912,7 +948,25 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 //		//$scope.$apply();
 //		//vm.forcer = 1;
 //	};
-	 
+	
+	vm.getClaimCurrentStatusId = function() {
+		var claimStatusId = 1;//default to pending
+		vm.claim.stateHistory.forEach(function(state){
+			if (state.currentFlag) {
+				claimStatusId = state.claimStatusId;
+			}
+		});
+		return claimStatusId;
+	};
+	
+	vm.postLoadClaimActions = function() {
+		vm.activateCategoryButton('Arguments');//default to argument tab, this is bad practice, shouldn't have string hardcoded here
+		vm.changeTab('arguments', 'argumentsTab');//by default, load arguments tab
+		vm.setCanDelete();
+		vm.claim.currentStatusId = vm.getClaimCurrentStatusId();
+		console.log(vm.claim);
+	};
+	
 	 vm.init = function(){
 		LookupService.getLookup("CLAIM_CATEGORIES_LKUP").then(function(response){
 			vm.categoryOptions = response;
@@ -927,8 +981,6 @@ app.controller('ClaimCtrl', function($scope, $http, $routeParams, ClaimService, 
 			}
 			else {
 				vm.getClaim(claimId);
-				vm.activateCategoryButton('Arguments');//default to argument tab, this is bad practice, shouldn't have string hardcoded here
-				vm.changeTab('arguments', 'argumentsTab');//by default, load arguments tab
 			}
 		});
 	 };

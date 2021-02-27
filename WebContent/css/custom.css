@@ -6,6 +6,8 @@
 @import "homepage.css";
 @import "login.css";
 @import "errors.css";
+@import "icons.css";
+@import "tooltips.css";
 
 .color-scheme {
 	background-color: #25274D;

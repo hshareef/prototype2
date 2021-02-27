@@ -1,0 +1,110 @@
+<br>
+<div class="row">
+	<div class="col-sm-9">
+		<button type="button"
+			class="btn btn-default btn-sm flat-button" 
+			ng-click="vm.openCreateArgDialog()"> Create New Argument
+		</button>
+	</div>
+</div>
+<br>
+<div class="row">
+	<div class="col-sm-9">
+		<button type="button" 
+				id="pendingArgsButton" 
+				class="btn btn-default btn-sm flat-button" 
+				ng-click="vm.switchUserArgs(1)"> Pending
+		</button>
+		<button type="button"
+				id="publishedArgsButton" 
+				class="btn btn-default btn-sm flat-button" 
+				ng-click="vm.switchUserArgs(2)"> Published
+		</button>
+	</div>
+</div>
+<br>
+<div class="row">
+	<div class="col-sm-9">
+		<div ng-repeat = "argument in vm.userArgs track by $index">
+			<div class="argSection panel panel-primary panel-center">
+				<div class="arg-panel-heading panel-heading">
+		      			<table>
+		      				<tr>
+		      					<td class="argNameCol">{{argument.argName}}</td>
+		      					<td>			       			
+		      						<span class="btn" ng-click="vm.openArg(event, 'Structure'+$index, $index); vm.toggleViewIcon($index)" ng-if="true" id="{{'arg-header-'+$index}}" data-toggle="collapse" data-target="{{'#collapse' + $index}}" aria-expanded="false" aria-controls="collapse + {{$index}}">
+		   									<span id="{{'view-plus-'+$index}}" class="glyphicon glyphicon-plus"></span>
+		   									<span id="{{'view-minus-'+$index}}" class="glyphicon glyphicon-minus initial-invisible"></span> 
+		   									View
+		   							</span>
+		  							</td>
+		  							<td>
+		  								<span class="btn" ng-click="vm.publishArg($index, 2)">
+		  									<span class="glyphicon glyphicon-send"></span> Publish
+		  								</span>
+		  							</td>
+		  							<td>
+		  								<span class="btn" ng-click="vm.openDialog('theCreateEditArgumentDialog', $index, 'edit') ; $event.stopPropagation()">
+		      								<span class="glyphicon glyphicon-edit"></span> Edit
+		    							</span>
+		  							</td>
+		  							<td>
+		  								<span class="btn delete-icon" ng-click="vm.deleteArgument($index) ; event.stopPropagation()">
+		      								<span class="glyphicon glyphicon-trash"></span> Delete 
+		   					 			</span>
+		  							</td>
+		      				</tr>
+		      			</table>
+		     				
+		  			</div>
+		   		<div class="container collapse panel-body-container" id="{{'collapse' + $index}}">
+		   			<div class = "panel-body" >
+						<div class="tab">
+						  	<button class="tablinks defaultOpen" ng-click="vm.openArg(event, 'Structure'+$index, $index)" id="defaultOpen">Structure</button>
+							<button class="tablinks" ng-click="vm.openArg(event, 'Objections'+$index, $index)">Objections ({{argument.missedPremiseObjections.length}})</button>
+							<button class="tablinks" ng-click="vm.openArg(event, 'ArgInfo'+$index, $index)">Argument Info</button>
+						</div>
+						
+						<div id="{{'Structure' + $index}}" class="tabcontent">
+						  <h3>Structure</h3>
+						  	<div ng-repeat="premise in argument.premises track by $index">
+								<span ng-if="premise.currentState.claimStatusId == 1" class="glyphicon glyphicon-exclamation-sign warning-exclamation exclamation-tooltip">
+									<span class="premise-pending-tooltiptext">This premise is still pending.</span>
+								</span>
+								Premise {{$index+1}}:
+								<a ng-class="btn" style="color:black; font-size:12px" ng-click="vm.openClaim(premise.claimId)">{{premise.claimStatement}}</a>
+								<br>
+							</div>
+							<br>
+							Conclusion: <a ng-click="vm.openArgClaim(argument.claimId)">{{argument.claimStatement}}</a>
+							<br>
+							<br>
+						</div>
+						
+						<div id="{{'Objections'+$index}}" class="tabcontent">
+						  <div class="row">
+						  	<div class="col-md-9">
+						  		<h3>Missed Premise Objections</h3>		
+						  	</div>											
+						  	<div class="col-md-3"><button type="button" class="btn btn-default btn-sm add-arg-button flat-button" ng-click="vm.openDialog('theAddMpoDialog', $parent.$index, 'addNewMpo', $index)">
+								<span class="glyphicon glyphicon-plus"></span> Add Missed Premise Objection
+							</button>
+							</div>
+							</div>
+							<div>
+							  	<div ng-repeat="missedPremiseObjection in argument.missedPremiseObjections track by $index">
+									<span class="claimRow" ng-click="vm.openDialog('theAddMpoDialog', $parent.$index, 'viewMpo', $index)">Missing Premise Objection # {{$index+1}} - {{missedPremiseObjection.name}}</span>
+								</div>
+							</div>
+						</div>
+						
+						<div id="{{'ArgInfo'+$index}}" class="tabcontent">
+						  <h3>Argument Info</h3>
+						  <p>List Argument Info here</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

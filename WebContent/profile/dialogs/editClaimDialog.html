@@ -1,0 +1,29 @@
+<div id="theEditClaimDialog" class="dialog">
+	<div class="dialog-content">
+		<div class="panel panel-primary panel-center dialog-panel">
+			<div class="panel-heading">
+				Edit Claim
+			</div>
+   			<div class = "panel-body" >
+   				<textarea rows="2" cols="90" type="text" ng-model="vm.editingClaimDuplicate.claimStatement"></textarea>
+   				<p>Category:</p>
+	   			<div ng-repeat="categoryId in vm.editingClaimDuplicate.categoryIds track by $index" class="chip">
+				  {{vm.categoryOptionsMap[categoryId].description}}
+				  <span class="close" ng-click="vm.removeCategory(vm.editingClaimDuplicate, $index)">&times;</span>
+				</div>
+				
+				<select class="form-control" 
+					ng-options="option as option.description for option in vm.categoryOptions"
+					ng-model="vm.categorySelected" 
+					ng-change="vm.addCategory(vm.editingClaimDuplicate, vm.categorySelected, false)"
+				>
+				</select>
+				<p class="error-text" ng-repeat="message in  vm.errorMessages">{{message}}</p>
+   			</div>
+	   		<div class="panel-footer">
+	   			<button ng-click="vm.saveClaim()" class="flat-button">Save</button>
+				<button ng-click="vm.closeDialog('theEditClaimDialog')" class="flat-button">Close</button>
+	   		</div>
+		</div>
+		</div>
+</div>

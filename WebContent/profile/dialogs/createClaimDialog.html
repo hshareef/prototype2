@@ -5,23 +5,23 @@
 				Create new claim
 			</div>
    			<div class = "panel-body" >
-   				<textarea rows="2" cols="90" type="text" ng-model="vm.claim.claimStatement"></textarea>
+   				<textarea rows="2" cols="90" type="text" ng-model="vm.newClaim.claimStatement"></textarea>
    				<p>Category:</p>
-	   			<div ng-repeat="categoryId in vm.claim.categoryIds track by $index" class="chip">
+	   			<div ng-repeat="categoryId in vm.newClaim.categoryIds track by $index" class="chip">
 				  {{vm.categoryOptionsMap[categoryId].description}}
-				  <span class="close" ng-click="vm.removeCategory($index, false)">&times;</span>
+				  <span class="close" ng-click="vm.removeCategory(vm.newClaim, $index)">&times;</span>
 				</div>
 				
 				<select class="form-control" 
 					ng-options="option as option.description for option in vm.categoryOptions"
 					ng-model="vm.categorySelected" 
-					ng-change="vm.addCategory(vm.categorySelected)"
+					ng-change="vm.addCategory(vm.newClaim, vm.categorySelected, false)"
 				>
 				</select>
-				<p class="error-text" ng-repeat="message in  vm.errorMessages">{{message}}</p>
+				<p class="error-text" ng-repeat="message in  vm.createClaimErrorMessages">{{message}}</p>
    			</div>
 	   		<div class="panel-footer">
-	   			<button ng-click="vm.createNewClaim()" class="flat-button">Save</button>
+	   			<button ng-click="vm.createNewClaim(vm.newClaim)" class="flat-button">Save</button>
 				<button ng-click="vm.closeDialog('theCreateClaimDialog', true, 'index.html')" class="flat-button">Close</button>
 	   		</div>
 		</div>

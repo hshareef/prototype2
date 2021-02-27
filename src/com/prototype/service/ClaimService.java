@@ -3,22 +3,28 @@ package com.prototype.service;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.prototype.common.ArgumentConstants;
+import com.prototype.common.ClaimConstants;
 import com.prototype.common.MpoConstants;
 import com.prototype.dao.ClaimDao;
+import com.prototype.messages.Message;
 import com.prototype.model.Argument;
 import com.prototype.model.ArgumentState;
 import com.prototype.model.Claim;
 import com.prototype.model.ClaimRef;
+import com.prototype.model.ClaimState;
 import com.prototype.model.FallacyDetails;
 import com.prototype.model.MissedPremiseObjection;
 import com.prototype.model.MpoState;
+import com.prototype.response.ArgumentResponse;
+import com.prototype.response.ResponseCodes;
 import com.prototype.validators.ClaimValidator;
+import com.prototype.messages.Error;
+
 
 public class ClaimService {
 	
@@ -27,12 +33,12 @@ public class ClaimService {
 	//need to autowire
 	ClaimValidator claimValidator = new ClaimValidator();
 	
-	public Claim saveClaim(Claim claim){
+	RulesService rulesService = new RulesService();
+	
+	public Claim createClaim(Claim claim) {
 		if(claimValidator.validateClaim(claim).size()==0){
-			for(Argument arg : claim.getArguments()){
-				arg.determineValidity();
-			}
-			addPrelimStates(claim);
+			addPrelimState(claim);
+			addArgs(claim);
 			claim = claimDao.saveClaim(claim);
 			return claim;
 		}
@@ -42,6 +48,56 @@ public class ClaimService {
 		}
 	}
 	
+	private void addArgs(Claim claim) {
+		if (claim.getArguments() == null) {
+			claim.setArguments(new ArrayList<Argument>());
+		}
+		
+	}
+
+	//this function gets hit for all updates (add arg, add mpo, etc), need to eventually update this
+	public Claim saveClaim(Claim claim){
+		if(claimValidator.validateClaim(claim).size() == 0
+				&& rulesService.runAddArgRules(claim).size() == 0){
+			for(Argument arg : claim.getArguments()){
+				arg.determineValidity();//this is not a good idea
+				//checkAndUpdatePremiseStates(arg);//make sure each premise has valid state history
+			}
+			addPrelimStates(claim);
+			addUserIdToPremises(claim);
+			claim = claimDao.saveClaim(claim);
+			return claim;
+		}
+		else{
+			System.out.println("Claim invalid, cannot save.");
+			return null;
+		}
+	}
+	
+//	private void checkAndUpdatePremiseStates(Argument arg) {
+//		for (Claim premise : arg.getPremises()) {
+//			if (premise.getStateHistory() == null || premise.getStateHistory().size() == 0) {
+//				addPrelimState(premise);
+//			}
+//		}
+//	}
+
+	private void addUserIdToPremises(Claim claim) {
+		if(claim != null && claim.getArguments() != null && claim.getArguments().size() > 0){
+			for(Argument arg : claim.getArguments()){
+				if (arg.getPremises() != null && arg.getPremises().size() > 0) {
+					for (Claim premise : arg.getPremises()) {
+						if (premise.getClaimId() == null) {
+							//means we are creating premise 
+							premise.setOriginalOwnerId(arg.getOwnerId());
+							premise.setOriginalOwnerUsername(arg.getOwnerUsername());
+						}
+					}
+				}
+			}
+		}
+	}
+
 	public Argument saveArgument(Argument arg){
 		return claimDao.saveArgument(arg);
 	}
@@ -51,8 +107,21 @@ public class ClaimService {
 	}
 
 	public Claim getClaim(Integer claimId) {
-		return claimDao.getClaim(claimId);
+		Claim claim = claimDao.getClaim(claimId);
+		//claim.setCanDelete(checkIfDeletable(claim));
+		return claim;
 	}
+	
+//	public boolean checkIfDeletable(Claim claim){
+//		//will need to update this to also check for media resources, people using claim, etc
+//		//need to make sure we're checking pending arguments as well, not just published ones
+//		if (claim.getArguments().size() != 0
+//				|| claim.getOppositeClaims().size() != 0) {
+//			return false;
+//		} else {
+//			return !claimDao.claimUsedAsPremise(claim.getClaimId());
+//		}
+//	}
 
 	public List<Claim> getSearchedClaims(String searchString) {
 		List<String> words = new ArrayList<String>(Arrays.asList(searchString.split(" ")));
@@ -120,6 +189,10 @@ public class ClaimService {
 	}
 
 	public Claim setOppositeClaim(Claim claim, Integer oppositeClaimId) {
+		if (rulesService.runSetOppositeClaimRules(claim).size() > 0) {
+			//need to handle error by sending response to front end and displaying error messages
+			return null;
+		}
 		Claim oppoClaim = getClaim(oppositeClaimId);
 		checkAndSetOppositeClaim(claim, oppoClaim);
 		checkAndSetOppositeClaim(oppoClaim, claim);
@@ -188,17 +261,41 @@ public class ClaimService {
 		arg.getStateHistory().add(state);
 	}
 
-	public Argument updateArgState(Argument argument, Integer targetStateId) {
+	//TODO: move this to argument service
+	public ArgumentResponse updateArgState(Argument argument, Integer targetStateId) {
+		ArgumentResponse response = new ArgumentResponse();
+		List<Message> errorMessages =  rulesService.publishArgRules(argument);
 		//can run rule checks here if needed
-		
-		addArgState(argument, targetStateId);
-		argument = saveArgument(argument);
-		return argument;
+		if (errorMessages.size() == 0) {
+			addArgState(argument, targetStateId);
+			//TODO: just updating state instead of saving full argument
+			argument = saveArgument(argument);
+			response.setCode(ResponseCodes.SUCCESS.id);
+			response.setArgument(argument);
+		} else {
+			response.setCode(ResponseCodes.FAILURE.id);
+			response.setMessages(errorMessages);
+		}
+		return response;
 		
 	}
 	
 	public boolean deleteClaim(Integer claimId){
+		//need to check conditions to allow deletion ie is pending
 		return claimDao.deleteClaim(claimId);
+	}
+	
+	public void addPrelimState(Claim claim){
+		if (claim.getStateHistory() == null) {
+			List<ClaimState> stateHistory = new ArrayList<ClaimState>();
+			claim.setStateHistory(stateHistory);
+		}
+		ClaimState prelimState = new ClaimState();
+		prelimState.setClaimStatusId(ClaimConstants.States.PRELIM.id);
+		prelimState.setCurrentFlag(true);
+		prelimState.setCreatedTs(new Timestamp(System.currentTimeMillis()));
+		prelimState.setUpdatedTs(prelimState.getCreatedTs());
+		claim.getStateHistory().add(prelimState);
 	}
 	
 	private void addPrelimStates(Claim claim){
@@ -206,8 +303,25 @@ public class ClaimService {
 		
 		//add prelim state for arguments if needed
 		
+		//add prelim states for argument premises if needed
+		addPremisePrelimStates(claim);
+		
 		//add prelim state for mpo's
 		addMpoPrelimStates(claim);
+	}
+	
+	private void addPremisePrelimStates(Claim claim) {
+		if(claim != null && claim.getArguments() != null && claim.getArguments().size() > 0){
+			for(Argument arg : claim.getArguments()){
+				if (arg.getPremises() != null && arg.getPremises().size() > 0) {
+					for (Claim premise : arg.getPremises()) {
+						if (premise.getStateHistory() == null || premise.getStateHistory().size() == 0) {
+							addPrelimState(premise);
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	private void addMpoPrelimStates(Claim claim){
@@ -239,5 +353,63 @@ public class ClaimService {
 			}
 		}
 	}
+
+	public List<Claim> getUserClaims(Integer userId) {
+		return claimDao.getUserClaims(userId);
+
+	}
+
+	public boolean updateClaimStatus(Integer claimId, Integer targetStatusId) {
+		Claim claim = claimDao.getClaim(claimId);
+		if (targetStatusId == ClaimConstants.States.PUBLISHED.id) {
+			//run publish rules here
+			//rule 1
+			///rule 2...
+		}
+		//set old state to not current
+		if(claim.getStateHistory() == null){
+			claim.setStateHistory(new ArrayList<ClaimState>());
+		}
+
+		clearOldStates(claim);
+		addNewClaimState(claim, targetStatusId);
+		claimDao.saveClaim(claim);
+		return true;
+	}
+	
+	private void clearOldStates(Claim claim) {
+		if(claim.getStateHistory().size() > 0){
+			for(ClaimState state : claim.getStateHistory()){
+				if(state.getCurrentFlag()){
+					state.setCurrentFlag(false);
+				}
+			}
+		}
+	}
+	
+	private void addNewClaimState(Claim claim, Integer targetStatusId) {
+		ClaimState newState = new ClaimState();
+		newState.setClaimStatusId(targetStatusId);
+		newState.setCreatedTs(new Timestamp(System.currentTimeMillis()));
+		newState.setUpdatedTs(new Timestamp(System.currentTimeMillis()));
+		newState.setCurrentFlag(true);
+		claim.getStateHistory().add(newState);
+	}
+
+//	public List<Claim> getClaimsForUserArgs(Integer userId) {
+//		List<Claim> claims = claimDao.getClaimsForUserArgs(userId);
+//		for(Claim claim : claims) {
+//			List<Argument> userArgs = new ArrayList<Argument>();
+//			for(Argument argument : claim.getArguments()){
+//				if (argument.getOwnerId() == userId) {
+//					userArgs.add(argument);
+//				}
+//			}
+//			claim.setArguments(userArgs);//replace claim arguments with array of only those created by user
+//		}
+//		return claims;
+//	}
+
+
 	
 }

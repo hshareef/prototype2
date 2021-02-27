@@ -9,6 +9,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name="claim_ref")
 public class ClaimRef {
+	//we need this class as an entity because even if we dont save them to DB, we are creating these via hibernate on load
 	
 	@Id
 	@GeneratedValue
